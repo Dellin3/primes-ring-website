@@ -1,14 +1,15 @@
 import { useEffect, useMemo, useState } from 'react'
 import './App.css'
 
-const navItems = [
-  { label: 'Overview', href: '#top' },
-  { label: 'Background', href: '#background' },
-  { label: 'Math', href: '#math' },
-  { label: 'Team Algorithms', href: '#pipeline' },
-  { label: 'Visual Gallery', href: '#figures' },
-  { label: 'Interactive Tool', href: '#tool' },
-  { label: 'Progress', href: '#contribution' },
+const portalMenuItems = [
+  { id: 'overview', title: 'Project Overview' },
+  { id: 'background', title: 'Mission Background' },
+  { id: 'math', title: 'Mathematical Framework' },
+  { id: 'team', title: 'Team Members' },
+  { id: 'algorithms', title: 'Algorithm Modules' },
+  { id: 'gallery', title: 'Visual Gallery' },
+  { id: 'data', title: 'Real Data Viewer' },
+  { id: 'progress', title: 'Progress & Next Steps' },
 ]
 
 const pipelineSteps = [
@@ -153,13 +154,79 @@ const galleryImages = [
   },
 ]
 
-const plannedToolFeatures = [
-  'CSV upload',
-  'Radius vs optical depth interactive plot',
-  'Local radial window selection',
-  'Derivative diagnostics',
-  'Export selected window as CSV',
-  'Future stationary-phase diagnostics',
+const teamMembers = [
+  {
+    name: 'Mentor',
+    role: 'Research guidance and mathematical supervision.',
+    focus: 'Helping the team refine the reconstruction framework, numerical assumptions, and research direction.',
+    status: 'Ongoing mentorship.',
+  },
+  {
+    name: 'Member A',
+    role: 'Phase toy model and explanatory figures.',
+    focus: 'Creating simplified examples to visualize phase behavior, stationary points, and caustic-like transitions.',
+    input: 'Synthetic phase parameters.',
+    output: 'Explanatory plots and toy model figures.',
+    status: 'Prototype / discussion stage.',
+  },
+  {
+    name: 'Member B',
+    role: 'Root mapping and zero-finding module.',
+    focus: 'Locating stationary roots and organizing how they change across radial windows.',
+    input: 'Phase derivative evaluations over a radial grid.',
+    output: 'Root locations, branch candidates, and possible bifurcation zones.',
+    status: 'Prototype algorithm under refinement.',
+  },
+  {
+    name: 'Member C',
+    role: 'Phase model and geometry setup.',
+    focus: 'Connecting the physical geometry to phase-function behavior and reconstruction assumptions.',
+    input: 'Ring geometry, occultation setup, and model parameters.',
+    output: 'Phase model components and geometry-based explanations.',
+    status: 'Under development.',
+  },
+  {
+    name: 'Dell',
+    role: 'Visualization, local diagnostics, and research portal.',
+    focus: 'Building the website, visual gallery, real-data viewer, local radial-window inspection, and future stationary-phase diagnostics.',
+    input: 'CSV-style ring profile data and synthetic/toy model outputs.',
+    output: 'Interactive plots, selected radial windows, diagnostic summaries, and presentation-ready visual tools.',
+    status: 'Active development.',
+  },
+]
+
+const progressGroups = [
+  {
+    title: 'Completed',
+    items: [
+      'React/Vite research portal',
+      'GitHub + Vercel deployment',
+      'NASA/JPL image gallery',
+      'Team algorithm module layout',
+      'Real Cassini subset data viewer',
+      'Local window export prototype',
+    ],
+  },
+  {
+    title: 'In progress',
+    items: [
+      'More real data subsets',
+      'Data comparison between multiple days',
+      'Derivative diagnostics',
+      'Stationary phase visualization',
+      'Branch bookkeeping prototype',
+    ],
+  },
+  {
+    title: 'Next',
+    items: [
+      'Add Day 141 dataset',
+      'Add overlay comparison',
+      'Add derivative plot',
+      'Add root/bifurcation toy demo',
+      'Ask teammates/mentor which names and contributions can be shown publicly',
+    ],
+  },
 ]
 
 const cassiniDataPath = '/data/cassini_day232.csv'
@@ -264,55 +331,33 @@ function rowsToCsv(rows) {
   return [headers.join(','), ...rows.map((row) => headers.map((header) => escapeCsvValue(row[header])).join(','))].join('\n')
 }
 
-function NavBar() {
+function NavBar({ onSelect }) {
   return (
     <header className="site-header">
-      <a className="brand" href="#top" aria-label="Go to top">
+      <button className="brand" type="button" onClick={() => onSelect('menu')} aria-label="Go to main menu">
         <span className="brand-mark">SR</span>
         <span>
           <strong>Saturn Rings</strong>
           <small>MIT PRIMES Math Junior</small>
         </span>
-      </a>
+      </button>
       <nav aria-label="Main navigation">
-        {navItems.map((item) => (
-          <a key={item.href} href={item.href}>
-            {item.label}
-          </a>
+        {portalMenuItems.map((item) => (
+          <button key={item.id} type="button" onClick={() => onSelect(item.id)}>
+            {item.title}
+          </button>
         ))}
       </nav>
     </header>
   )
 }
 
-function RingDiagram() {
+function HeroImageCard() {
   return (
-    <div className="visual-card hero-visual" aria-label="Abstract Saturn ring reconstruction diagram">
-      <svg viewBox="0 0 520 360" role="img">
-        <title>Abstract radio occultation and ring reconstruction diagram</title>
-        <defs>
-          <linearGradient id="ringGlow" x1="0%" x2="100%" y1="0%" y2="100%">
-            <stop offset="0%" stopColor="#f7d58a" />
-            <stop offset="55%" stopColor="#8eb6ff" />
-            <stop offset="100%" stopColor="#9b7cff" />
-          </linearGradient>
-        </defs>
-        <rect className="grid" x="26" y="28" width="468" height="304" rx="24" />
-        <ellipse className="ring ring-wide" cx="260" cy="186" rx="185" ry="64" />
-        <ellipse className="ring ring-mid" cx="260" cy="186" rx="145" ry="48" />
-        <ellipse className="ring ring-thin" cx="260" cy="186" rx="103" ry="33" />
-        <circle className="planet" cx="260" cy="184" r="42" />
-        <path className="signal signal-one" d="M76 70 C170 96 170 242 258 278 S380 245 446 295" />
-        <path className="signal signal-two" d="M72 286 C168 248 172 100 258 82 S386 112 456 65" />
-        <line className="beam" x1="70" y1="182" x2="450" y2="182" />
-        <circle className="node" cx="178" cy="126" r="5" />
-        <circle className="node" cx="342" cy="240" r="5" />
-        <circle className="spacecraft" cx="454" cy="182" r="9" />
-      </svg>
-      <div className="visual-caption">
-        Placeholder visualization: radio signal paths, ring profiles, and stationary regions.
-      </div>
-    </div>
+    <figure className="visual-card hero-image-card">
+      <img src="/images/cassini-occultation.jpg" alt="Cassini radio occultation context" />
+      <figcaption>Cassini radio occultation context.</figcaption>
+    </figure>
   )
 }
 
@@ -708,40 +753,91 @@ function CassiniDataViewer() {
 }
 
 function App() {
+  const [activePanel, setActivePanel] = useState('menu')
   const [selectedPipelineIndex, setSelectedPipelineIndex] = useState(0)
+  const [selectedMemberIndex, setSelectedMemberIndex] = useState(0)
   const selectedPipelineStep = pipelineSteps[selectedPipelineIndex]
+  const selectedMember = teamMembers[selectedMemberIndex]
 
-  return (
-    <div className="app-shell" id="top">
-      <NavBar />
+  function openPanel(panelId) {
+    setActivePanel(panelId)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
 
-      <main>
-        <section className="hero section">
-          <div className="hero-copy">
-            <p className="eyebrow">Research Portfolio</p>
-            <h1>Mathematics of Saturn Ring Occultations</h1>
-            <p className="hero-lede">
-              An MIT PRIMES Math Junior research portfolio on how radio signals,
-              oscillatory integrals, and local diagnostics can support careful study of
-              Saturn's rings.
+  function goBackToMenu() {
+    openPanel('menu')
+  }
+
+  function PanelShell({ children }) {
+    return (
+      <div className="portal-panel-wrap">
+        <button className="back-button" type="button" onClick={goBackToMenu}>
+          ← Back to Main Menu
+        </button>
+        {children}
+      </div>
+    )
+  }
+
+  function renderMenu() {
+    return (
+      <section className="hero section portal-home">
+        <div className="hero-copy">
+          <p className="eyebrow">Research Portal</p>
+          <h1>Mathematics of Saturn Ring Occultations</h1>
+        </div>
+        <HeroImageCard />
+        <div className="portal-menu" aria-label="Research portal main menu">
+          {portalMenuItems.map((item, index) => (
+            <button className="portal-menu-card" type="button" key={item.id} onClick={() => openPanel(item.id)}>
+              <span>{String(index + 1).padStart(2, '0')} / {item.title}</span>
+              <strong>{item.title}</strong>
+            </button>
+          ))}
+        </div>
+      </section>
+    )
+  }
+
+  function renderOverview() {
+    return (
+      <PanelShell>
+        <Section id="overview" eyebrow="01 / Overview" title="Project Overview">
+          <div className="two-column">
+            <p>
+              This portal presents an MIT PRIMES Math Junior project about how radio
+              occultation measurements can support careful study of Saturn’s rings. The
+              focus is mathematical structure, visualization, and local diagnostic tools.
             </p>
-            <div className="hero-actions" aria-label="Page shortcuts">
-              <a className="button primary" href="#pipeline">
-                View Research Thread
-              </a>
-              <a className="button secondary" href="#figures">
-                See Schematics
-              </a>
-            </div>
-            <div className="status-strip">
-              <span>Local diagnostics</span>
-              <span>No unpublished data shown</span>
-            </div>
+            <p>
+              The current site is a research-support interface. It uses public or
+              schematic material only, avoids unpublished PRIMES data, and does not claim
+              final reconstruction results.
+            </p>
           </div>
-          <RingDiagram />
-        </section>
+          <div className="contribution-panel portal-spaced">
+            <div>
+              <h3>Current role of the portal</h3>
+              <p>
+                The portal organizes background, algorithms, image references, and local
+                radial-window tools so the research can be inspected in focused modules.
+              </p>
+            </div>
+            <ul>
+              {contributions.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          </div>
+        </Section>
+      </PanelShell>
+    )
+  }
 
-        <Section id="background" eyebrow="01 / Background" title="Radio Occultation as a Window into Rings">
+  function renderBackground() {
+    return (
+      <PanelShell>
+        <Section id="background" eyebrow="02 / Mission Context" title="Radio Occultation as a Window into Rings">
           <div className="two-column">
             <p>
               In a radio occultation, a spacecraft sends a steady radio signal toward
@@ -753,14 +849,18 @@ function App() {
             <p>
               The mathematical challenge is that the observation is not a direct
               photograph of the rings. It is a transformed wave measurement, so geometry,
-              diffraction, phase, and numerical reconstruction all matter. This site
-              describes the framework I am studying and uses only schematic placeholder
-              visuals, not unpublished PRIMES results.
+              diffraction, phase, and numerical reconstruction all matter.
             </p>
           </div>
         </Section>
+      </PanelShell>
+    )
+  }
 
-        <Section id="math" eyebrow="02 / Mathematical Idea" title="Stationary Phase and Caustic Regions">
+  function renderMath() {
+    return (
+      <PanelShell>
+        <Section id="math" eyebrow="03 / Mathematical Framework" title="Stationary Phase and Caustic Regions">
           <div className="math-grid">
             {mathConcepts.map((concept) => (
               <article className="feature-card" key={concept.kicker}>
@@ -772,10 +872,59 @@ function App() {
             ))}
           </div>
         </Section>
-
         <StationaryPhaseDemo />
+      </PanelShell>
+    )
+  }
 
-        <Section id="pipeline" eyebrow="04 / Reconstruction Pipeline" title="From Signal Geometry to Diagnostics">
+  function renderTeam() {
+    return (
+      <PanelShell>
+        <Section id="team" eyebrow="04 / Team Members" title="Team Members">
+          <div className="team-layout">
+            <div className="team-grid">
+              {teamMembers.map((member, index) => (
+                <button
+                  className={`member-card${selectedMemberIndex === index ? ' active' : ''}`}
+                  type="button"
+                  key={member.name}
+                  onClick={() => setSelectedMemberIndex(index)}
+                >
+                  <span className="card-kicker">{member.name}</span>
+                  <h3>{member.role}</h3>
+                  <p>{member.status}</p>
+                </button>
+              ))}
+            </div>
+            <article className="member-detail">
+              <span className="card-kicker">Selected member</span>
+              <h3>{selectedMember.name}</h3>
+              <p><strong>Role:</strong> {selectedMember.role}</p>
+              <p><strong>Focus:</strong> {selectedMember.focus}</p>
+              {selectedMember.input && <p><strong>Input:</strong> {selectedMember.input}</p>}
+              {selectedMember.output && <p><strong>Output:</strong> {selectedMember.output}</p>}
+              <p><strong>Status:</strong> {selectedMember.status}</p>
+            </article>
+          </div>
+        </Section>
+      </PanelShell>
+    )
+  }
+
+  function renderAlgorithms() {
+    const relatedMembers = ['Member C', 'Member A', 'Dell', 'Member B', 'Member B', 'Dell']
+    const statuses = [
+      'Reference module in progress.',
+      'Prototype workflow.',
+      'Active implementation.',
+      'Research prototype.',
+      'Early diagnostic design.',
+      'Visualization prototype.',
+    ]
+
+    return (
+      <PanelShell>
+        <Section id="pipeline" eyebrow="05 / Algorithm Modules" title="Team Algorithm Modules">
           <div className="pipeline">
             {pipelineSteps.map((step, index) => (
               <button
@@ -791,40 +940,23 @@ function App() {
             ))}
           </div>
           <div className="pipeline-detail">
-            <span className="card-kicker">Selected step</span>
+            <span className="card-kicker">Selected module</span>
             <h3>{selectedPipelineStep.title}</h3>
             <div className="detail-grid">
-              <p>
-                <strong>What it does:</strong> {selectedPipelineStep.does}
-              </p>
-              <p>
-                <strong>Why it matters:</strong> {selectedPipelineStep.matters}
-              </p>
-              <p>
-                <strong>Input / output:</strong> {selectedPipelineStep.io}
-              </p>
+              <p><strong>Goal:</strong> {selectedPipelineStep.does}</p>
+              <p><strong>Input / output:</strong> {selectedPipelineStep.io}</p>
+              <p><strong>Current status:</strong> {statuses[selectedPipelineIndex]}</p>
+              <p><strong>Related team member:</strong> {relatedMembers[selectedPipelineIndex]}</p>
             </div>
           </div>
         </Section>
+      </PanelShell>
+    )
+  }
 
-        <Section id="contribution" eyebrow="05 / My Contribution" title="Current Focus and Research Role">
-          <div className="contribution-panel">
-            <div>
-              <h3>Building mathematical intuition into computational tests</h3>
-              <p>
-                My current role is to make the analysis easier to see and inspect. I am
-                focusing on visualization, local windows in radius, and diagnostic tools
-                that can later support more formal stationary-phase and bifurcation work.
-              </p>
-            </div>
-            <ul>
-              {contributions.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-          </div>
-        </Section>
-
+  function renderGallery() {
+    return (
+      <PanelShell>
         <Section id="figures" eyebrow="06 / Visual Gallery" title="Visual Gallery / Mission Context">
           <p className="gallery-intro">
             Public mission imagery provides context for the ring structures and
@@ -864,51 +996,71 @@ function App() {
             ))}
           </div>
         </Section>
+      </PanelShell>
+    )
+  }
 
-        <Section id="tool" eyebrow="07 / Future Interactive Tool" title="Toward a Cassini and Ring Data Explorer">
-          <div className="tool-preview">
-            <div className="mock-window">
-              <div className="window-bar">
-                <span></span>
-                <span></span>
-                <span></span>
-              </div>
-              <div className="window-content">
-                <div className="sidebar-lines"></div>
-                <div className="map-orbit"></div>
-                <div className="data-bars">
-                  <span></span>
-                  <span></span>
-                  <span></span>
-                  <span></span>
-                </div>
-              </div>
-            </div>
-            <div>
-              <span className="coming-soon">Coming soon</span>
-              <h3>Planned Cassini/ring data visualizer</h3>
-              <p>
-                This planned research-support tool will help inspect public or simulated
-                ring profiles without displaying unpublished PRIMES data or claiming final
-                reconstruction results.
-              </p>
-              <ul className="tool-feature-list">
-                {plannedToolFeatures.map((feature) => (
-                  <li key={feature}>{feature}</li>
-                ))}
-              </ul>
-            </div>
-          </div>
+  function renderDataViewer() {
+    return (
+      <PanelShell>
+        <Section id="tool" eyebrow="07 / Real Data Viewer" title="Cassini Data Viewer">
+          <p className="gallery-intro">
+            This tool lets the team inspect a local radial window, compute basic
+            statistics, and export a selected window for follow-up reconstruction or
+            diagnostics.
+          </p>
           <CassiniDataViewer />
         </Section>
-      </main>
+      </PanelShell>
+    )
+  }
 
-      <footer className="site-footer">
-        <p>
-          Research portfolio for an MIT PRIMES Math Junior project. Visuals are schematic
-          placeholders and do not display unpublished data.
-        </p>
-      </footer>
+  function renderProgress() {
+    return (
+      <PanelShell>
+        <Section id="progress" eyebrow="08 / Progress" title="Progress & Next Steps">
+          <div className="progress-grid">
+            {progressGroups.map((group) => (
+              <article className="progress-card" key={group.title}>
+                <span className="card-kicker">{group.title}</span>
+                <ul>
+                  {group.items.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </article>
+            ))}
+          </div>
+        </Section>
+      </PanelShell>
+    )
+  }
+
+  function renderActivePanel() {
+    if (activePanel === 'menu') return renderMenu()
+    if (activePanel === 'overview') return renderOverview()
+    if (activePanel === 'background') return renderBackground()
+    if (activePanel === 'math') return renderMath()
+    if (activePanel === 'team') return renderTeam()
+    if (activePanel === 'algorithms') return renderAlgorithms()
+    if (activePanel === 'gallery') return renderGallery()
+    if (activePanel === 'data') return renderDataViewer()
+    if (activePanel === 'progress') return renderProgress()
+    return renderMenu()
+  }
+
+  return (
+    <div className="app-shell" id="top">
+      <NavBar onSelect={openPanel} />
+      <main>{renderActivePanel()}</main>
+      {activePanel !== 'menu' && (
+        <footer className="site-footer">
+          <p>
+            Research portfolio for an MIT PRIMES Math Junior project. Public imagery and
+            sample data are used for context; unpublished PRIMES data is not displayed.
+          </p>
+        </footer>
+      )}
     </div>
   )
 }

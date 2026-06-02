@@ -27,7 +27,11 @@
 
 .brand {
   gap: 12px;
+  border: 0;
   color: var(--text-strong);
+  font: inherit;
+  cursor: pointer;
+  background: transparent;
   text-decoration: none;
 }
 
@@ -67,19 +71,23 @@
   gap: 6px;
 }
 
-.site-header nav a {
+.site-header nav button {
   padding: 8px 10px;
+  border: 0;
   border-radius: 999px;
   color: var(--text);
+  font: inherit;
   font-size: 0.78rem;
+  cursor: pointer;
+  background: transparent;
   text-decoration: none;
   transition:
     background 180ms ease,
     color 180ms ease;
 }
 
-.site-header nav a:hover,
-.site-header nav a:focus-visible {
+.site-header nav button:hover,
+.site-header nav button:focus-visible {
   color: var(--text-strong);
   background: rgba(142, 182, 255, 0.12);
 }
@@ -192,13 +200,149 @@
 .featured-reference,
 .contribution-panel,
 .tool-preview,
-.data-viewer {
+.data-viewer,
+.portal-menu-card,
+.member-card,
+.member-detail,
+.progress-card {
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   background:
     linear-gradient(145deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.025)),
     var(--surface);
   box-shadow: var(--shadow);
+}
+
+.portal-panel-wrap {
+  min-height: calc(100vh - 80px);
+  padding-top: 18px;
+}
+
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  min-height: 42px;
+  margin-left: max(20px, calc((100vw - 1120px) / 2));
+  padding: 0 16px;
+  border: 1px solid rgba(247, 213, 138, 0.28);
+  border-radius: 999px;
+  color: var(--gold);
+  font: inherit;
+  font-family: var(--mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  background: rgba(247, 213, 138, 0.07);
+}
+
+.back-button:hover,
+.back-button:focus-visible {
+  border-color: rgba(247, 213, 138, 0.55);
+  color: var(--text-strong);
+}
+
+.portal-home {
+  align-items: center;
+  row-gap: 30px;
+}
+
+.portal-menu {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 0;
+}
+
+.portal-menu-card {
+  display: flex;
+  min-height: 112px;
+  justify-content: center;
+  flex-direction: column;
+  padding: 20px;
+  color: inherit;
+  font: inherit;
+  text-align: center;
+  cursor: pointer;
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease,
+    background 180ms ease;
+}
+
+.portal-menu-card:hover,
+.portal-menu-card:focus-visible,
+.member-card:hover,
+.member-card:focus-visible,
+.member-card.active {
+  border-color: rgba(247, 213, 138, 0.5);
+  box-shadow:
+    var(--shadow),
+    0 0 0 1px rgba(247, 213, 138, 0.12);
+  transform: translateY(-2px);
+}
+
+.portal-menu-card:hover,
+.portal-menu-card:focus-visible {
+  background:
+    linear-gradient(145deg, rgba(247, 213, 138, 0.09), rgba(142, 182, 255, 0.04)),
+    var(--surface);
+}
+
+.portal-menu-card span {
+  color: var(--gold);
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.portal-menu-card strong {
+  display: block;
+  margin-top: 12px;
+  color: var(--text-strong);
+  font-size: 1.14rem;
+  line-height: 1.25;
+}
+
+.portal-spaced {
+  margin-top: 24px;
+}
+
+.hero-image-card {
+  position: relative;
+  overflow: hidden;
+  width: min(100%, 500px);
+  justify-self: end;
+  margin: 0;
+  padding: 12px;
+}
+
+.hero-image-card::before {
+  content: '';
+  position: absolute;
+  inset: -24% -18%;
+  z-index: -1;
+  background: radial-gradient(circle, rgba(142, 182, 255, 0.16), transparent 62%);
+}
+
+.hero-image-card img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border: 1px solid rgba(232, 238, 255, 0.14);
+  border-radius: 22px;
+  object-fit: cover;
+}
+
+.hero-image-card figcaption {
+  margin: 10px 6px 2px;
+  color: var(--text-strong);
+  font-size: 0.86rem;
+  font-weight: 600;
+  text-align: center;
 }
 
 .hero-visual {
@@ -418,6 +562,96 @@
   top: 0.62em;
   width: 10px;
   height: 10px;
+  border: 1px solid var(--gold);
+  border-radius: 50%;
+  background: rgba(247, 213, 138, 0.12);
+}
+
+.team-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(300px, 0.95fr);
+  gap: 22px;
+  align-items: start;
+}
+
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.member-card {
+  min-height: 170px;
+  padding: 24px;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease;
+}
+
+.member-card h3,
+.member-detail h3 {
+  margin: 12px 0 10px;
+  color: var(--text-strong);
+  font-size: 1.18rem;
+  line-height: 1.25;
+}
+
+.member-card p,
+.member-detail p {
+  margin: 0;
+  color: var(--text);
+  line-height: 1.65;
+}
+
+.member-detail {
+  padding: 28px;
+}
+
+.member-detail p + p {
+  margin-top: 14px;
+}
+
+.member-detail strong {
+  color: var(--text-strong);
+}
+
+.progress-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.progress-card {
+  padding: 26px;
+}
+
+.progress-card ul {
+  display: grid;
+  gap: 12px;
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.progress-card li {
+  position: relative;
+  padding-left: 24px;
+  color: var(--text);
+  line-height: 1.55;
+}
+
+.progress-card li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.55em;
+  width: 8px;
+  height: 8px;
   border: 1px solid var(--gold);
   border-radius: 50%;
   background: rgba(247, 213, 138, 0.12);
@@ -986,10 +1220,17 @@
   .two-column,
   .math-grid,
   .pipeline,
+  .team-layout,
+  .progress-grid,
   .contribution-panel,
   .figure-grid,
   .tool-preview {
     grid-template-columns: 1fr;
+  }
+
+  .portal-menu,
+  .team-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .hero {
@@ -1033,7 +1274,7 @@
     gap: 2px;
   }
 
-  .site-header nav a {
+  .site-header nav button {
     padding: 7px 8px;
   }
 
@@ -1065,6 +1306,11 @@
   }
 
   .gallery-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .portal-menu,
+  .team-grid {
     grid-template-columns: 1fr;
   }
 
