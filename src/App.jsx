@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import './App.css'
 
 const navItems = [
@@ -162,6 +162,108 @@ const plannedToolFeatures = [
   'Future stationary-phase diagnostics',
 ]
 
+const cassiniDataPath = '/data/cassini_day232.csv'
+const cassiniXAxisColumn = 'ring_radius_km'
+
+function parseNumericValue(value) {
+  if (value === null || value === undefined || value === '') {
+    return null
+  }
+
+  const parsed = Number(String(value).trim())
+  return Number.isFinite(parsed) ? parsed : null
+}
+
+function detectNumericColumns(rows) {
+  if (!rows.length) {
+    return []
+  }
+
+  return Object.keys(rows[0]).filter((column) => {
+    const values = rows.map((row) => parseNumericValue(row[column])).filter((value) => value !== null)
+    return values.length > 0 && values.length / rows.length > 0.8
+  })
+}
+
+function chooseDefaultColumn(columns, preferredNames, fallbackIndex = 0) {
+  const normalizedColumns = columns.map((column) => column.toLowerCase())
+  const preferred = preferredNames
+    .map((name) => normalizedColumns.findIndex((column) => column.includes(name)))
+    .find((index) => index >= 0)
+
+  return columns[preferred >= 0 ? preferred : fallbackIndex] || ''
+}
+
+function formatStat(value) {
+  if (!Number.isFinite(value)) {
+    return '—'
+  }
+
+  return Math.abs(value) >= 1000 ? value.toFixed(2) : value.toPrecision(4)
+}
+
+function parseCsvLine(line) {
+  const values = []
+  let current = ''
+  let inQuotes = false
+
+  for (let index = 0; index < line.length; index += 1) {
+    const character = line[index]
+    const nextCharacter = line[index + 1]
+
+    if (character === '"' && nextCharacter === '"') {
+      current += '"'
+      index += 1
+    } else if (character === '"') {
+      inQuotes = !inQuotes
+    } else if (character === ',' && !inQuotes) {
+      values.push(current)
+      current = ''
+    } else {
+      current += character
+    }
+  }
+
+  values.push(current)
+  return values
+}
+
+function parseCsvText(csvText) {
+  const lines = csvText.trim().split(/\r?\n/).filter(Boolean)
+
+  if (lines.length < 2) {
+    return []
+  }
+
+  const headers = parseCsvLine(lines[0]).map((header) => header.trim())
+  return lines.slice(1).map((line) => {
+    const values = parseCsvLine(line)
+    return headers.reduce((row, header, index) => {
+      row[header] = values[index] ?? ''
+      return row
+    }, {})
+  })
+}
+
+function escapeCsvValue(value) {
+  const stringValue = String(value ?? '')
+
+  if (/[",\n]/.test(stringValue)) {
+    return `"${stringValue.replaceAll('"', '""')}"`
+  }
+
+  return stringValue
+}
+
+function rowsToCsv(rows) {
+  if (!rows.length) {
+    return ''
+  }
+
+  const headers = Object.keys(rows[0])
+  return [headers.join(','), ...rows.map((row) => headers.map((header) => escapeCsvValue(row[header])).join(','))].join('\n')
+}
+
 function NavBar() {
   return (
     <header className="site-header">
@@ -296,6 +398,301 @@ function StationaryPhaseDemo() {
         </div>
       </div>
     </Section>
+  )
+}
+
+function CassiniDataViewer() {
+  const [rows, setRows] = useState([])
+  const [error, setError] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+  const [yColumn, setYColumn] = useState('')
+  const [windowMin, setWindowMin] = useState('')
+  const [windowMax, setWindowMax] = useState('')
+
+  const numericColumns = useMemo(() => detectNumericColumns(rows), [rows])
+  const yColumns = useMemo(
+    () => numericColumns.filter((column) => column !== cassiniXAxisColumn),
+    [numericColumns],
+  )
+
+  useEffect(() => {
+    let isCancelled = false
+
+    async function loadDataset() {
+      setIsLoading(true)
+      setError('')
+      setRows([])
+
+      try {
+        const response = await fetch(cassiniDataPath)
+
+        if (!response.ok) {
+          throw new Error(`Could not load ${cassiniDataPath}. Check that the CSV exists in public/data.`)
+        }
+
+        const csvText = await response.text()
+        const parsedRows = parseCsvText(csvText).filter((row) => Object.values(row).some((value) => value !== ''))
+
+        if (!parsedRows.length) {
+          throw new Error('The selected CSV loaded, but it did not contain any data rows.')
+        }
+
+        if (!isCancelled) {
+          setRows(parsedRows)
+        }
+      } catch (loadError) {
+        if (!isCancelled) {
+          setError(loadError.message || 'Unable to load the selected Cassini dataset.')
+        }
+      } finally {
+        if (!isCancelled) {
+          setIsLoading(false)
+        }
+      }
+    }
+
+    loadDataset()
+
+    return () => {
+      isCancelled = true
+    }
+  }, [])
+
+  const activeXColumn = numericColumns.includes(cassiniXAxisColumn) ? cassiniXAxisColumn : ''
+  const defaultYColumn = chooseDefaultColumn(yColumns, ['normal_optical_depth', 'optical_depth'], 0)
+  const activeYColumn = yColumns.includes(yColumn) ? yColumn : defaultYColumn
+
+  const plottedRows = useMemo(() => {
+    if (!activeXColumn || !activeYColumn) {
+      return []
+    }
+
+    return rows
+      .map((row) => ({
+        x: parseNumericValue(row[activeXColumn]),
+        y: parseNumericValue(row[activeYColumn]),
+      }))
+      .filter(({ x, y }) => x !== null && y !== null)
+  }, [rows, activeXColumn, activeYColumn])
+
+  const xExtent = useMemo(() => {
+    if (!plottedRows.length) {
+      return { min: null, max: null }
+    }
+
+    const values = plottedRows.map((point) => point.x)
+    return { min: Math.min(...values), max: Math.max(...values) }
+  }, [plottedRows])
+
+  const selectedRows = useMemo(() => {
+    const min = windowMin === '' ? xExtent.min : parseNumericValue(windowMin)
+    const max = windowMax === '' ? xExtent.max : parseNumericValue(windowMax)
+
+    return plottedRows.filter(({ x }) => {
+      const aboveMin = min === null || x >= min
+      const belowMax = max === null || x <= max
+      return aboveMin && belowMax
+    })
+  }, [plottedRows, windowMin, windowMax, xExtent])
+
+  const summary = useMemo(() => {
+    if (!selectedRows.length) {
+      return null
+    }
+
+    const xValues = selectedRows.map((point) => point.x)
+    const yValues = selectedRows.map((point) => point.y)
+    const yMean = yValues.reduce((sum, value) => sum + value, 0) / yValues.length
+    const variance = yValues.reduce((sum, value) => sum + (value - yMean) ** 2, 0) / yValues.length
+
+    return {
+      count: selectedRows.length,
+      xMin: Math.min(...xValues),
+      xMax: Math.max(...xValues),
+      yMin: Math.min(...yValues),
+      yMax: Math.max(...yValues),
+      yMean,
+      yStd: Math.sqrt(variance),
+    }
+  }, [selectedRows])
+
+  const chart = useMemo(() => {
+    if (!summary || !selectedRows.length) {
+      return { points: [], path: '' }
+    }
+
+    const width = 760
+    const height = 320
+    const padding = { left: 54, right: 22, top: 24, bottom: 46 }
+    const innerWidth = width - padding.left - padding.right
+    const innerHeight = height - padding.top - padding.bottom
+    const xSpan = summary.xMax - summary.xMin || 1
+    const ySpan = summary.yMax - summary.yMin || 1
+
+    const points = selectedRows.map((point) => ({
+      ...point,
+      svgX: padding.left + ((point.x - summary.xMin) / xSpan) * innerWidth,
+      svgY: padding.top + (1 - (point.y - summary.yMin) / ySpan) * innerHeight,
+    }))
+
+    return {
+      points,
+      path: points.map((point) => `${point.svgX.toFixed(2)},${point.svgY.toFixed(2)}`).join(' '),
+    }
+  }, [selectedRows, summary])
+
+  function resetWindow() {
+    if (xExtent.min === null || xExtent.max === null) {
+      return
+    }
+
+    setWindowMin(String(xExtent.min))
+    setWindowMax(String(xExtent.max))
+  }
+
+  function downloadSelectedWindow() {
+    if (!selectedRows.length) {
+      return
+    }
+
+    const csv = rowsToCsv(selectedRows.map((point) => ({ [activeXColumn]: point.x, [activeYColumn]: point.y })))
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = 'cassini_day232_window.csv'
+    link.click()
+    URL.revokeObjectURL(url)
+  }
+
+  return (
+    <div className="data-viewer">
+      <div className="data-viewer-header">
+        <div>
+          <span className="coming-soon">Live prototype</span>
+          <h3>Cassini Data Viewer</h3>
+          <p>
+            Explore the Day 232 public CSV sample in a local radial window. This
+            front-end viewer is intended for inspection and visualization, not for
+            claiming new reconstruction results.
+          </p>
+        </div>
+      </div>
+
+      <div className="viewer-controls">
+        <div className="dataset-badge">
+          <span>Dataset</span>
+          <strong>Cassini Day 232</strong>
+        </div>
+        <div className="dataset-badge">
+          <span>X-axis</span>
+          <strong>{cassiniXAxisColumn}</strong>
+        </div>
+        <label>
+          <span>Y-axis</span>
+          <select value={activeYColumn} onChange={(event) => setYColumn(event.target.value)} disabled={!yColumns.length}>
+            {yColumns.map((column) => (
+              <option value={column} key={column}>
+                {column}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label>
+          <span>Window minimum</span>
+          <input type="number" value={windowMin} onChange={(event) => setWindowMin(event.target.value)} />
+        </label>
+        <label>
+          <span>Window maximum</span>
+          <input type="number" value={windowMax} onChange={(event) => setWindowMax(event.target.value)} />
+        </label>
+        <button className="reset-window" type="button" onClick={resetWindow} disabled={xExtent.min === null}>
+          Reset view
+        </button>
+      </div>
+
+      {error && <div className="viewer-message">{error}</div>}
+      {!error && !numericColumns.length && !isLoading && (
+        <div className="viewer-message">No numeric columns were detected in this CSV.</div>
+      )}
+      {!error && numericColumns.length > 0 && !activeXColumn && (
+        <div className="viewer-message">The CSV loaded, but it does not include the required ring_radius_km column.</div>
+      )}
+
+      <div className="viewer-plot-card">
+        {isLoading ? (
+          <div className="viewer-placeholder">Loading Cassini CSV data…</div>
+        ) : (
+          <svg className="data-svg" viewBox="0 0 760 320" role="img">
+            <title>
+              Cassini Day 232: {activeXColumn} versus {activeYColumn}
+            </title>
+            <path className="data-grid-line" d="M54 24 V274 M225 24 V274 M396 24 V274 M567 24 V274 M738 24 V274" />
+            <path className="data-grid-line" d="M54 24 H738 M54 86.5 H738 M54 149 H738 M54 211.5 H738 M54 274 H738" />
+            <path className="data-axis" d="M54 24 V274 H738" />
+            {chart.path && <polyline className="data-line" points={chart.path} />}
+            {chart.points.map((point, index) => (
+              <circle className="data-point" cx={point.svgX} cy={point.svgY} r="3.5" key={`${point.x}-${index}`}>
+                <title>
+                  {activeXColumn}: {formatStat(point.x)}
+                  {'\n'}
+                  {activeYColumn}: {formatStat(point.y)}
+                </title>
+              </circle>
+            ))}
+            <text className="data-axis-label" x="396" y="309">
+              {activeXColumn || 'x'}
+            </text>
+            <text className="data-axis-label y" x="-149" y="18">
+              {activeYColumn || 'y'}
+            </text>
+            <text className="data-tick" x="54" y="294">
+              {formatStat(summary?.xMin)}
+            </text>
+            <text className="data-tick end" x="738" y="294">
+              {formatStat(summary?.xMax)}
+            </text>
+            <text className="data-tick" x="12" y="278">
+              {formatStat(summary?.yMin)}
+            </text>
+            <text className="data-tick" x="12" y="30">
+              {formatStat(summary?.yMax)}
+            </text>
+          </svg>
+        )}
+      </div>
+
+      <div className="viewer-summary">
+        <div>
+          <span>Points</span>
+          <strong>{summary ? summary.count : 0}</strong>
+        </div>
+        <div>
+          <span>X min / max</span>
+          <strong>
+            {formatStat(summary?.xMin)} / {formatStat(summary?.xMax)}
+          </strong>
+        </div>
+        <div>
+          <span>Y min / max</span>
+          <strong>
+            {formatStat(summary?.yMin)} / {formatStat(summary?.yMax)}
+          </strong>
+        </div>
+        <div>
+          <span>Y mean</span>
+          <strong>{formatStat(summary?.yMean)}</strong>
+        </div>
+        <div>
+          <span>Y std. dev.</span>
+          <strong>{formatStat(summary?.yStd)}</strong>
+        </div>
+      </div>
+
+      <button className="download-window" type="button" onClick={downloadSelectedWindow} disabled={!selectedRows.length}>
+        Download selected window as CSV
+      </button>
+    </div>
   )
 }
 
@@ -491,6 +888,7 @@ function App() {
               </ul>
             </div>
           </div>
+          <CassiniDataViewer />
         </Section>
       </main>
 
