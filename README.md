@@ -1,16 +1,52 @@
-# React + Vite
+# Mathematics of Saturn Ring Occultations
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is a PRIMES Math Junior research portal for organizing mission context, mathematical framework, team research modules, visual references, and local Cassini ring-data inspection tools.
 
-Currently, two official plugins are available:
+The site is built as a React/Vite front-end. It does not use a backend and should not include unpublished PRIMES data without permission.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Portal Sections
 
-## React Compiler
+- Project Overview
+- Mission Background
+- Mathematical Framework
+- Team Members
+- Algorithm Modules
+- Visual Gallery
+- Real Data Viewer
+- Progress & Next Steps
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Current Features
 
-## Expanding the ESLint configuration
+- React + Vite research portal
+- Dark academic dashboard design
+- Panel-based navigation
+- NASA/JPL visual reference gallery
+- Team module layout
+- Prototype Cassini data viewer
+- Local radial-window export prototype
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Run Locally
+
+```bash
+npm install
+npm run dev
+```
+
+## Build
+
+```bash
+npm run build
+```
+
+## Data and Image Notes
+
+- Public images are used for educational research context.
+- Image credits should remain visible in the website.
+- The data viewer currently uses a small Cassini subset for demonstration.
+- Unpublished PRIMES data should not be added without permission.
+
+## Current Status
+
+Website structure and visual portal are under active development.
+
+Next steps include adding more real data subsets, comparison views, derivative diagnostics, stationary phase visualization, and branch bookkeeping prototypes.

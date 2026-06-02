@@ -12,6 +12,11 @@ const portalMenuItems = [
   { id: 'progress', title: 'Progress & Next Steps' },
 ]
 
+function getPanelFromHash() {
+  const hash = window.location.hash.replace('#', '')
+  return portalMenuItems.some((item) => item.id === hash) ? hash : 'menu'
+}
+
 const pipelineSteps = [
   {
     title: 'Occultation data',
@@ -93,6 +98,154 @@ const mathConcepts = [
     title: 'Roots can split or merge',
     symbol: 'root tracks',
     text: 'Branch bookkeeping keeps stationary points matched correctly as parameters or radius windows change.',
+  },
+]
+
+const formulaLibrary = [
+  {
+    title: 'Oscillatory Integral Model',
+    formula: (
+      <>
+        <span>I(p) = ∫ A(φ; p)e</span>
+        <sup>ikψ(φ; p)</sup>
+        <span> dφ</span>
+      </>
+    ),
+    purpose:
+      'Represents the oscillatory integral framework behind the reconstruction problem. The amplitude A changes slowly, while the phase ψ controls rapid oscillation.',
+  },
+  {
+    title: 'Stationary Phase Condition',
+    formula: (
+      <>
+        <span>∂ψ / ∂φ = 0</span>
+      </>
+    ),
+    purpose:
+      'Defines stationary roots, where the phase changes slowly. These roots often dominate the contribution of the oscillatory integral.',
+  },
+  {
+    title: 'Second Derivative Diagnostic',
+    formula: (
+      <>
+        <span>ψ″(φ</span>
+        <sub>s</sub>
+        <span>; p) = ∂</span>
+        <sup>2</sup>
+        <span>ψ / ∂φ</span>
+        <sup>2</sup>
+        <span> at φ = φ</span>
+        <sub>s</sub>
+      </>
+    ),
+    purpose:
+      'Measures local curvature near a stationary point. Small |ψ″| can indicate instability, caustic behavior, or a nearby bifurcation.',
+  },
+  {
+    title: 'Local Taylor Expansion',
+    formula: (
+      <>
+        <span>ψ(φ; p) ≈ ψ(φ</span>
+        <sub>s</sub>
+        <span>; p) + 1/2 ψ″(φ</span>
+        <sub>s</sub>
+        <span>; p)(φ − φ</span>
+        <sub>s</sub>
+        <span>)</span>
+        <sup>2</sup>
+        <span> + 1/6 ψ‴(φ</span>
+        <sub>s</sub>
+        <span>; p)(φ − φ</span>
+        <sub>s</sub>
+        <span>)</span>
+        <sup>3</sup>
+      </>
+    ),
+    purpose:
+      'Approximates the phase near a stationary root and helps diagnose whether a local region is regular or nearly degenerate.',
+  },
+  {
+    title: 'Stationary Phase Approximation',
+    formula: (
+      <>
+        <span>I(p) ≈ A(φ</span>
+        <sub>s</sub>
+        <span>; p)e</span>
+        <sup>ikψ(φ_s; p)</sup>
+        <span> √(2π / (k |ψ″(φ</span>
+        <sub>s</sub>
+        <span>; p)|))</span>
+      </>
+    ),
+    purpose:
+      'Estimates the main contribution from an isolated stationary point and shows why curvature matters.',
+  },
+  {
+    title: 'Bifurcation / Caustic Warning',
+    formula: (
+      <>
+        <span>|ψ″(φ</span>
+        <sub>s</sub>
+        <span>; p)| &lt; ε</span>
+        <sub>bif</sub>
+      </>
+    ),
+    purpose: 'Flags regions where stationary roots may merge, disappear, or become difficult to track.',
+  },
+  {
+    title: 'Newton Root-Finding Update',
+    formula: (
+      <>
+        <span>φ</span>
+        <sub>n+1</sub>
+        <span> = φ</span>
+        <sub>n</sub>
+        <span> − f(φ</span>
+        <sub>n</sub>
+        <span>) / f′(φ</span>
+        <sub>n</sub>
+        <span>), where f(φ) = ∂ψ / ∂φ</span>
+      </>
+    ),
+    purpose: 'Iteratively solves the stationary phase condition f(φ)=0.',
+  },
+  {
+    title: 'Halley Root-Finding Update',
+    formula: (
+      <>
+        <span>φ</span>
+        <sub>n+1</sub>
+        <span> = φ</span>
+        <sub>n</sub>
+        <span> − [2 f(φ</span>
+        <sub>n</sub>
+        <span>) f′(φ</span>
+        <sub>n</sub>
+        <span>)] / [2(f′(φ</span>
+        <sub>n</sub>
+        <span>))</span>
+        <sup>2</sup>
+        <span> − f(φ</span>
+        <sub>n</sub>
+        <span>) f″(φ</span>
+        <sub>n</sub>
+        <span>)]</span>
+      </>
+    ),
+    purpose:
+      'A faster root-finding method that uses second-derivative information when the initial guess is good.',
+  },
+  {
+    title: 'Branch Output Tuple',
+    formula: (
+      <>
+        <span>{'{ φ'}</span>
+        <sub>s</sub>
+        <span>, ψ, ψ″, label, flag {'}'}</span>
+      </>
+    ),
+    purpose:
+      'Stores each stationary root with its phase value, curvature, branch label, and diagnostic flag.',
   },
 ]
 
@@ -352,12 +505,50 @@ function NavBar({ onSelect }) {
   )
 }
 
-function HeroImageCard() {
+function HeroImageCard({ onOpenModel }) {
   return (
     <figure className="visual-card hero-image-card">
       <img src="/images/cassini-occultation.jpg" alt="Cassini radio occultation context" />
-      <figcaption>Cassini radio occultation context.</figcaption>
+      <figcaption>
+        <button className="open-model-button" type="button" onClick={onOpenModel}>
+          Open 3D Saturn Model
+        </button>
+      </figcaption>
     </figure>
+  )
+}
+
+function SaturnModelModal({ onClose }) {
+  return (
+    <div className="saturn-modal-backdrop" role="presentation" onClick={onClose}>
+      <div
+        className="saturn-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="saturn-modal-title"
+        onClick={(event) => event.stopPropagation()}
+      >
+        <div className="saturn-modal-header">
+          <div>
+            <span className="card-kicker">Interactive model</span>
+            <h3 id="saturn-modal-title">Interactive Saturn 3D Model</h3>
+          </div>
+          <button className="model-close-button" type="button" onClick={onClose}>
+            Close
+          </button>
+        </div>
+        <div className="saturn-stage">
+          <model-viewer
+            src="/model/Saturn.glb"
+            alt="Interactive 3D model of Saturn"
+            camera-controls
+            auto-rotate
+            shadow-intensity="1"
+            exposure="1"
+          ></model-viewer>
+        </div>
+      </div>
+    </div>
   )
 }
 
@@ -753,16 +944,36 @@ function CassiniDataViewer() {
 }
 
 function App() {
-  const [activePanel, setActivePanel] = useState('menu')
+  const [activePanel, setActivePanel] = useState(() => getPanelFromHash())
   const [selectedPipelineIndex, setSelectedPipelineIndex] = useState(0)
   const [selectedMemberIndex, setSelectedMemberIndex] = useState(0)
+  const [isSaturnModelOpen, setIsSaturnModelOpen] = useState(false)
   const selectedPipelineStep = pipelineSteps[selectedPipelineIndex]
   const selectedMember = teamMembers[selectedMemberIndex]
 
   function openPanel(panelId) {
     setActivePanel(panelId)
+    if (panelId === 'menu') {
+      window.history.pushState(null, '', window.location.pathname)
+    } else {
+      window.history.pushState(null, '', `#${panelId}`)
+    }
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
+
+  useEffect(() => {
+    function handleHashChange() {
+      setActivePanel(getPanelFromHash())
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+
+    window.addEventListener('hashchange', handleHashChange)
+    window.addEventListener('popstate', handleHashChange)
+    return () => {
+      window.removeEventListener('hashchange', handleHashChange)
+      window.removeEventListener('popstate', handleHashChange)
+    }
+  }, [])
 
   function goBackToMenu() {
     openPanel('menu')
@@ -786,11 +997,10 @@ function App() {
           <p className="eyebrow">Research Portal</p>
           <h1>Mathematics of Saturn Ring Occultations</h1>
         </div>
-        <HeroImageCard />
+        <HeroImageCard onOpenModel={() => setIsSaturnModelOpen(true)} />
         <div className="portal-menu" aria-label="Research portal main menu">
-          {portalMenuItems.map((item, index) => (
+          {portalMenuItems.map((item) => (
             <button className="portal-menu-card" type="button" key={item.id} onClick={() => openPanel(item.id)}>
-              <span>{String(index + 1).padStart(2, '0')} / {item.title}</span>
               <strong>{item.title}</strong>
             </button>
           ))}
@@ -870,6 +1080,28 @@ function App() {
                 <p>{concept.text}</p>
               </article>
             ))}
+          </div>
+          <div className="formula-library">
+            <div className="formula-library-heading">
+              <h3>Formula Library</h3>
+              <p>
+                These formulas summarize the mathematical objects used throughout the portal:
+                oscillatory integrals, stationary roots, curvature diagnostics, root-finding,
+                and branch bookkeeping.
+              </p>
+            </div>
+            <div className="formula-panel">
+              {formulaLibrary.map((item, index) => (
+                <article className="formula-row" key={item.title}>
+                  <div className="formula-index">{String(index + 1).padStart(2, '0')}</div>
+                  <div className="formula-main">
+                    <h4>{item.title}</h4>
+                    <div className="formula-expression">{item.formula}</div>
+                    <p className="formula-purpose">{item.purpose}</p>
+                  </div>
+                </article>
+              ))}
+            </div>
           </div>
         </Section>
         <StationaryPhaseDemo />
@@ -1053,6 +1285,7 @@ function App() {
     <div className="app-shell" id="top">
       <NavBar onSelect={openPanel} />
       <main>{renderActivePanel()}</main>
+      {isSaturnModelOpen && <SaturnModelModal onClose={() => setIsSaturnModelOpen(false)} />}
       {activePanel !== 'menu' && (
         <footer className="site-footer">
           <p>
