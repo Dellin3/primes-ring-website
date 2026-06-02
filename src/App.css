@@ -189,6 +189,7 @@
 .pipeline-step,
 .figure-card,
 .gallery-card,
+.featured-reference,
 .contribution-panel,
 .tool-preview {
   border: 1px solid var(--border);
@@ -430,6 +431,84 @@
   margin-bottom: 28px;
 }
 
+.featured-reference {
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+
+.featured-reference-image {
+  display: grid;
+  min-height: 240px;
+  place-items: center;
+  margin: 14px 14px 0;
+  padding: clamp(14px, 2.4vw, 28px);
+  border: 1px solid rgba(232, 238, 255, 0.14);
+  border-radius: 22px;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(142, 182, 255, 0.08), transparent 55%),
+    rgba(5, 8, 16, 0.86);
+}
+
+.featured-reference-image img {
+  display: block;
+  width: 100%;
+  max-height: min(68vh, 620px);
+  object-fit: contain;
+}
+
+.featured-reference-body {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 22px;
+  padding: 24px 28px 28px;
+}
+
+.featured-reference h3 {
+  margin: 0 0 10px;
+  color: var(--text-strong);
+  font-size: 1.18rem;
+  line-height: 1.25;
+}
+
+.featured-reference p {
+  margin: 0;
+  color: var(--text);
+  line-height: 1.7;
+}
+
+.featured-reference small {
+  display: block;
+  margin-top: 14px;
+  color: var(--text-muted);
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  line-height: 1.5;
+}
+
+.featured-reference a,
+.gallery-open-link {
+  flex: 0 0 auto;
+  padding: 10px 14px;
+  border: 1px solid rgba(247, 213, 138, 0.28);
+  border-radius: 999px;
+  color: var(--gold);
+  font-family: var(--mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  text-transform: uppercase;
+  background: rgba(247, 213, 138, 0.07);
+}
+
+.featured-reference a:hover,
+.featured-reference a:focus-visible,
+.gallery-open-link:hover,
+.gallery-open-link:focus-visible {
+  border-color: rgba(247, 213, 138, 0.55);
+  color: var(--text-strong);
+}
+
 .gallery-grid {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
@@ -470,6 +549,14 @@
   font-family: var(--mono);
   font-size: 0.72rem;
   line-height: 1.5;
+}
+
+.gallery-open-link {
+  display: inline-flex;
+  width: fit-content;
+  margin-top: 16px;
+  padding: 8px 11px;
+  font-size: 0.68rem;
 }
 
 .mini-plot {
@@ -651,6 +738,11 @@
 
   .pipeline-step::after {
     display: none;
+  }
+
+  .featured-reference-body {
+    align-items: flex-start;
+    flex-direction: column;
   }
 
   .gallery-grid {

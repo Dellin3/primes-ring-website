@@ -101,6 +101,13 @@ const contributions = [
   'Preparing future stationary-phase and bifurcation diagnostics, including root tracking and curvature checks.',
 ]
 
+const featuredReferenceImage = {
+  title: 'Saturn’s Ring Structure Reference',
+  image: '/images/saturn-rings-labeled.jpg',
+  caption: 'A labeled view of Saturn’s major rings, divisions, and ring features.',
+  credit: 'Image credit: NASA/JPL-Caltech/Space Science Institute.',
+}
+
 const galleryImages = [
   {
     title: 'Cassini Radio Occultation',
@@ -108,12 +115,6 @@ const galleryImages = [
     caption:
       'Cassini radio signals passing through Saturn’s rings provide information about ring material, signal attenuation, and optical depth.',
     credit: 'Image credit: NASA/JPL-Caltech.',
-  },
-  {
-    title: 'Saturn’s Ring Structure',
-    image: '/images/saturn-rings-labeled.jpg',
-    caption: 'A labeled view of Saturn’s major rings, divisions, and ring features.',
-    credit: 'Image credit: NASA/JPL-Caltech/Space Science Institute.',
   },
   {
     title: 'Cassini Division',
@@ -142,6 +143,13 @@ const galleryImages = [
     caption:
       'A broad division in Saturn’s rings that helps illustrate large-scale radial gaps and ring-region boundaries.',
     credit: 'Image credit: NASA/JPL-Caltech/Space Science Institute.',
+  },
+  {
+    title: 'Small Particles in Saturn’s Rings',
+    image: '/images/small-particles.jpg',
+    caption:
+      'A radio-occultation-based view highlighting how ring material and particle distributions affect the observed signal.',
+    credit: 'Image credit: NASA/JPL-Caltech.',
   },
 ]
 
@@ -415,6 +423,21 @@ function App() {
             occultation geometry behind this project. These images are used for
             background and communication, not as unpublished PRIMES data.
           </p>
+          <article className="featured-reference">
+            <div className="featured-reference-image">
+              <img src={featuredReferenceImage.image} alt={featuredReferenceImage.title} />
+            </div>
+            <div className="featured-reference-body">
+              <div>
+                <h3>{featuredReferenceImage.title}</h3>
+                <p>{featuredReferenceImage.caption}</p>
+                <small>{featuredReferenceImage.credit}</small>
+              </div>
+              <a href={featuredReferenceImage.image} target="_blank" rel="noreferrer">
+                Open full-resolution image
+              </a>
+            </div>
+          </article>
           <div className="gallery-grid">
             {galleryImages.map((image) => (
               <article className="gallery-card" key={image.title}>
@@ -425,6 +448,9 @@ function App() {
                   <h3>{image.title}</h3>
                   <p>{image.caption}</p>
                   <small>{image.credit}</small>
+                  <a className="gallery-open-link" href={image.image} target="_blank" rel="noreferrer">
+                    Open image
+                  </a>
                 </div>
               </article>
             ))}
