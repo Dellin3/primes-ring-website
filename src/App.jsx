@@ -462,13 +462,14 @@ function CassiniDataViewer() {
   const defaultYColumn = chooseDefaultColumn(yColumns, ['normal_optical_depth', 'optical_depth'], 0)
   const activeYColumn = yColumns.includes(yColumn) ? yColumn : defaultYColumn
 
-  const plottedRows = useMemo(() => {
+  const numericData = useMemo(() => {
     if (!activeXColumn || !activeYColumn) {
       return []
     }
 
     return rows
       .map((row) => ({
+        row,
         x: parseNumericValue(row[activeXColumn]),
         y: parseNumericValue(row[activeYColumn]),
       }))
@@ -476,37 +477,37 @@ function CassiniDataViewer() {
   }, [rows, activeXColumn, activeYColumn])
 
   const xExtent = useMemo(() => {
-    if (!plottedRows.length) {
+    if (!numericData.length) {
       return { min: null, max: null }
     }
 
-    const values = plottedRows.map((point) => point.x)
+    const values = numericData.map((point) => point.x)
     return { min: Math.min(...values), max: Math.max(...values) }
-  }, [plottedRows])
+  }, [numericData])
 
-  const selectedRows = useMemo(() => {
+  const filteredData = useMemo(() => {
     const min = windowMin === '' ? xExtent.min : parseNumericValue(windowMin)
     const max = windowMax === '' ? xExtent.max : parseNumericValue(windowMax)
 
-    return plottedRows.filter(({ x }) => {
+    return numericData.filter(({ x }) => {
       const aboveMin = min === null || x >= min
       const belowMax = max === null || x <= max
       return aboveMin && belowMax
     })
-  }, [plottedRows, windowMin, windowMax, xExtent])
+  }, [numericData, windowMin, windowMax, xExtent])
 
   const summary = useMemo(() => {
-    if (!selectedRows.length) {
+    if (!filteredData.length) {
       return null
     }
 
-    const xValues = selectedRows.map((point) => point.x)
-    const yValues = selectedRows.map((point) => point.y)
+    const xValues = filteredData.map((point) => point.x)
+    const yValues = filteredData.map((point) => point.y)
     const yMean = yValues.reduce((sum, value) => sum + value, 0) / yValues.length
     const variance = yValues.reduce((sum, value) => sum + (value - yMean) ** 2, 0) / yValues.length
 
     return {
-      count: selectedRows.length,
+      count: filteredData.length,
       xMin: Math.min(...xValues),
       xMax: Math.max(...xValues),
       yMin: Math.min(...yValues),
@@ -514,10 +515,10 @@ function CassiniDataViewer() {
       yMean,
       yStd: Math.sqrt(variance),
     }
-  }, [selectedRows])
+  }, [filteredData])
 
   const chart = useMemo(() => {
-    if (!summary || !selectedRows.length) {
+    if (!summary || filteredData.length < 2) {
       return { points: [], path: '' }
     }
 
@@ -529,7 +530,7 @@ function CassiniDataViewer() {
     const xSpan = summary.xMax - summary.xMin || 1
     const ySpan = summary.yMax - summary.yMin || 1
 
-    const points = selectedRows.map((point) => ({
+    const points = filteredData.map((point) => ({
       ...point,
       svgX: padding.left + ((point.x - summary.xMin) / xSpan) * innerWidth,
       svgY: padding.top + (1 - (point.y - summary.yMin) / ySpan) * innerHeight,
@@ -539,7 +540,7 @@ function CassiniDataViewer() {
       points,
       path: points.map((point) => `${point.svgX.toFixed(2)},${point.svgY.toFixed(2)}`).join(' '),
     }
-  }, [selectedRows, summary])
+  }, [filteredData, summary])
 
   function resetWindow() {
     if (xExtent.min === null || xExtent.max === null) {
@@ -551,11 +552,11 @@ function CassiniDataViewer() {
   }
 
   function downloadSelectedWindow() {
-    if (!selectedRows.length) {
+    if (!filteredData.length) {
       return
     }
 
-    const csv = rowsToCsv(selectedRows.map((point) => ({ [activeXColumn]: point.x, [activeYColumn]: point.y })))
+    const csv = rowsToCsv(filteredData.map((point) => point.row))
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
     const url = URL.createObjectURL(blob)
     const link = document.createElement('a')
@@ -617,6 +618,13 @@ function CassiniDataViewer() {
       )}
       {!error && numericColumns.length > 0 && !activeXColumn && (
         <div className="viewer-message">The CSV loaded, but it does not include the required ring_radius_km column.</div>
+      )}
+
+      <div className="viewer-count-label">
+        Showing {filteredData.length} of total {numericData.length} points
+      </div>
+      {filteredData.length > 0 && filteredData.length < 2 && (
+        <div className="viewer-message compact">Selected window is too small to plot.</div>
       )}
 
       <div className="viewer-plot-card">
@@ -689,9 +697,12 @@ function CassiniDataViewer() {
         </div>
       </div>
 
-      <button className="download-window" type="button" onClick={downloadSelectedWindow} disabled={!selectedRows.length}>
-        Download selected window as CSV
+      <button className="download-window" type="button" onClick={downloadSelectedWindow} disabled={!filteredData.length}>
+        Export Local Window CSV
       </button>
+      <p className="download-helper">
+        Exports only the currently selected radial window for follow-up reconstruction or diagnostics.
+      </p>
     </div>
   )
 }

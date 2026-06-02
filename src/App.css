@@ -822,6 +822,20 @@
   background: rgba(247, 213, 138, 0.06);
 }
 
+.viewer-message.compact {
+  min-height: auto;
+  padding: 12px 14px;
+}
+
+.viewer-count-label {
+  margin-bottom: 10px;
+  color: var(--text-muted);
+  font-family: var(--mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
 .viewer-plot-card {
   overflow: hidden;
   min-height: 430px;
@@ -942,6 +956,13 @@
 .download-window:disabled {
   cursor: not-allowed;
   opacity: 0.46;
+}
+
+.download-helper {
+  margin: 12px 0 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  line-height: 1.6;
 }
 
 .site-footer {
