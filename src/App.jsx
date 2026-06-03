@@ -621,6 +621,7 @@ const branchFoldPoint = {
   x: -Math.cbrt(27 / 4),
   y: -Math.cbrt(1 / 2),
 }
+const branchFoldTolerance = 0.04
 
 function branchEquation(x, y) {
   return y ** 3 + x * y - 1
@@ -720,9 +721,18 @@ function StationaryPhaseDemo() {
     }
   }, [])
 
-  const selectedRoots = useMemo(() => findBranchRoots(selectedX), [selectedX])
-  const selectedLineX = mapBranchPoint(selectedX, 0).x
-  const rootCountLabel = selectedRoots.length === 3 ? '3 real roots' : '1 real root'
+  const isFoldSelected = Math.abs(selectedX - branchFoldPoint.x) <= branchFoldTolerance
+  const sliceX = isFoldSelected ? branchFoldPoint.x : selectedX
+  const selectedRoots = useMemo(() => findBranchRoots(sliceX), [sliceX])
+  const selectedLineX = mapBranchPoint(sliceX, 0).x
+  const selectedRootMarkers = isFoldSelected
+    ? selectedRoots.filter((root) => Math.abs(root - branchFoldPoint.y) > 0.05)
+    : selectedRoots
+  const rootCountLabel = isFoldSelected
+    ? 'Fold point: double root'
+    : selectedRoots.length === 3
+      ? '3 real roots'
+      : '1 real root'
   const verticalGrid = [-8, -6, -4, -2, 0, 2]
   const horizontalGrid = [-4, -2, 0, 2, 4]
 
@@ -812,7 +822,6 @@ function StationaryPhaseDemo() {
             <path className="branch-path branch-upper" d={branchPaths.upper} />
             <path className="branch-path branch-middle" d={branchPaths.middle} />
             <path className="branch-path branch-lower" d={branchPaths.lower} />
-            <circle className="branch-fold-dot" cx={branchPaths.fold.x} cy={branchPaths.fold.y} r="4.2" />
             <line
               className="branch-slice-line"
               x1={selectedLineX}
@@ -820,10 +829,21 @@ function StationaryPhaseDemo() {
               y1={branchPlot.padY}
               y2={branchPlot.height - branchPlot.padY}
             />
-            {selectedRoots.map((root) => {
-              const point = mapBranchPoint(selectedX, root)
+            {selectedRootMarkers.map((root) => {
+              const point = mapBranchPoint(sliceX, root)
               return <circle className="branch-root-dot" cx={point.x} cy={point.y} r="4.5" key={root.toFixed(5)} />
             })}
+            <circle
+              className={`branch-fold-dot${isFoldSelected ? ' active' : ''}`}
+              cx={branchPaths.fold.x}
+              cy={branchPaths.fold.y}
+              r={isFoldSelected ? '5.2' : '4.2'}
+            />
+            {isFoldSelected && (
+              <text className="branch-double-root-label" x={branchPaths.fold.x + 10} y={branchPaths.fold.y - 10}>
+                double root
+              </text>
+            )}
           </svg>
           <div className="branch-plot-caption">F(x, y) = y³ + xy − 1 = 0</div>
         </div>

@@ -1320,10 +1320,22 @@
 }
 
 .branch-fold-dot {
-  color: rgba(255, 250, 235, 0.98);
+  color: rgba(247, 213, 138, 0.98);
   fill: currentColor;
   stroke: none;
   filter: drop-shadow(0 0 8px rgba(247, 213, 138, 0.28));
+}
+
+.branch-fold-dot.active {
+  color: rgba(255, 241, 203, 1);
+  filter: drop-shadow(0 0 12px rgba(247, 213, 138, 0.45));
+}
+
+.branch-double-root-label {
+  fill: rgba(255, 241, 203, 0.88);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
 }
 
 .branch-plot-caption {
