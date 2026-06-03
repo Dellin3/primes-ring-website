@@ -729,7 +729,7 @@ function StationaryPhaseDemo() {
     ? selectedRoots.filter((root) => Math.abs(root - branchFoldPoint.y) > 0.05)
     : selectedRoots
   const rootCountLabel = isFoldSelected
-    ? 'Fold point: double root'
+    ? '1 simple real root + 1 double root'
     : selectedRoots.length === 3
       ? '3 real roots'
       : '1 real root'
