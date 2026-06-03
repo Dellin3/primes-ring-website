@@ -543,8 +543,14 @@ function SaturnModelModal({ onClose }) {
             alt="Interactive 3D model of Saturn"
             camera-controls
             auto-rotate
-            shadow-intensity="1"
-            exposure="1"
+            auto-rotate-delay="1200"
+            rotation-per-second="6deg"
+            shadow-intensity="0"
+            exposure="1.3"
+            environment-image="neutral"
+            camera-orbit="35deg 68deg 105%"
+            min-camera-orbit="auto auto 70%"
+            max-camera-orbit="auto auto 170%"
           ></model-viewer>
         </div>
       </div>
