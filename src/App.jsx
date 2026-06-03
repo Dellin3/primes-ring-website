@@ -309,41 +309,84 @@ const galleryImages = [
 
 const teamMembers = [
   {
-    name: 'Mentor',
-    role: 'Research guidance and mathematical supervision.',
-    focus: 'Helping the team refine the reconstruction framework, numerical assumptions, and research direction.',
+    name: 'Dr. Ryan Maguire',
+    role: 'Mentor / research advisor.',
+    cardRole: 'Mentor / research advisor',
+    paperSections: ['Research guidance and supervision'],
+    focus: 'Provides research guidance, mathematical supervision, and project direction.',
+    keyIdeas: [
+      'Refining mathematical assumptions',
+      'Guiding numerical strategy',
+      'Supporting the team reading and research process',
+    ],
+    module: 'Research guidance and project overview.',
     status: 'Ongoing mentorship.',
   },
   {
-    name: 'Member A',
-    role: 'Phase toy model and explanatory figures.',
-    focus: 'Creating simplified examples to visualize phase behavior, stationary points, and caustic-like transitions.',
-    input: 'Synthetic phase parameters.',
-    output: 'Explanatory plots and toy model figures.',
-    status: 'Prototype / discussion stage.',
+    name: 'Maiya Qiu',
+    role: 'Interpolation and stationary-root numerical methods.',
+    cardRole: 'Interpolation and stationary-root methods',
+    paperSections: [
+      'Introduction',
+      '1D Interpolation of the Phase for Reconstruction',
+      'Numerical Methods for the Solutions to the Stationary Phase',
+    ],
+    focus:
+      'Develops the motivation and numerical methods for improving phase approximation and root tracking.',
+    keyIdeas: [
+      'Radio occultation motivation',
+      'C-Spline interpolation',
+      'PCHIP interpolation',
+      'Floater-Hormann interpolation',
+      'Newton and Halley root-finding',
+      'Pseudo-arclength continuation for tracking folded solution branches',
+    ],
+    module: 'Interpolation and root-tracking overview.',
+    status: 'Algorithm design and comparison under development.',
   },
   {
-    name: 'Member B',
-    role: 'Root mapping and zero-finding module.',
-    focus: 'Locating stationary roots and organizing how they change across radial windows.',
-    input: 'Phase derivative evaluations over a radial grid.',
-    output: 'Root locations, branch candidates, and possible bifurcation zones.',
-    status: 'Prototype algorithm under refinement.',
+    name: 'Yutong Zhao',
+    role: 'Theoretical background and multivariate interpolation.',
+    cardRole: 'Theory and multivariate interpolation',
+    paperSections: ['Theoretical Background', 'Multivariate Interpolation'],
+    focus:
+      'Builds the mathematical and physical background for the reconstruction framework.',
+    keyIdeas: [
+      'Wave optics',
+      'Huygens-Fresnel principle',
+      'Fresnel diffraction',
+      'Saturn ring geometry',
+      'Fresnel scale',
+      'Stationary phase framework',
+      'Multivariate / implicit reconstruction ideas',
+      'RBF-style reconstruction',
+    ],
+    module: 'Theory background and multivariate reconstruction overview.',
+    status: 'Theory framework and multivariate methods under development.',
   },
   {
-    name: 'Member C',
-    role: 'Phase model and geometry setup.',
-    focus: 'Connecting the physical geometry to phase-function behavior and reconstruction assumptions.',
-    input: 'Ring geometry, occultation setup, and model parameters.',
-    output: 'Phase model components and geometry-based explanations.',
-    status: 'Under development.',
-  },
-  {
-    name: 'Dell',
-    role: 'Visualization, local diagnostics, and research portal.',
-    focus: 'Building the website, visual gallery, real-data viewer, local radial-window inspection, and future stationary-phase diagnostics.',
-    input: 'CSV-style ring profile data and synthetic/toy model outputs.',
-    output: 'Interactive plots, selected radial windows, diagnostic summaries, and presentation-ready visual tools.',
+    name: 'Dell Li',
+    role: 'Branch bookkeeping, local diagnostics, reliability testing, and research portal.',
+    cardRole: 'Branch bookkeeping and diagnostics',
+    paperSections: [
+      'Abstract',
+      'Branch Bookkeeping Between Root Finding and Reconstruction',
+      'Local Diagnostics Near Bifurcation',
+      'Reliability of the Stationary-Point Approximation and Possible Residual Contributions',
+    ],
+    focus:
+      'Connects stationary-root finding to the reconstruction layer by organizing roots, labels, curvature, branch status, confidence scores, and validation logic.',
+    keyIdeas: [
+      'Branch labels',
+      'Stationary-root records',
+      'Second-derivative diagnostics',
+      'Bifurcation warning flags',
+      'Confidence score prototype',
+      'Stationary-point reliability benchmark',
+      'Website / research portal development',
+      'Real-data viewer prototype',
+    ],
+    module: 'Branch record dashboard, confidence calculator, real-data viewer, and research portal.',
     status: 'Active development.',
   },
 ]
@@ -543,14 +586,8 @@ function SaturnModelModal({ onClose }) {
             alt="Interactive 3D model of Saturn"
             camera-controls
             auto-rotate
-            auto-rotate-delay="1200"
-            rotation-per-second="6deg"
-            shadow-intensity="0"
             exposure="1.3"
-            environment-image="neutral"
-            camera-orbit="35deg 68deg 105%"
-            min-camera-orbit="auto auto 70%"
-            max-camera-orbit="auto auto 170%"
+            shadow-intensity="0"
           ></model-viewer>
         </div>
       </div>
@@ -570,73 +607,225 @@ function Section({ id, eyebrow, title, children, className = '' }) {
   )
 }
 
-function StationaryPhaseDemo() {
-  const [parameter, setParameter] = useState(0.45)
-  const roots = useMemo(() => {
-    if (parameter > 0.02) {
-      const sideRoot = Math.sqrt(parameter)
-      return [-sideRoot, 0, sideRoot]
+const branchPlot = {
+  xMin: -8,
+  xMax: 2,
+  yMin: -4,
+  yMax: 4,
+  width: 620,
+  height: 360,
+  padX: 54,
+  padY: 34,
+}
+const branchFoldPoint = {
+  x: -Math.cbrt(27 / 4),
+  y: -Math.cbrt(1 / 2),
+}
+
+function branchEquation(x, y) {
+  return y ** 3 + x * y - 1
+}
+
+function mapBranchPoint(x, y) {
+  const { xMin, xMax, yMin, yMax, width, height, padX, padY } = branchPlot
+  const innerWidth = width - padX * 2
+  const innerHeight = height - padY * 2
+
+  return {
+    x: padX + ((x - xMin) / (xMax - xMin)) * innerWidth,
+    y: padY + ((yMax - y) / (yMax - yMin)) * innerHeight,
+  }
+}
+
+function findBranchRoots(x) {
+  const yMin = -5
+  const yMax = 5
+  const steps = 420
+  const roots = []
+  let previousY = yMin
+  let previousValue = branchEquation(x, previousY)
+
+  for (let index = 1; index <= steps; index += 1) {
+    const currentY = yMin + ((yMax - yMin) * index) / steps
+    const currentValue = branchEquation(x, currentY)
+
+    if (Math.abs(previousValue) < 1e-5) {
+      roots.push(previousY)
+    } else if (previousValue * currentValue < 0) {
+      let low = previousY
+      let high = currentY
+      let lowValue = previousValue
+
+      for (let step = 0; step < 34; step += 1) {
+        const mid = (low + high) / 2
+        const midValue = branchEquation(x, mid)
+
+        if (lowValue * midValue <= 0) {
+          high = mid
+        } else {
+          low = mid
+          lowValue = midValue
+        }
+      }
+
+      roots.push((low + high) / 2)
     }
 
-    return [0]
-  }, [parameter])
+    previousY = currentY
+    previousValue = currentValue
+  }
 
-  const points = useMemo(() => {
-    const samples = 120
-    return Array.from({ length: samples + 1 }, (_, index) => {
-      const phi = -1.35 + (2.7 * index) / samples
-      const value = phi ** 3 - parameter * phi
-      const x = 32 + ((phi + 1.35) / 2.7) * 376
-      const y = 140 - ((value + 1.55) / 3.1) * 110
-      return `${x.toFixed(2)},${y.toFixed(2)}`
-    }).join(' ')
-  }, [parameter])
+  return roots
+    .sort((a, b) => a - b)
+    .filter((root, index, sortedRoots) => index === 0 || Math.abs(root - sortedRoots[index - 1]) > 0.01)
+}
+
+function pointsToPath(points) {
+  return points
+    .map((point, index) => `${index === 0 ? 'M' : 'L'} ${point.x.toFixed(2)} ${point.y.toFixed(2)}`)
+    .join(' ')
+}
+
+function StationaryPhaseDemo() {
+  const [selectedX, setSelectedX] = useState(-3)
+
+  const branchPaths = useMemo(() => {
+    const samples = 360
+    const upper = []
+    const middle = []
+    const lower = []
+
+    for (let index = 0; index <= samples; index += 1) {
+      const x = branchPlot.xMin + ((branchPlot.xMax - branchPlot.xMin) * index) / samples
+      const roots = findBranchRoots(x)
+
+      if (roots.length >= 3) {
+        lower.push(mapBranchPoint(x, roots[0]))
+        middle.push(mapBranchPoint(x, roots[1]))
+        upper.push(mapBranchPoint(x, roots[2]))
+      } else if (roots.length === 1) {
+        upper.push(mapBranchPoint(x, roots[0]))
+      }
+    }
+
+    const mappedFoldPoint = mapBranchPoint(branchFoldPoint.x, branchFoldPoint.y)
+    middle.push(mappedFoldPoint)
+    lower.push(mappedFoldPoint)
+
+    return {
+      upper: pointsToPath(upper),
+      middle: pointsToPath(middle),
+      lower: pointsToPath(lower),
+      fold: mappedFoldPoint,
+    }
+  }, [])
+
+  const selectedRoots = useMemo(() => findBranchRoots(selectedX), [selectedX])
+  const selectedLineX = mapBranchPoint(selectedX, 0).x
+  const rootCountLabel = selectedRoots.length === 3 ? '3 real roots' : '1 real root'
+  const verticalGrid = [-8, -6, -4, -2, 0, 2]
+  const horizontalGrid = [-4, -2, 0, 2, 4]
 
   return (
     <Section
       id="stationary-demo"
       eyebrow="03 / Toy Demo"
-      title="Stationary Points in a Simple Phase Model"
+      title="Toy Branch Diagram: Multi-Root Structure"
       className="demo-section"
     >
-      <div className="demo-panel">
-        <div className="demo-controls">
-          <div>
-            <span className="card-kicker">Parameter p</span>
-            <h3>Toy derivative curve</h3>
-            <p>
-              Stationary points occur where ψ′ = 0. As the parameter changes, roots can
-              appear, merge, or disappear, giving intuition for bifurcation-like behavior.
-            </p>
+      <div className="branch-demo-panel">
+        <div className="branch-demo-copy">
+          <span className="card-kicker">Branch tracking intuition</span>
+          <h3>Folded solution branches</h3>
+          <p>
+            This toy model visualizes how the number of real solution branches changes near
+            a fold-like region. It is not Cassini data; it is a simplified diagram for
+            branch tracking intuition.
+          </p>
+          <div className="branch-equation">
+            <span>y</span>
+            <sup>3</sup>
+            <span> + xy = 1</span>
           </div>
-          <label className="slider-label">
-            <span>p = {parameter.toFixed(2)}</span>
+          <label className="branch-slider">
+            <span>x = {selectedX.toFixed(2)}</span>
             <input
               type="range"
-              min="-0.45"
-              max="1.15"
+              min={branchPlot.xMin}
+              max={branchPlot.xMax}
               step="0.01"
-              value={parameter}
-              onChange={(event) => setParameter(Number(event.target.value))}
+              value={selectedX}
+              onChange={(event) => setSelectedX(Number(event.target.value))}
             />
           </label>
-          <div className="root-count">
-            <strong>{roots.length}</strong>
-            <span>stationary point{roots.length === 1 ? '' : 's'}</span>
-          </div>
+          <div className="root-count-pill">{rootCountLabel}</div>
         </div>
-        <div className="demo-plot" aria-label="Toy derivative curve with stationary points">
-          <svg viewBox="0 0 440 180" role="img">
-            <title>Toy derivative-like curve for stationary phase intuition</title>
-            <path className="axis" d="M32 140 H408 M220 24 V158" />
-            <path className="zero-line" d="M32 140 H408" />
-            <polyline className="curve primary" points={points} />
-            {roots.map((root) => {
-              const x = 32 + ((root + 1.35) / 2.7) * 376
-              return <circle className="plot-point root" cx={x} cy="140" r="6" key={root} />
+        <div className="branch-demo-plot" aria-label="Implicit branch diagram for y cubed plus x y equals one">
+          <svg className="branch-svg" viewBox={`0 0 ${branchPlot.width} ${branchPlot.height}`} role="img">
+            <title>Implicit branch diagram for y cubed plus x y equals one</title>
+            {verticalGrid.map((xValue) => {
+              const point = mapBranchPoint(xValue, 0)
+              return (
+                <line
+                  className="branch-grid-line"
+                  x1={point.x}
+                  x2={point.x}
+                  y1={branchPlot.padY}
+                  y2={branchPlot.height - branchPlot.padY}
+                  key={`x-${xValue}`}
+                />
+              )
+            })}
+            {horizontalGrid.map((yValue) => {
+              const point = mapBranchPoint(0, yValue)
+              return (
+                <line
+                  className="branch-grid-line"
+                  x1={branchPlot.padX}
+                  x2={branchPlot.width - branchPlot.padX}
+                  y1={point.y}
+                  y2={point.y}
+                  key={`y-${yValue}`}
+                />
+              )
+            })}
+            <line
+              className="branch-axis"
+              x1={branchPlot.padX}
+              x2={branchPlot.width - branchPlot.padX}
+              y1={mapBranchPoint(0, 0).y}
+              y2={mapBranchPoint(0, 0).y}
+            />
+            <line
+              className="branch-axis"
+              x1={mapBranchPoint(0, 0).x}
+              x2={mapBranchPoint(0, 0).x}
+              y1={branchPlot.padY}
+              y2={branchPlot.height - branchPlot.padY}
+            />
+            <text className="branch-axis-label" x={branchPlot.width - branchPlot.padX + 10} y={mapBranchPoint(0, 0).y - 8}>
+              x
+            </text>
+            <text className="branch-axis-label" x={mapBranchPoint(0, 0).x + 8} y={branchPlot.padY + 14}>
+              y
+            </text>
+            <path className="branch-path branch-upper" d={branchPaths.upper} />
+            <path className="branch-path branch-middle" d={branchPaths.middle} />
+            <path className="branch-path branch-lower" d={branchPaths.lower} />
+            <circle className="branch-fold-dot" cx={branchPaths.fold.x} cy={branchPaths.fold.y} r="4.2" />
+            <line
+              className="branch-slice-line"
+              x1={selectedLineX}
+              x2={selectedLineX}
+              y1={branchPlot.padY}
+              y2={branchPlot.height - branchPlot.padY}
+            />
+            {selectedRoots.map((root) => {
+              const point = mapBranchPoint(selectedX, root)
+              return <circle className="branch-root-dot" cx={point.x} cy={point.y} r="4.5" key={root.toFixed(5)} />
             })}
           </svg>
-          <div className="demo-equation">ψ′(φ; p) = φ³ - pφ</div>
+          <div className="branch-plot-caption">F(x, y) = y³ + xy − 1 = 0</div>
         </div>
       </div>
     </Section>
@@ -1118,7 +1307,7 @@ function App() {
   function renderTeam() {
     return (
       <PanelShell>
-        <Section id="team" eyebrow="04 / Team Members" title="Team Members">
+        <Section id="team" eyebrow="04 / Team Members" title="Paper-Based Contribution Dashboard">
           <div className="team-layout">
             <div className="team-grid">
               {teamMembers.map((member, index) => (
@@ -1128,20 +1317,48 @@ function App() {
                   key={member.name}
                   onClick={() => setSelectedMemberIndex(index)}
                 >
-                  <span className="card-kicker">{member.name}</span>
-                  <h3>{member.role}</h3>
-                  <p>{member.status}</p>
+                  <h3>{member.name}</h3>
+                  <p>{member.cardRole}</p>
                 </button>
               ))}
             </div>
             <article className="member-detail">
               <span className="card-kicker">Selected member</span>
               <h3>{selectedMember.name}</h3>
-              <p><strong>Role:</strong> {selectedMember.role}</p>
-              <p><strong>Focus:</strong> {selectedMember.focus}</p>
-              {selectedMember.input && <p><strong>Input:</strong> {selectedMember.input}</p>}
-              {selectedMember.output && <p><strong>Output:</strong> {selectedMember.output}</p>}
-              <p><strong>Status:</strong> {selectedMember.status}</p>
+              <div className="member-detail-grid">
+                <section>
+                  <h4>Role</h4>
+                  <p>{selectedMember.role}</p>
+                </section>
+                <section>
+                  <h4>Paper sections</h4>
+                  <ul>
+                    {selectedMember.paperSections.map((section) => (
+                      <li key={section}>{section}</li>
+                    ))}
+                  </ul>
+                </section>
+                <section>
+                  <h4>Focus</h4>
+                  <p>{selectedMember.focus}</p>
+                </section>
+                <section>
+                  <h4>Key ideas</h4>
+                  <ul>
+                    {selectedMember.keyIdeas.map((idea) => (
+                      <li key={idea}>{idea}</li>
+                    ))}
+                  </ul>
+                </section>
+                <section>
+                  <h4>Website module</h4>
+                  <p>{selectedMember.module}</p>
+                </section>
+                <section>
+                  <h4>Status</h4>
+                  <p>{selectedMember.status}</p>
+                </section>
+              </div>
             </article>
           </div>
         </Section>

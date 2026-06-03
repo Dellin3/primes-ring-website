@@ -1160,71 +1160,29 @@
   font-size: 0.68rem;
 }
 
-.mini-plot {
+.branch-demo-panel {
   display: grid;
-  min-height: 190px;
-  place-items: center;
-  margin-bottom: 18px;
-  border: 1px solid rgba(142, 182, 255, 0.14);
-  border-radius: 20px;
-  background:
-    linear-gradient(rgba(142, 182, 255, 0.06) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(142, 182, 255, 0.06) 1px, transparent 1px);
-  background-size: 28px 28px;
-}
-
-.mini-plot svg {
-  width: min(100%, 360px);
-}
-
-.axis {
-  fill: none;
-  stroke: rgba(232, 238, 255, 0.22);
-  stroke-width: 1.4;
-}
-
-.curve {
-  fill: none;
-  stroke-linecap: round;
-  stroke-width: 4;
-}
-
-.curve.primary {
-  stroke: var(--blue);
-}
-
-.curve.secondary {
-  stroke: rgba(247, 213, 138, 0.62);
-  stroke-width: 2.2;
-}
-
-.plot-point {
-  fill: var(--gold);
-}
-
-.demo-panel {
-  display: grid;
-  grid-template-columns: minmax(240px, 0.72fr) minmax(0, 1.28fr);
+  grid-template-columns: minmax(250px, 0.78fr) minmax(0, 1.22fr);
   gap: 22px;
   align-items: stretch;
-  padding: 22px;
+  padding: 24px;
   border: 1px solid var(--border);
   border-radius: 28px;
   background:
-    radial-gradient(circle at 12% 10%, rgba(142, 182, 255, 0.1), transparent 34%),
+    radial-gradient(circle at 10% 0%, rgba(142, 182, 255, 0.11), transparent 32%),
     linear-gradient(145deg, rgba(255, 255, 255, 0.065), rgba(255, 255, 255, 0.02)),
     rgba(11, 16, 30, 0.82);
   box-shadow: 0 22px 70px rgba(0, 0, 0, 0.2);
 }
 
-.demo-controls {
+.branch-demo-copy {
   display: flex;
   flex-direction: column;
   justify-content: center;
   gap: 18px;
 }
 
-.demo-controls h3 {
+.branch-demo-copy h3 {
   margin: 10px 0 10px;
   color: var(--text-strong);
   font-family: var(--heading);
@@ -1232,98 +1190,93 @@
   line-height: 1.08;
 }
 
-.demo-controls p {
+.branch-demo-copy p {
   margin: 0;
   color: var(--text);
   line-height: 1.65;
 }
 
-.slider-label {
+.branch-equation {
+  width: fit-content;
+  max-width: 100%;
+  overflow-x: auto;
+  padding: 12px 14px;
+  border: 1px solid rgba(247, 213, 138, 0.2);
+  border-radius: 16px;
+  color: var(--text-strong);
+  font-family: var(--heading);
+  font-size: clamp(1.18rem, 2vw, 1.48rem);
+  line-height: 1.2;
+  white-space: nowrap;
+  background: rgba(247, 213, 138, 0.055);
+}
+
+.branch-equation sup {
+  font-size: 0.68em;
+  line-height: 0;
+}
+
+.branch-slider {
   display: grid;
   gap: 10px;
 }
 
-.slider-label span {
+.branch-slider span {
   color: var(--text-strong);
   font-family: var(--mono);
   font-size: 0.82rem;
   letter-spacing: 0.08em;
 }
 
-.slider-note {
-  margin: 0;
-  padding: 12px 14px;
-  border: 1px solid rgba(142, 182, 255, 0.14);
-  border-radius: 16px;
-  color: var(--text-muted);
-  font-size: 0.9rem;
-  line-height: 1.6;
-  background: rgba(142, 182, 255, 0.055);
-}
-
-.branch-demo-note {
-  margin: 0;
-  color: var(--text-muted);
-  font-size: 0.9rem;
-  line-height: 1.6;
-}
-
-.root-count {
-  display: flex;
-  align-items: baseline;
-  gap: 10px;
-  padding-top: 4px;
-}
-
-.demo-controls .root-count {
-  padding: 12px 14px;
+.root-count-pill {
+  width: fit-content;
+  padding: 10px 13px;
   border: 1px solid rgba(247, 213, 138, 0.18);
-  border-radius: 16px;
-  background: rgba(247, 213, 138, 0.055);
-}
-
-.root-count strong {
   color: var(--text-strong);
-  font-family: var(--heading);
-  font-size: clamp(1.26rem, 2.3vw, 1.72rem);
-  line-height: 1;
+  border-radius: 999px;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: rgba(247, 213, 138, 0.07);
 }
 
-.root-count span {
-  color: var(--text);
-  line-height: 1.45;
-}
-
-.demo-plot {
+.branch-demo-plot {
   display: grid;
-  gap: 12px;
+  gap: 10px;
   place-items: center;
   min-width: 0;
   padding: 16px;
   border: 1px solid rgba(232, 238, 255, 0.12);
   border-radius: 24px;
   background:
-    radial-gradient(circle at 58% 44%, rgba(143, 118, 255, 0.14), transparent 34%),
+    linear-gradient(rgba(142, 182, 255, 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(142, 182, 255, 0.045) 1px, transparent 1px),
+    radial-gradient(circle at 54% 42%, rgba(143, 118, 255, 0.12), transparent 36%),
     rgba(5, 8, 16, 0.62);
+  background-size:
+    28px 28px,
+    28px 28px,
+    auto,
+    auto;
 }
 
-.demo-plot svg {
+.branch-svg {
   display: block;
   width: 100%;
-  max-width: 620px;
+  max-width: 680px;
   height: auto;
 }
 
-.branch-grid {
+.branch-grid-line {
   fill: none;
-  stroke: rgba(232, 238, 255, 0.06);
+  stroke: rgba(232, 238, 255, 0.08);
   stroke-width: 1;
 }
 
-.parameter-line {
-  stroke: rgba(247, 213, 138, 0.7);
-  stroke-dasharray: 7 7;
-  stroke-width: 1.5;
+.branch-axis {
+  stroke: rgba(232, 238, 255, 0.26);
+  stroke-width: 1.25;
 }
 
 .branch-axis-label {
@@ -1333,41 +1286,51 @@
   letter-spacing: 0.08em;
 }
 
-.branch-curve {
+.branch-path {
   fill: none;
   stroke-linecap: round;
   stroke-linejoin: round;
-  stroke-width: 3.4;
+  stroke-width: 3.35;
+  filter: drop-shadow(0 0 10px rgba(142, 182, 255, 0.18));
 }
 
 .branch-upper {
-  stroke: rgba(195, 208, 255, 0.94);
+  stroke: rgba(202, 211, 255, 0.96);
 }
 
 .branch-middle {
-  stroke: rgba(169, 139, 255, 0.85);
+  stroke: rgba(169, 139, 255, 0.9);
 }
 
 .branch-lower {
-  stroke: rgba(247, 213, 138, 0.78);
+  stroke: rgba(142, 190, 255, 0.9);
 }
 
-.branch-root-marker {
-  fill: var(--text-strong);
-  stroke: rgba(247, 213, 138, 0.8);
-  stroke-width: 1.4;
+.branch-slice-line {
+  stroke: rgba(247, 213, 138, 0.72);
+  stroke-dasharray: 7 7;
+  stroke-width: 1.6;
 }
 
-.demo-equation {
-  color: var(--text-strong);
-  font-family: var(--heading);
-  font-size: clamp(1.08rem, 1.7vw, 1.34rem);
-  letter-spacing: 0.01em;
+.branch-root-dot {
+  fill: rgba(255, 250, 235, 0.96);
+  stroke: rgba(247, 213, 138, 0.85);
+  stroke-width: 1.5;
+  filter: drop-shadow(0 0 8px rgba(247, 213, 138, 0.26));
 }
 
-.demo-equation sup {
-  font-size: 0.68em;
-  line-height: 0;
+.branch-fold-dot {
+  color: rgba(255, 250, 235, 0.98);
+  fill: currentColor;
+  stroke: none;
+  filter: drop-shadow(0 0 8px rgba(247, 213, 138, 0.28));
+}
+
+.branch-plot-caption {
+  color: var(--text-muted);
+  font-family: var(--mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.04em;
 }
 
 .confidence-card {
@@ -1856,7 +1819,7 @@
   .hero,
   .two-column,
   .math-grid,
-  .demo-panel,
+  .branch-demo-panel,
   .paper-role-row,
   .confidence-card,
   .benchmark-panel,
@@ -1939,7 +1902,7 @@
   .feature-card,
   .pipeline-step,
   .figure-card,
-  .demo-panel,
+  .branch-demo-panel,
   .contribution-panel,
   .tool-preview,
   .data-viewer {
