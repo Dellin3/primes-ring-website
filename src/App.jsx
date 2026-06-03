@@ -13,8 +13,30 @@ const portalMenuItems = [
 ]
 
 function getPanelFromHash() {
+  if (getMethodSlugFromLocation()) {
+    return 'algorithms'
+  }
+
   const hash = window.location.hash.replace('#', '')
   return portalMenuItems.some((item) => item.id === hash) ? hash : 'menu'
+}
+
+function getMethodSlugFromLocation() {
+  const pathMatch = window.location.pathname.match(/^\/algorithms\/([^/]+)/)
+  if (pathMatch) {
+    return pathMatch[1]
+  }
+
+  const hash = window.location.hash.replace('#', '')
+  return hash.startsWith('algorithms/') ? hash.split('/')[1] : ''
+}
+
+function getMethodSlug(methodName) {
+  return methodName
+    .toLowerCase()
+    .replace(/é/g, 'e')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
 }
 
 const pipelineSteps = [
@@ -59,6 +81,130 @@ const pipelineSteps = [
     does: 'Creates schematic or public-data visualizations with captions and exportable local views.',
     matters: 'The goal is a careful research-support display, not an overclaimed final ring result.',
     io: 'Input: selected data, diagnostics, and notes. Output: plots, captions, and exportable windows.',
+  },
+]
+
+const numericalMethodsToolkit = [
+  {
+    tag: 'Interpolation',
+    name: 'PCHIP Interpolation',
+    does: 'Shape-preserving interpolation for phase or signal samples.',
+    matters: 'Useful when smooth interpolation is needed without introducing large oscillations.',
+    example:
+      'Suppose we have sampled phase values at several nearby radii. A regular high-degree fit may wiggle too much, but PCHIP follows the data shape more safely.',
+    caption: 'Six sampled points with a smooth curve that preserves local shape.',
+    illustration: 'pchip',
+    status: 'Candidate method.',
+  },
+  {
+    tag: 'Interpolation',
+    name: 'Cubic Spline Interpolation',
+    does: 'Builds a smooth piecewise-polynomial approximation from sampled data.',
+    matters: 'Provides a baseline smooth interpolation method for phase reconstruction.',
+    example:
+      'Given several sampled values of a phase-related quantity, cubic spline produces a smooth curve with continuous derivatives between knots.',
+    caption: 'Knot points connected by a smooth piecewise cubic baseline.',
+    illustration: 'spline',
+    status: 'Candidate method.',
+  },
+  {
+    tag: 'Interpolation',
+    name: 'Floater-Hormann Rational Interpolation',
+    does: 'Uses rational interpolation to approximate sampled functions while reducing some polynomial interpolation instability.',
+    matters: 'Candidate method for stable phase approximation before root-finding.',
+    example:
+      'If polynomial interpolation begins to oscillate near the edge of a window, a rational interpolation can remain better behaved.',
+    caption: 'A dashed oscillatory fit compared with a steadier rational fit.',
+    illustration: 'rational',
+    status: 'Candidate method.',
+  },
+  {
+    tag: 'Initializer',
+    name: 'Padé Approximation Initializer',
+    does: 'Uses a local rational approximation P_m(x) / Q_n(x) to approximate the phase or phase derivative near a window.',
+    matters: 'Can provide better initial guesses for Newton or Halley root-finding, especially near difficult local regions.',
+    example:
+      'Near a sharp local bend, a polynomial guess may miss the local geometry, but a Padé approximation can better capture the curve and predict where the derivative becomes zero.',
+    caption: 'Padé provides an initializer for Newton / Halley near a difficult local bend.',
+    illustration: 'pade',
+    status: 'Prototype.',
+  },
+  {
+    tag: 'Root solver',
+    name: 'Newton Root-Finding',
+    does: 'Iteratively solves f(φ)=0 using first-derivative information.',
+    matters: 'Can locate stationary roots where ∂ψ/∂φ = 0 when the initial guess is good.',
+    example:
+      'Start from an initial guess near a root. Tangent lines step closer to the x-axis crossing.',
+    caption: 'Candidate method; useful locally, but may be unstable near bifurcation.',
+    illustration: 'newton',
+    status: 'Candidate method.',
+  },
+  {
+    tag: 'Root solver',
+    name: 'Halley Root-Finding',
+    does: 'Uses first and second derivative information for faster local convergence.',
+    matters: 'Useful for refining stationary roots after a good initializer such as Padé approximation.',
+    example:
+      'Start from the same initial guess as Newton and show Halley reaching the root in fewer refinement steps.',
+    caption: 'Uses second derivative information; faster when the local model and initial guess are good.',
+    illustration: 'halley',
+    status: 'Candidate method.',
+  },
+  {
+    tag: 'Continuation',
+    name: 'Pseudo-Arclength Continuation',
+    does: 'Tracks solution branches through folds by stepping along the curve rather than only along one parameter axis.',
+    matters: 'Important near fold-like regions where ordinary parameter stepping can fail or jump branches.',
+    example:
+      'A branch bends back, so x is no longer a good global parameter. Pseudo-arclength continues along the branch anyway.',
+    caption: 'Arrows follow the folded branch through the turning region.',
+    illustration: 'continuation',
+    status: 'Prototype / planned.',
+  },
+  {
+    tag: 'Validation',
+    name: 'Least-Squares Fitting',
+    does: 'Fits a local model to sampled data by minimizing residual error.',
+    matters: 'Useful for local phase fitting, parameter estimation, or comparing candidate reconstruction models.',
+    example:
+      'Fit a simple model to several noisy sample points and compare the residuals.',
+    caption: 'Local least-squares fit on a sampled radial window.',
+    illustration: 'leastSquares',
+    status: 'Planned.',
+  },
+  {
+    tag: 'Bookkeeping',
+    name: 'Branch Bookkeeping',
+    does: 'Stores each stationary root with its phase value, curvature, label, and diagnostic flag.',
+    matters: 'Connects root-finding output to reconstruction and prevents branches from being mixed up.',
+    example:
+      'At one radius window there are 3 roots, and at the next window there are still 3 roots but slightly shifted. Bookkeeping matches root A to A, B to B, C to C.',
+    caption: 'Neighboring slices are matched by branch labels.',
+    illustration: 'bookkeeping',
+    status: 'Prototype.',
+  },
+  {
+    tag: 'Diagnostics',
+    name: 'Local Diagnostics and Confidence Score',
+    does: 'Uses curvature, branch separation, and jump behavior to estimate whether a stationary root record is reliable.',
+    matters: 'Flags regions near caustics, bifurcations, or unstable stationary-phase approximations.',
+    example:
+      'If two roots become very close and curvature becomes small, confidence drops and the point gets a warning flag.',
+    caption: 'Confidence falls near the fold-like warning zone.',
+    illustration: 'diagnostics',
+    status: 'Prototype.',
+  },
+  {
+    tag: 'Validation',
+    name: 'Stationary-Phase Reliability Benchmark',
+    does: 'Compares the stationary-point approximation against a fuller numerical integral or local residual check.',
+    matters: 'Helps detect missed roots, unstable windows, or regions requiring special treatment.',
+    example:
+      'Compare an approximate reconstructed value and a more direct numerical reference; if the mismatch is small, the method passes the check.',
+    caption: 'A good case has nearly overlapping curves; a warning case separates.',
+    illustration: 'benchmark',
+    status: 'Planned.',
   },
 ]
 
@@ -532,7 +678,7 @@ function NavBar({ onSelect }) {
     <header className="site-header">
       <button className="brand" type="button" onClick={() => onSelect('menu')} aria-label="Go to main menu">
         <span className="brand-mark">SR</span>
-        <span>
+        <span className="brand-copy">
           <strong>Saturn Rings</strong>
           <small>MIT PRIMES Math Junior</small>
         </span>
@@ -685,6 +831,171 @@ function pointsToPath(points) {
   return points
     .map((point, index) => `${index === 0 ? 'M' : 'L'} ${point.x.toFixed(2)} ${point.y.toFixed(2)}`)
     .join(' ')
+}
+
+function MethodIllustration({ type }) {
+  if (type === 'rational') {
+    return (
+      <svg viewBox="0 0 220 120" role="img">
+        <path className="method-axis" d="M18 92 H202" />
+        <path className="method-line dashed" d="M24 78 C52 20, 72 112, 98 44 S154 102, 194 34" />
+        <path className="method-line" d="M24 78 C58 62, 86 56, 116 52 S168 46, 194 38" />
+      </svg>
+    )
+  }
+
+  if (type === 'pade') {
+    return (
+      <svg viewBox="0 0 220 120" role="img">
+        <path className="method-axis" d="M18 92 H202" />
+        <path className="method-line muted dashed" d="M28 84 C72 80, 96 30, 128 18 S170 58, 196 96" />
+        <path className="method-line" d="M28 84 C72 80, 100 58, 128 42 S174 38, 196 50" />
+        <line className="method-residual gold" x1="138" x2="138" y1="42" y2="92" />
+        <circle className="method-dot gold" cx="138" cy="92" r="4" />
+        {[38, 74, 111, 150, 184].map((x, index) => (
+          <circle className="method-dot" cx={x} cy={[82, 73, 55, 42, 48][index]} r="3.5" key={x} />
+        ))}
+        <text className="method-svg-label" x="116" y="18">polynomial guess</text>
+        <text className="method-svg-label gold" x="92" y="108">predicted derivative zero</text>
+        <text className="method-svg-label gold" x="84" y="36">Padé rational guess</text>
+      </svg>
+    )
+  }
+
+  if (type === 'newton') {
+    return (
+      <svg viewBox="0 0 220 120" role="img">
+        <path className="method-axis" d="M18 92 H202" />
+        <path className="method-line" d="M28 22 C60 28, 78 86, 108 92 S156 66, 194 28" />
+        <path className="method-tangent" d="M62 70 L132 92" />
+        <path className="method-tangent" d="M132 92 L166 64" />
+        <circle className="method-dot gold" cx="62" cy="70" r="4" />
+        <circle className="method-dot gold" cx="132" cy="92" r="4" />
+        <text className="method-svg-label gold" x="38" y="108">candidate method</text>
+        <text className="method-svg-label" x="112" y="28">may be unstable near fold</text>
+      </svg>
+    )
+  }
+
+  if (type === 'halley') {
+    return (
+      <svg viewBox="0 0 220 120" role="img">
+        <path className="method-axis" d="M18 92 H202" />
+        <path className="method-line muted" d="M28 26 C64 30, 82 90, 112 92 S160 64, 194 30" />
+        <path className="method-arrow muted" d="M42 66 H78 H114 H144" />
+        <path className="method-arrow" d="M42 88 H104 H154" />
+        <circle className="method-dot" cx="78" cy="66" r="3" />
+        <circle className="method-dot" cx="114" cy="66" r="3" />
+        <circle className="method-dot gold" cx="104" cy="88" r="3.5" />
+        <text className="method-svg-label" x="148" y="68">Newton: more steps</text>
+        <text className="method-svg-label gold" x="112" y="92">Halley: fewer steps</text>
+        <text className="method-svg-label" x="72" y="20">uses second derivative</text>
+      </svg>
+    )
+  }
+
+  if (type === 'continuation') {
+    return (
+      <svg viewBox="0 0 220 120" role="img">
+        <path className="method-axis" d="M18 92 H202" />
+        <path className="method-line" d="M46 98 C116 98, 64 24, 140 24 C184 24, 178 78, 124 78" />
+        <line className="method-residual" x1="142" x2="142" y1="22" y2="96" />
+        <path className="method-arrow muted" d="M150 96 V70" />
+        <path className="method-arrow" d="M72 92 L88 82" />
+        <path className="method-arrow" d="M100 44 L116 34" />
+        <path className="method-arrow" d="M154 30 L166 42" />
+        <text className="method-svg-label" x="120" y="108">ordinary parameter step fails</text>
+        <text className="method-svg-label gold" x="42" y="33">continue along branch</text>
+        <text className="method-svg-label gold" x="146" y="22">fold region</text>
+      </svg>
+    )
+  }
+
+  if (type === 'leastSquares') {
+    return (
+      <svg viewBox="0 0 220 120" role="img">
+        <path className="method-axis" d="M18 92 H202" />
+        <path className="method-line" d="M28 82 C66 70, 112 48, 194 30" />
+        <text className="method-svg-label gold" x="42" y="18">local least-squares fit</text>
+        <text className="method-svg-label" x="58" y="108">sampled window</text>
+        {[40, 68, 100, 132, 164, 190].map((x, index) => {
+          const y = [78, 63, 68, 44, 50, 25][index]
+          const fitY = [78, 68, 58, 48, 38, 31][index]
+          return (
+            <g key={x}>
+              <line className="method-residual" x1={x} x2={x} y1={y} y2={fitY} />
+              <circle className="method-dot" cx={x} cy={y} r="3.5" />
+            </g>
+          )
+        })}
+      </svg>
+    )
+  }
+
+  if (type === 'bookkeeping') {
+    return (
+      <svg viewBox="0 0 220 120" role="img">
+        <path className="method-axis" d="M42 28 V84 M104 28 V84 M142 28 V84 M184 28 V84" />
+        <text className="method-svg-label gold" x="24" y="18">normal tracking</text>
+        <text className="method-svg-label" x="128" y="18">near fold: flag branch merge</text>
+        {[36, 56, 76].map((y, index) => (
+          <g key={y}>
+            <line className="method-match" x1="42" x2="104" y1={y} y2={y + [5, -1, -6][index]} />
+            <circle className="method-dot gold" cx="42" cy={y} r="3.6" />
+            <circle className="method-dot" cx="104" cy={y + [5, -1, -6][index]} r="3.6" />
+          </g>
+        ))}
+        <path className="method-match warn" d="M142 38 C160 42, 172 47, 184 54 M142 72 C160 68, 172 61, 184 54" />
+        <circle className="method-dot" cx="142" cy="38" r="3.5" />
+        <circle className="method-dot" cx="142" cy="72" r="3.5" />
+        <circle className="method-dot gold" cx="184" cy="54" r="4.8" />
+        <text className="method-svg-label" x="40" y="104">labels preserved</text>
+        <text className="method-svg-label gold" x="154" y="104">double root</text>
+      </svg>
+    )
+  }
+
+  if (type === 'diagnostics') {
+    return (
+      <svg viewBox="0 0 220 120" role="img">
+        <rect className="method-zone warn" x="126" y="22" width="70" height="76" rx="12" />
+        <path className="method-line" d="M26 88 C72 82, 106 72, 134 58 C154 48, 174 48, 194 58" />
+        <path className="method-line muted" d="M26 24 C74 32, 108 42, 134 56 C154 66, 174 66, 194 56" />
+        <line className="method-residual" x1="152" x2="152" y1="51" y2="64" />
+        <circle className="method-dot gold" cx="152" cy="51" r="3.5" />
+        <circle className="method-dot gold" cx="152" cy="64" r="3.5" />
+        <text className="method-svg-label" x="28" y="111">branch separation decreases</text>
+        <text className="method-svg-label gold" x="126" y="18">low-confidence warning zone</text>
+        <text className="method-svg-label" x="137" y="78">small curvature</text>
+      </svg>
+    )
+  }
+
+  if (type === 'benchmark') {
+    return (
+      <svg viewBox="0 0 220 120" role="img">
+        <text className="method-svg-label gold" x="28" y="14">small error → pass</text>
+        <path className="method-line" d="M24 38 C62 26, 88 52, 116 42 S158 30, 202 42" />
+        <path className="method-line dashed" d="M24 41 C62 28, 88 54, 116 44 S158 33, 202 45" />
+        <text className="method-svg-label" x="144" y="30">I_SP</text>
+        <text className="method-svg-label" x="144" y="54">I_full</text>
+        <text className="method-svg-label gold" x="28" y="72">large error → warning</text>
+        <path className="method-line muted" d="M24 94 C64 88, 94 72, 128 66 S172 58, 202 38" />
+        <path className="method-line muted dashed" d="M24 100 C64 108, 94 102, 128 86 S172 60, 202 58" />
+        <text className="method-svg-label" x="120" y="112">E = |I_full - I_SP|</text>
+      </svg>
+    )
+  }
+
+  return (
+    <svg viewBox="0 0 220 120" role="img">
+      <path className="method-axis" d="M18 92 H202" />
+      <path className="method-line" d="M26 84 C62 76, 76 52, 108 52 S156 38, 194 28" />
+      {[32, 62, 92, 122, 152, 184].map((x, index) => (
+        <circle className="method-dot" cx={x} cy={[82, 70, 58, 52, 40, 30][index]} r="3.5" key={x} />
+      ))}
+    </svg>
+  )
 }
 
 function StationaryPhaseDemo() {
@@ -1160,25 +1471,37 @@ function CassiniDataViewer() {
 
 function App() {
   const [activePanel, setActivePanel] = useState(() => getPanelFromHash())
+  const [activeMethodSlug, setActiveMethodSlug] = useState(() => getMethodSlugFromLocation())
   const [selectedPipelineIndex, setSelectedPipelineIndex] = useState(0)
   const [selectedMemberIndex, setSelectedMemberIndex] = useState(0)
   const [isSaturnModelOpen, setIsSaturnModelOpen] = useState(false)
   const selectedPipelineStep = pipelineSteps[selectedPipelineIndex]
   const selectedMember = teamMembers[selectedMemberIndex]
+  const selectedMethod = numericalMethodsToolkit.find((method) => getMethodSlug(method.name) === activeMethodSlug)
 
   function openPanel(panelId) {
+    setActiveMethodSlug('')
     setActivePanel(panelId)
     if (panelId === 'menu') {
-      window.history.pushState(null, '', window.location.pathname)
+      window.history.pushState(null, '', '/')
     } else {
-      window.history.pushState(null, '', `#${panelId}`)
+      window.history.pushState(null, '', `/#${panelId}`)
     }
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  function openMethod(method) {
+    const slug = getMethodSlug(method.name)
+    setActivePanel('algorithms')
+    setActiveMethodSlug(slug)
+    window.history.pushState(null, '', `/algorithms/${slug}`)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   useEffect(() => {
     function handleHashChange() {
       setActivePanel(getPanelFromHash())
+      setActiveMethodSlug(getMethodSlugFromLocation())
       window.scrollTo({ top: 0, behavior: 'smooth' })
     }
 
@@ -1387,7 +1710,14 @@ function App() {
   }
 
   function renderAlgorithms() {
-    const relatedMembers = ['Member C', 'Member A', 'Dell', 'Member B', 'Member B', 'Dell']
+    const relatedMembers = [
+      'Yutong Zhao / Dell Li',
+      'Maiya Qiu / Dell Li',
+      'Dell Li',
+      'Maiya Qiu',
+      'Dell Li',
+      'Dell Li / Team',
+    ]
     const statuses = [
       'Reference module in progress.',
       'Prototype workflow.',
@@ -1396,6 +1726,55 @@ function App() {
       'Early diagnostic design.',
       'Visualization prototype.',
     ]
+
+    if (selectedMethod) {
+      return (
+        <PanelShell>
+          <Section id="method-detail" eyebrow={selectedMethod.tag} title={selectedMethod.name}>
+            <button className="back-button inline-back-button" type="button" onClick={() => openPanel('algorithms')}>
+              ← Back to Algorithms
+            </button>
+            <div className="method-detail-page">
+              <div className="method-detail-copy">
+                <span className="method-status">{selectedMethod.status}</span>
+                <p className="method-detail-summary">{selectedMethod.does}</p>
+                <div className="method-detail-grid">
+                  <section>
+                    <h3>Why It Matters</h3>
+                    <p>{selectedMethod.matters}</p>
+                  </section>
+                  <section>
+                    <h3>Example</h3>
+                    <p>{selectedMethod.example}</p>
+                  </section>
+                  <section>
+                    <h3>How It Works</h3>
+                    <p>
+                      This method is used as a research-support module: it takes local
+                      samples, root candidates, or branch records and helps prepare a
+                      more stable reconstruction experiment without claiming a final
+                      published result.
+                    </p>
+                  </section>
+                  <section>
+                    <h3>Implementation Notes</h3>
+                    <p>
+                      Current status: {selectedMethod.status} Inputs, thresholds, and
+                      validation checks should be reviewed against the paper discussion
+                      before being treated as a finished algorithm.
+                    </p>
+                  </section>
+                </div>
+              </div>
+              <figure className="method-detail-figure">
+                <MethodIllustration type={selectedMethod.illustration} />
+                <figcaption>{selectedMethod.caption}</figcaption>
+              </figure>
+            </div>
+          </Section>
+        </PanelShell>
+      )
+    }
 
     return (
       <PanelShell>
@@ -1422,6 +1801,35 @@ function App() {
               <p><strong>Input / output:</strong> {selectedPipelineStep.io}</p>
               <p><strong>Current status:</strong> {statuses[selectedPipelineIndex]}</p>
               <p><strong>Related team member:</strong> {relatedMembers[selectedPipelineIndex]}</p>
+            </div>
+          </div>
+          <div className="method-toolkit">
+            <div className="method-toolkit-heading">
+              <span className="card-kicker">Method library</span>
+              <h3>Numerical Methods Toolkit</h3>
+              <p>
+                These methods connect the mathematical model to practical reconstruction
+                experiments: approximating phase functions, locating stationary roots,
+                tracking branches, and checking reliability.
+              </p>
+            </div>
+            <div className="method-list">
+              {numericalMethodsToolkit.map((method) => (
+                <article className="method-row" key={method.name}>
+                  <div className="method-name">
+                    <span>{method.tag}</span>
+                    <h4>{method.name}</h4>
+                  </div>
+                  <p><strong>What it does:</strong> {method.does}</p>
+                  <p><strong>Why it matters:</strong> {method.matters}</p>
+                  <div className="method-meta">
+                    <div className="method-status">{method.status}</div>
+                    <button className="method-example-button" type="button" onClick={() => openMethod(method)}>
+                      View Example
+                    </button>
+                  </div>
+                </article>
+              ))}
             </div>
           </div>
         </Section>
