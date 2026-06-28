@@ -140,12 +140,20 @@
 }
 
 .hero h1 {
-  max-width: 560px;
+  max-width: 620px;
+}
+
+.hero-subtitle {
+  max-width: 620px;
+  margin: 18px 0 0;
+  color: var(--gold);
+  font-size: clamp(1rem, 1.55vw, 1.18rem);
+  line-height: 1.55;
 }
 
 .hero-lede {
   max-width: 590px;
-  margin: 28px 0 0;
+  margin: 22px 0 0;
   color: var(--text);
   font-size: clamp(0.98rem, 1.45vw, 1.13rem);
   line-height: 1.68;
@@ -155,6 +163,12 @@
   flex-wrap: wrap;
   gap: 12px;
   margin-top: 28px;
+}
+
+.hero-actions .button {
+  border: 0;
+  font: inherit;
+  cursor: pointer;
 }
 
 .button {
@@ -209,6 +223,10 @@
 .featured-reference,
 .contribution-panel,
 .suggested-path-card,
+.worksheet-question-card,
+.impact-audience-card,
+.impact-metric-card,
+.impact-feedback-panel,
 .tool-preview,
 .data-viewer,
 .portal-menu-card,
@@ -1294,6 +1312,148 @@
   text-decoration-color: rgba(247, 213, 138, 0.75);
 }
 
+.worksheet-intro {
+  display: grid;
+  gap: 16px;
+  max-width: 760px;
+}
+
+.worksheet-subtitle {
+  margin: 0;
+  color: var(--text);
+  font-size: 1.08rem;
+  line-height: 1.75;
+}
+
+.worksheet-note {
+  margin: 0;
+  padding: 14px 18px;
+  border: 1px solid rgba(247, 213, 138, 0.22);
+  border-radius: var(--radius-md);
+  color: var(--text-muted);
+  line-height: 1.65;
+  background: rgba(247, 213, 138, 0.05);
+}
+
+.copy-worksheet-button {
+  justify-self: start;
+  min-height: 42px;
+  border: 0;
+  font: inherit;
+  font-family: var(--mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.worksheet-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 28px;
+}
+
+.worksheet-question-card {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+  padding: 22px;
+}
+
+.worksheet-question-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid rgba(247, 213, 138, 0.42);
+  border-radius: 50%;
+  color: var(--gold);
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  background: rgba(247, 213, 138, 0.08);
+}
+
+.worksheet-question-text {
+  margin: 8px 0 0;
+  color: var(--text-strong);
+  line-height: 1.65;
+}
+
+.impact-intro p {
+  margin: 0;
+  max-width: 820px;
+  color: var(--text);
+  font-size: 1.08rem;
+  line-height: 1.75;
+}
+
+.impact-section-heading h3 {
+  margin: 0 0 16px;
+  color: var(--text-strong);
+  font-size: 1.28rem;
+}
+
+.impact-audience-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.impact-audience-card {
+  padding: 24px;
+}
+
+.impact-audience-card p {
+  margin: 0;
+  color: var(--text);
+  line-height: 1.7;
+}
+
+.impact-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.impact-metric-card {
+  display: grid;
+  gap: 10px;
+  padding: 22px 18px;
+  text-align: center;
+}
+
+.impact-metric-value {
+  color: var(--gold);
+  font-family: var(--mono);
+  font-size: 1.35rem;
+  letter-spacing: 0.06em;
+}
+
+.impact-metric-label {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+.impact-feedback-panel {
+  padding: 28px;
+}
+
+.impact-feedback-panel p {
+  margin: 0 0 20px;
+  max-width: 760px;
+  color: var(--text);
+  line-height: 1.7;
+}
+
+.impact-feedback-button {
+  display: inline-flex;
+}
+
 .team-layout {
   display: grid;
   grid-template-columns: minmax(280px, 0.9fr) minmax(360px, 1.1fr);
@@ -1987,6 +2147,70 @@
   line-height: 1.7;
 }
 
+.viewer-workspace {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.82fr) minmax(0, 1.18fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.mini-investigation-card {
+  padding: 22px;
+  border: 1px solid rgba(247, 213, 138, 0.18);
+  border-radius: var(--radius-lg);
+  background:
+    linear-gradient(145deg, rgba(247, 213, 138, 0.06), rgba(255, 255, 255, 0.02)),
+    rgba(5, 8, 16, 0.42);
+}
+
+.mini-investigation-card h4 {
+  margin: 12px 0 10px;
+  color: var(--text-strong);
+  font-size: 1.18rem;
+}
+
+.mini-investigation-note {
+  margin-bottom: 18px !important;
+  color: var(--text-muted) !important;
+  font-size: 0.96rem !important;
+  line-height: 1.65 !important;
+}
+
+.mini-investigation-steps {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mini-investigation-steps li {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+  color: var(--text);
+  line-height: 1.6;
+}
+
+.mini-investigation-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid rgba(247, 213, 138, 0.35);
+  border-radius: 50%;
+  color: var(--gold);
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  background: rgba(247, 213, 138, 0.08);
+}
+
+.viewer-main {
+  min-width: 0;
+}
+
 .viewer-controls {
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
@@ -2256,6 +2480,9 @@
   .progress-grid,
   .contribution-panel,
   .suggested-path-card,
+  .worksheet-grid,
+  .impact-audience-grid,
+  .impact-metrics-grid,
   .figure-grid,
   .tool-preview {
     grid-template-columns: 1fr;
@@ -2309,6 +2536,10 @@
   .viewer-summary {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .viewer-workspace {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 640px) {
@@ -2347,6 +2578,10 @@
   .branch-demo-panel,
   .contribution-panel,
   .suggested-path-card,
+  .worksheet-question-card,
+  .impact-audience-card,
+  .impact-metric-card,
+  .impact-feedback-panel,
   .tool-preview,
   .data-viewer {
     padding: 22px;

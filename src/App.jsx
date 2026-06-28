@@ -3,6 +3,8 @@ import './App.css'
 
 const portalMenuItems = [
   { id: 'start-here', title: 'Start Here' },
+  { id: 'worksheet', title: 'Student Worksheet' },
+  { id: 'impact', title: 'Impact & Feedback' },
   { id: 'overview', title: 'Project Overview' },
   { id: 'background', title: 'Mission Background' },
   { id: 'math', title: 'Mathematical Framework' },
@@ -567,13 +569,51 @@ const startHerePathSteps = [
   {
     step: 6,
     text: 'Complete the Student Mini-Lab Worksheet.',
-    panelId: null,
+    panelId: 'worksheet',
   },
   {
     step: 7,
     text: 'Submit feedback so the learning module can be improved.',
-    panelId: 'progress',
+    panelId: 'impact',
   },
+]
+
+const studentWorksheetQuestions = [
+  'Why is radio occultation different from taking a direct photograph of Saturn’s rings?',
+  'What is the measured signal in this project, and what physical structure are we trying to infer?',
+  'What is the “forward problem” in the Saturn rings setting?',
+  'What is the “inverse problem” in the Saturn rings setting?',
+  'Why can noise or small measurement errors make reconstruction difficult?',
+  'What does a stationary point mean intuitively in an oscillatory integral?',
+  'In the toy branch diagram, when do roots split or merge?',
+  'Why does this site focus on local radial-window analysis instead of claiming a complete reconstruction?',
+  'After using the Data Viewer, choose one local radial window and describe what changes you observe in the signal.',
+  'What part of the project helped you most understand how classroom math becomes research?',
+]
+
+function buildWorksheetText() {
+  return [
+    'Student Mini-Lab Worksheet',
+    'A guided activity for students exploring radio occultation, inverse problems, and Saturn ring reconstruction.',
+    '',
+    ...studentWorksheetQuestions.map((question, index) => `${index + 1}. ${question}`),
+    '',
+    'Note: Students can use this worksheet before or after exploring the Data Viewer and Mathematical Framework pages.',
+  ].join('\n')
+}
+
+const whoThisHelps = [
+  'High school students interested in applied mathematics or scientific computing.',
+  'Students who have learned calculus, physics, or linear algebra but have not seen how those tools appear in research.',
+  'Teachers, club leaders, or peer mentors looking for a concrete STEM enrichment case study.',
+]
+
+const impactMetrics = [
+  { label: 'Students who tested the site', value: 'TBD' },
+  { label: 'Feedback responses collected', value: 'TBD' },
+  { label: 'Math/STEM club presentations', value: 'TBD' },
+  { label: 'Website visitors', value: 'TBD' },
+  { label: 'Worksheets completed', value: 'TBD' },
 ]
 
 const progressGroups = [
@@ -612,6 +652,15 @@ const progressGroups = [
 
 const cassiniDataPath = '/data/cassini_day232.csv'
 const cassiniXAxisColumn = 'ring_radius_km'
+
+const miniInvestigationSteps = [
+  'Select normal_optical_depth as the y-axis.',
+  'Choose a narrow radial window.',
+  'Look for regions where the signal changes sharply.',
+  'Record the x-range, y-min, y-max, mean, and standard deviation.',
+  'Export the local window CSV.',
+  'Explain why local windows are useful for careful reconstruction or diagnostics.',
+]
 
 function parseNumericValue(value) {
   if (value === null || value === undefined || value === '') {
@@ -1381,6 +1430,27 @@ function CassiniDataViewer() {
         </div>
       </div>
 
+      <div className="viewer-workspace">
+        <aside className="mini-investigation-card">
+          <span className="card-kicker">Guided activity</span>
+          <h4>Mini Investigation</h4>
+          <p className="mini-investigation-note">
+            This viewer does not claim a full reconstruction result. It helps students and
+            researchers inspect local data behavior before making mathematical claims.
+          </p>
+          <ol className="mini-investigation-steps">
+            {miniInvestigationSteps.map((step, index) => (
+              <li key={step}>
+                <span className="mini-investigation-number" aria-hidden="true">
+                  {index + 1}
+                </span>
+                <span>{step}</span>
+              </li>
+            ))}
+          </ol>
+        </aside>
+
+        <div className="viewer-main">
       <div className="viewer-controls">
         <div className="dataset-badge">
           <span>Dataset</span>
@@ -1504,6 +1574,8 @@ function CassiniDataViewer() {
       <p className="download-helper">
         Exports only the currently selected radial window for follow-up reconstruction or diagnostics.
       </p>
+        </div>
+      </div>
     </div>
   )
 }
@@ -1514,6 +1586,7 @@ function App() {
   const [selectedPipelineIndex, setSelectedPipelineIndex] = useState(0)
   const [selectedMemberIndex, setSelectedMemberIndex] = useState(0)
   const [isSaturnModelOpen, setIsSaturnModelOpen] = useState(false)
+  const [worksheetCopied, setWorksheetCopied] = useState(false)
   const selectedPipelineStep = pipelineSteps[selectedPipelineIndex]
   const selectedMember = teamMembers[selectedMemberIndex]
   const selectedMethod = numericalMethodsToolkit.find((method) => getMethodSlug(method.name) === activeMethodSlug)
@@ -1556,6 +1629,16 @@ function App() {
     openPanel('menu')
   }
 
+  async function copyWorksheet() {
+    try {
+      await navigator.clipboard.writeText(buildWorksheetText())
+      setWorksheetCopied(true)
+      window.setTimeout(() => setWorksheetCopied(false), 2200)
+    } catch {
+      setWorksheetCopied(false)
+    }
+  }
+
   function PanelShell({ children }) {
     return (
       <div className="portal-panel-wrap">
@@ -1572,7 +1655,28 @@ function App() {
       <section className="hero section portal-home">
         <div className="hero-copy">
           <p className="eyebrow">Research Portal</p>
-          <h1>Mathematics of Saturn Ring Occultations</h1>
+          <h1>Saturn Rings Reconstruction Lab</h1>
+          <p className="hero-subtitle">
+            An interactive case study for high school students exploring inverse problems,
+            radio occultation, and applied mathematics research.
+          </p>
+          <p className="hero-lede">
+            This website began as a research-support portal for a MIT PRIMES Math Junior project
+            and is being expanded into a public learning module. It uses Saturn’s rings as a
+            concrete example to show how indirect scientific measurements can become mathematical
+            models, numerical diagnostics, and visual explanations.
+          </p>
+          <div className="hero-actions">
+            <button className="button primary" type="button" onClick={() => openPanel('start-here')}>
+              Start Here
+            </button>
+            <button className="button secondary" type="button" onClick={() => openPanel('data')}>
+              Try the Data Viewer
+            </button>
+            <button className="button secondary" type="button" onClick={() => openPanel('math')}>
+              Explore the Math
+            </button>
+          </div>
         </div>
         <HeroImageCard onOpenModel={() => setIsSaturnModelOpen(true)} />
         <div className="portal-menu" aria-label="Research portal main menu">
@@ -1583,6 +1687,101 @@ function App() {
           ))}
         </div>
       </section>
+    )
+  }
+
+  function renderImpactFeedback() {
+    return (
+      <PanelShell>
+        <Section id="impact" eyebrow="Public Learning Module" title="Impact & Feedback">
+          <div className="impact-intro">
+            <p>
+              This site is being developed as a public learning module for high school students
+              interested in applied mathematics, inverse problems, scientific computing, and
+              research. The project uses Saturn ring radio occultation as a concrete case study to
+              help students see how real research moves from physical observation to mathematical
+              modeling, numerical diagnostics, and visualization.
+            </p>
+          </div>
+
+          <div className="impact-section portal-spaced">
+            <div className="impact-section-heading">
+              <h3>Who this helps</h3>
+            </div>
+            <div className="impact-audience-grid">
+              {whoThisHelps.map((item) => (
+                <article className="impact-audience-card" key={item}>
+                  <p>{item}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+
+          <div className="impact-section portal-spaced">
+            <div className="impact-section-heading">
+              <h3>Impact Metrics</h3>
+            </div>
+            <div className="impact-metrics-grid">
+              {impactMetrics.map((metric) => (
+                <article className="impact-metric-card" key={metric.label}>
+                  <span className="impact-metric-value">{metric.value}</span>
+                  <p className="impact-metric-label">{metric.label}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+
+          <div className="impact-feedback-panel portal-spaced">
+            <div className="impact-section-heading">
+              <h3>Feedback Survey</h3>
+            </div>
+            <p>
+              A feedback form will be added here for students to report what became clearer, what
+              remained confusing, and whether the site increased their interest in applied
+              mathematics or scientific computing.
+            </p>
+            <a className="button primary impact-feedback-button" href="#">
+              Open Feedback Form
+            </a>
+          </div>
+        </Section>
+      </PanelShell>
+    )
+  }
+
+  function renderStudentWorksheet() {
+    return (
+      <PanelShell>
+        <Section id="worksheet" eyebrow="Learning Activity" title="Student Mini-Lab Worksheet">
+          <div className="worksheet-intro">
+            <p className="worksheet-subtitle">
+              A guided activity for students exploring radio occultation, inverse problems, and
+              Saturn ring reconstruction.
+            </p>
+            <p className="worksheet-note">
+              Students can use this worksheet before or after exploring the Data Viewer and
+              Mathematical Framework pages.
+            </p>
+            <button
+              className="button secondary copy-worksheet-button"
+              type="button"
+              onClick={copyWorksheet}
+            >
+              {worksheetCopied ? 'Copied!' : 'Copy Worksheet'}
+            </button>
+          </div>
+          <div className="worksheet-grid">
+            {studentWorksheetQuestions.map((question, index) => (
+              <article className="worksheet-question-card" key={question}>
+                <span className="worksheet-question-number" aria-hidden="true">
+                  {index + 1}
+                </span>
+                <p className="worksheet-question-text">{question}</p>
+              </article>
+            ))}
+          </div>
+        </Section>
+      </PanelShell>
     )
   }
 
@@ -2014,6 +2213,8 @@ function App() {
   function renderActivePanel() {
     if (activePanel === 'menu') return renderMenu()
     if (activePanel === 'start-here') return renderStartHere()
+    if (activePanel === 'worksheet') return renderStudentWorksheet()
+    if (activePanel === 'impact') return renderImpactFeedback()
     if (activePanel === 'overview') return renderOverview()
     if (activePanel === 'background') return renderBackground()
     if (activePanel === 'math') return renderMath()
