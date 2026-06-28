@@ -208,6 +208,7 @@
 .gallery-card,
 .featured-reference,
 .contribution-panel,
+.suggested-path-card,
 .tool-preview,
 .data-viewer,
 .portal-menu-card,
@@ -804,6 +805,7 @@
 .figure-card h3,
 .gallery-card h3,
 .contribution-panel h3,
+.suggested-path-card h3,
 .tool-preview h3 {
   margin: 12px 0 10px;
   color: var(--text-strong);
@@ -817,6 +819,7 @@
 .gallery-intro,
 .gallery-card p,
 .contribution-panel p,
+.suggested-path-card p,
 .tool-preview p,
 .site-footer p {
   margin: 0;
@@ -1206,6 +1209,89 @@
   border: 1px solid var(--gold);
   border-radius: 50%;
   background: rgba(247, 213, 138, 0.12);
+}
+
+.start-here-intro p {
+  margin: 0;
+  color: var(--text);
+  line-height: 1.75;
+}
+
+.suggested-path-card {
+  display: grid;
+  grid-template-columns: minmax(240px, 0.85fr) minmax(0, 1.15fr);
+  gap: 36px;
+  padding: 34px;
+}
+
+.suggested-path-card h3 {
+  margin: 0 0 12px;
+  color: var(--text-strong);
+  font-size: 1.28rem;
+}
+
+.suggested-path-card p {
+  margin: 0;
+  color: var(--text-muted);
+  line-height: 1.65;
+}
+
+.suggested-path-list {
+  display: grid;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: path-step;
+}
+
+.suggested-path-step {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
+}
+
+.suggested-path-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid rgba(247, 213, 138, 0.42);
+  border-radius: 50%;
+  color: var(--gold);
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  background: rgba(247, 213, 138, 0.08);
+}
+
+.suggested-path-link,
+.suggested-path-text {
+  margin: 0;
+  padding: 6px 0 0;
+  color: var(--text);
+  line-height: 1.65;
+  text-align: left;
+}
+
+.suggested-path-link {
+  border: 0;
+  background: transparent;
+  font: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: rgba(247, 213, 138, 0.35);
+  text-underline-offset: 0.18em;
+  transition:
+    color 180ms ease,
+    text-decoration-color 180ms ease;
+}
+
+.suggested-path-link:hover,
+.suggested-path-link:focus-visible {
+  color: var(--gold);
+  text-decoration-color: rgba(247, 213, 138, 0.75);
 }
 
 .team-layout {
@@ -2169,6 +2255,7 @@
   .team-layout,
   .progress-grid,
   .contribution-panel,
+  .suggested-path-card,
   .figure-grid,
   .tool-preview {
     grid-template-columns: 1fr;
@@ -2259,6 +2346,7 @@
   .figure-card,
   .branch-demo-panel,
   .contribution-panel,
+  .suggested-path-card,
   .tool-preview,
   .data-viewer {
     padding: 22px;

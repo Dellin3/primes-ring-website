@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import './App.css'
 
 const portalMenuItems = [
+  { id: 'start-here', title: 'Start Here' },
   { id: 'overview', title: 'Project Overview' },
   { id: 'background', title: 'Mission Background' },
   { id: 'math', title: 'Mathematical Framework' },
@@ -534,6 +535,44 @@ const teamMembers = [
     ],
     module: 'Branch record dashboard, confidence calculator, real-data viewer, and research portal.',
     status: 'Active development.',
+  },
+]
+
+const startHerePathSteps = [
+  {
+    step: 1,
+    text: 'Read the Mission Background to understand radio occultation.',
+    panelId: 'background',
+  },
+  {
+    step: 2,
+    text: 'Learn why the project is an inverse problem.',
+    panelId: 'background',
+  },
+  {
+    step: 3,
+    text: 'Explore the Mathematical Framework.',
+    panelId: 'math',
+  },
+  {
+    step: 4,
+    text: 'Try the Toy Branch Diagram.',
+    panelId: 'math',
+  },
+  {
+    step: 5,
+    text: 'Inspect a local Cassini data window in the Data Viewer.',
+    panelId: 'data',
+  },
+  {
+    step: 6,
+    text: 'Complete the Student Mini-Lab Worksheet.',
+    panelId: null,
+  },
+  {
+    step: 7,
+    text: 'Submit feedback so the learning module can be improved.',
+    panelId: 'progress',
   },
 ]
 
@@ -1547,6 +1586,59 @@ function App() {
     )
   }
 
+  function renderStartHere() {
+    return (
+      <PanelShell>
+        <Section id="start-here" eyebrow="Welcome / Start Here" title="Start Here: An Applied Math Research Case Study">
+          <div className="start-here-intro two-column">
+            <p>
+              This site is designed for high school students who are curious about applied
+              mathematics, scientific computing, and research. Using Saturn’s rings as a
+              concrete case study, it shows how a real scientific problem can move from
+              physical observation to mathematical modeling, numerical analysis, and
+              visualization.
+            </p>
+            <p>
+              The goal is not only to present a MIT PRIMES Math Junior project, but to make
+              research-level ideas such as radio occultation, inverse problems, stationary
+              phase, and local data analysis more accessible to students who have mostly
+              seen math through classroom exercises or competitions.
+            </p>
+          </div>
+          <div className="suggested-path-card portal-spaced">
+            <div>
+              <h3>Suggested Path</h3>
+              <p>
+                Work through these steps in order to move from mission context to hands-on
+                exploration and reflection.
+              </p>
+            </div>
+            <ol className="suggested-path-list">
+              {startHerePathSteps.map((item) => (
+                <li key={item.step} className="suggested-path-step">
+                  <span className="suggested-path-number" aria-hidden="true">
+                    {item.step}
+                  </span>
+                  {item.panelId ? (
+                    <button
+                      type="button"
+                      className="suggested-path-link"
+                      onClick={() => openPanel(item.panelId)}
+                    >
+                      {item.text}
+                    </button>
+                  ) : (
+                    <span className="suggested-path-text">{item.text}</span>
+                  )}
+                </li>
+              ))}
+            </ol>
+          </div>
+        </Section>
+      </PanelShell>
+    )
+  }
+
   function renderOverview() {
     return (
       <PanelShell>
@@ -1921,6 +2013,7 @@ function App() {
 
   function renderActivePanel() {
     if (activePanel === 'menu') return renderMenu()
+    if (activePanel === 'start-here') return renderStartHere()
     if (activePanel === 'overview') return renderOverview()
     if (activePanel === 'background') return renderBackground()
     if (activePanel === 'math') return renderMath()
