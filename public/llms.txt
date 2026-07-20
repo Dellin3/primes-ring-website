@@ -1,0 +1,13 @@
+# Saturn Rings Reconstruction Lab
+
+An educational research website exploring Saturn ring reconstruction through public Cassini RSS radio-occultation data, optical-depth visualization, inverse problems, applied mathematics, and guided student research tools.
+
+Main pages:
+- Homepage: https://primes-ring-website-p9yv.vercel.app/
+- Data Viewer: https://primes-ring-website-p9yv.vercel.app/viewer
+- Mathematics: https://primes-ring-website-p9yv.vercel.app/math
+- Research Guide: https://primes-ring-website-p9yv.vercel.app/research-guide
+- Data Hub: https://primes-ring-website-p9yv.vercel.app/data-hub
+
+Data sources:
+Public NASA Planetary Data System Cassini RSS ring-occultation products.

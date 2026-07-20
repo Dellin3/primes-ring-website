@@ -1,6 +1,118 @@
-import { useEffect, useMemo, useState } from 'react'
+import { lazy, Suspense, useEffect, useMemo, useState } from 'react'
+import { Helmet } from 'react-helmet-async'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import './App.css'
-import SaturnModel from './components/SaturnModel.jsx'
+
+const SaturnModel = lazy(() => import('./components/SaturnModel.jsx'))
+
+const SITE_URL = 'https://primes-ring-website-p9yv.vercel.app'
+const SOCIAL_IMAGE_URL = `${SITE_URL}/images/saturn-rings-hero.jpg`
+
+const PANEL_ROUTES = {
+  menu: '/',
+  'start-here': '/start-here',
+  'how-to-start-research': '/research-guide',
+  'data-hub': '/data-hub',
+  math: '/math',
+  data: '/viewer',
+  worksheet: '/worksheet',
+  impact: '/impact',
+  overview: '/overview',
+  background: '/background',
+  team: '/team',
+  algorithms: '/algorithms',
+  gallery: '/gallery',
+  progress: '/progress',
+}
+
+const ROUTE_PANELS = Object.fromEntries(
+  Object.entries(PANEL_ROUTES).map(([panel, path]) => [path, panel]),
+)
+
+const RELATED_PAGES = {
+  'start-here': { to: '/background', label: 'Next step: Mission Background' },
+  'how-to-start-research': { to: '/data-hub', label: 'Next step: Explore the Data Hub' },
+  'data-hub': { to: '/viewer', label: 'Next step: Open the Data Viewer' },
+  math: { to: '/viewer', label: 'Related tool: Cassini Data Viewer' },
+  data: { to: '/worksheet', label: 'Next step: Student Worksheet' },
+  worksheet: { to: '/math', label: 'Related page: Mathematical Framework' },
+  impact: { to: '/start-here', label: 'Next step: Start the Learning Path' },
+  overview: { to: '/background', label: 'Next step: Mission Background' },
+  background: { to: '/data-hub', label: 'Next step: Cassini Data Hub' },
+  team: { to: '/algorithms', label: 'Related page: Algorithm Modules' },
+  algorithms: { to: '/math', label: 'Related page: Mathematical Framework' },
+  gallery: { to: '/background', label: 'Related page: Mission Background' },
+  progress: { to: '/impact', label: 'Related page: Educational Goals' },
+}
+
+const DEFAULT_DESCRIPTION =
+  'Explore real Cassini RSS Saturn-ring occultation data, applied mathematics, optical-depth profiles, branch diagrams, interactive tools, and a guided student research pathway.'
+
+const ROUTE_SEO = {
+  '/': {
+    title: 'Saturn Rings Reconstruction Lab | Cassini Data and Applied Mathematics',
+    description: DEFAULT_DESCRIPTION,
+  },
+  '/start-here': {
+    title: 'Start Here | Saturn Rings Reconstruction Lab',
+    description:
+      'Begin a guided student pathway through Cassini radio occultation, Saturn ring data, inverse problems, and applied mathematics.',
+  },
+  '/research-guide': {
+    title: 'How to Start Research | Saturn Rings Reconstruction Lab',
+    description:
+      'Learn how to turn scientific curiosity into a research question, find reliable sources, and verify an AI-assisted literature workflow.',
+  },
+  '/data-hub': {
+    title: 'Cassini Saturn Ring Data Hub | NASA PDS Resources',
+    description:
+      'Find public NASA Planetary Data System resources for Cassini Saturn-ring occultations and connect official archives to educational data samples.',
+  },
+  '/math': {
+    title: 'Saturn Ring Reconstruction Mathematics | Stationary Phase and Branches',
+    description:
+      'Explore inverse problems, stationary phase, caustic regions, root finding, and branch structure in Saturn-ring reconstruction mathematics.',
+  },
+  '/viewer': {
+    title: 'Cassini RSS Data Viewer | Saturn Ring Optical-Depth Profiles',
+    description:
+      'Interactively explore public Cassini RSS radio-occultation profiles, compare local radial windows, inspect optical-depth statistics and residuals, and export selected data.',
+  },
+  '/worksheet': {
+    title: 'Student Saturn Rings Research Worksheet',
+    description:
+      'Use a guided student worksheet to observe, measure, interpret, and model public Cassini Saturn-ring radio-occultation data.',
+  },
+  '/impact': {
+    title: 'Project Overview and Educational Goals | Saturn Rings Lab',
+    description:
+      'Review the educational goals, intended student audience, and public-learning purpose of the Saturn Rings Reconstruction Lab.',
+  },
+  '/overview': {
+    title: 'Saturn Rings Lab Project Overview',
+    description: 'Read an overview of this educational Saturn-ring reconstruction research portal.',
+  },
+  '/background': {
+    title: 'Cassini Radio Occultation Mission Background | Saturn Rings Lab',
+    description: 'Learn how Cassini radio occultation measurements reveal structure in Saturn’s rings.',
+  },
+  '/team': {
+    title: 'Project Team | Saturn Rings Reconstruction Lab',
+    description: 'Explore the project roles and mathematical research topics represented in the lab.',
+  },
+  '/algorithms': {
+    title: 'Reconstruction Algorithm Modules | Saturn Rings Lab',
+    description: 'Explore numerical methods and algorithm modules used in Saturn-ring reconstruction experiments.',
+  },
+  '/gallery': {
+    title: 'Saturn Rings Visual Gallery | Cassini Mission Context',
+    description: 'View credited Cassini mission imagery and educational diagrams used throughout the lab.',
+  },
+  '/progress': {
+    title: 'Project Progress | Saturn Rings Reconstruction Lab',
+    description: 'Review completed work and next steps for the educational Saturn rings research lab.',
+  },
+}
 
 const FIGURE_SOURCES = {
   cassiniImagery:
@@ -14,22 +126,6 @@ const FIGURE_SOURCES = {
 
 const VIEWER_EDUCATIONAL_NOTE =
   'CSV files used on this site are educational local copies derived from public Cassini RSS occultation products. Unpublished PRIMES project data is not displayed.'
-
-const portalMenuItems = [
-  { id: 'start-here', title: 'Start Here' },
-  { id: 'how-to-start-research', title: 'How to Start Research' },
-  { id: 'data-hub', title: 'Data Hub' },
-  { id: 'worksheet', title: 'Student Worksheet' },
-  { id: 'impact', title: 'Impact & Feedback' },
-  { id: 'overview', title: 'Project Overview' },
-  { id: 'background', title: 'Mission Background' },
-  { id: 'math', title: 'Mathematical Framework' },
-  { id: 'team', title: 'Team Members' },
-  { id: 'algorithms', title: 'Algorithm Modules' },
-  { id: 'gallery', title: 'Visual Gallery' },
-  { id: 'data', title: 'Real Data Viewer' },
-  { id: 'progress', title: 'Progress & Next Steps' },
-]
 
 const homeModuleCards = [
   {
@@ -224,28 +320,6 @@ const compactNavItems = [
   { id: 'worksheet', title: 'Worksheet' },
   { id: 'impact', title: 'Impact' },
 ]
-
-function getPanelFromHash() {
-  if (getMethodSlugFromLocation()) {
-    return 'algorithms'
-  }
-
-  const hash = window.location.hash.replace('#', '')
-  if (hash === 'ai-workflow') {
-    return 'how-to-start-research'
-  }
-  return portalMenuItems.some((item) => item.id === hash) ? hash : 'menu'
-}
-
-function getMethodSlugFromLocation() {
-  const pathMatch = window.location.pathname.match(/^\/algorithms\/([^/]+)/)
-  if (pathMatch) {
-    return pathMatch[1]
-  }
-
-  const hash = window.location.hash.replace('#', '')
-  return hash.startsWith('algorithms/') ? hash.split('/')[1] : ''
-}
 
 function getMethodSlug(methodName) {
   return methodName
@@ -1458,28 +1532,30 @@ function rowsToCsv(rows) {
   return [headers.join(','), ...rows.map((row) => headers.map((header) => escapeCsvValue(row[header])).join(','))].join('\n')
 }
 
-function NavBar({ onSelect }) {
+function NavBar() {
   return (
     <header className="site-header">
-      <button className="brand" type="button" onClick={() => onSelect('menu')} aria-label="Go to main menu">
+      <Link className="brand" to="/" aria-label="Go to main menu">
         <span className="brand-mark" aria-hidden="true">
           SR
         </span>
         <span className="brand-copy">
           <strong>Saturn Rings Reconstruction Lab</strong>
         </span>
-      </button>
+      </Link>
       <nav aria-label="Main navigation">
         {compactNavItems.map((item) => (
-          <button key={item.id} type="button" onClick={() => onSelect(item.id)}>
+          <Link key={item.id} to={PANEL_ROUTES[item.id]}>
             {item.title}
-          </button>
+          </Link>
         ))}
       </nav>
     </header>
   )
 }
 
+// Retained for future diagram variants used by this learning module.
+// eslint-disable-next-line no-unused-vars
 function SchematicDataViewerFigure({ compact = false }) {
   return (
     <svg
@@ -1580,6 +1656,8 @@ function SchematicPathwayFigure() {
   )
 }
 
+// Retained for future diagram variants used by this learning module.
+// eslint-disable-next-line no-unused-vars
 function SchematicBranchFigure({ compact = false }) {
   return (
     <svg
@@ -1752,7 +1830,9 @@ function SaturnModelModal({ onClose }) {
           </button>
         </div>
         <div className="saturn-stage">
-          <SaturnModel />
+          <Suspense fallback={<p>Loading interactive Saturn model…</p>}>
+            <SaturnModel />
+          </Suspense>
         </div>
       </div>
     </div>
@@ -1764,7 +1844,7 @@ function Section({ id, eyebrow, title, children, className = '', tone = '' }) {
     <section id={id} className={`section ${tone ? `panel-tone-${tone}` : ''} ${className}`.trim()}>
       <div className="section-heading">
         <p className="eyebrow">{eyebrow}</p>
-        <h2>{title}</h2>
+        <h1>{title}</h1>
       </div>
       {children}
     </section>
@@ -2905,53 +2985,54 @@ function CassiniDataViewer() {
 }
 
 function App() {
-  const [activePanel, setActivePanel] = useState(() => getPanelFromHash())
-  const [activeMethodSlug, setActiveMethodSlug] = useState(() => getMethodSlugFromLocation())
+  const location = useLocation()
+  const navigate = useNavigate()
+  const normalizedPath =
+    location.pathname.length > 1 ? location.pathname.replace(/\/+$/, '') : location.pathname
+  const methodPathMatch = normalizedPath.match(/^\/algorithms\/([^/]+)$/)
+  const activeMethodSlug = methodPathMatch ? decodeURIComponent(methodPathMatch[1]) : ''
+  const activePanel = methodPathMatch ? 'algorithms' : ROUTE_PANELS[normalizedPath]
   const [selectedPipelineIndex, setSelectedPipelineIndex] = useState(0)
   const [selectedMemberIndex, setSelectedMemberIndex] = useState(0)
-  const [isSaturnModelOpen, setIsSaturnModelOpen] = useState(false)
+  const [saturnModelPath, setSaturnModelPath] = useState('')
+  const isSaturnModelOpen = saturnModelPath === normalizedPath
   const [worksheetCopied, setWorksheetCopied] = useState(false)
   const selectedPipelineStep = pipelineSteps[selectedPipelineIndex]
   const selectedMember = teamMembers[selectedMemberIndex]
   const selectedMethod = numericalMethodsToolkit.find((method) => getMethodSlug(method.name) === activeMethodSlug)
-
-  function openPanel(panelId) {
-    setActiveMethodSlug('')
-    setActivePanel(panelId)
-    if (panelId === 'menu') {
-      window.history.pushState(null, '', '/')
-    } else {
-      window.history.pushState(null, '', `/#${panelId}`)
-    }
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  }
-
-  function openMethod(method) {
-    const slug = getMethodSlug(method.name)
-    setActivePanel('algorithms')
-    setActiveMethodSlug(slug)
-    window.history.pushState(null, '', `/algorithms/${slug}`)
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+  const baseSeo = ROUTE_SEO[methodPathMatch ? '/algorithms' : normalizedPath] || ROUTE_SEO['/']
+  const seo = selectedMethod
+    ? {
+        title: `${selectedMethod.name} | Saturn Rings Reconstruction Lab`,
+        description: `${selectedMethod.does} Explore this numerical method in the Saturn Rings Reconstruction Lab.`,
+      }
+    : baseSeo
+  const canonicalPath = activePanel ? normalizedPath : '/'
+  const canonicalUrl = `${SITE_URL}${canonicalPath}`
+  const learningResourceStructuredData = {
+    '@context': 'https://schema.org',
+    '@type': 'LearningResource',
+    name: 'Saturn Rings Reconstruction Lab',
+    url: `${SITE_URL}/`,
+    description: DEFAULT_DESCRIPTION,
+    educationalUse: 'Instruction and independent study',
+    learningResourceType: 'Interactive research lab',
+    about: [
+      'Saturn rings',
+      'Cassini radio occultation',
+      'Inverse problems',
+      'Applied mathematics',
+    ],
   }
 
   useEffect(() => {
-    function handleHashChange() {
-      setActivePanel(getPanelFromHash())
-      setActiveMethodSlug(getMethodSlugFromLocation())
-      window.scrollTo({ top: 0, behavior: 'smooth' })
+    if (!activePanel) {
+      navigate('/', { replace: true })
+      return
     }
 
-    window.addEventListener('hashchange', handleHashChange)
-    window.addEventListener('popstate', handleHashChange)
-    return () => {
-      window.removeEventListener('hashchange', handleHashChange)
-      window.removeEventListener('popstate', handleHashChange)
-    }
-  }, [])
-
-  function goBackToMenu() {
-    openPanel('menu')
-  }
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [activePanel, navigate, normalizedPath])
 
   async function copyWorksheet() {
     try {
@@ -2964,12 +3045,19 @@ function App() {
   }
 
   function PanelShell({ children }) {
+    const relatedPage = RELATED_PAGES[activePanel]
+
     return (
       <div className="portal-panel-wrap">
-        <button className="back-button" type="button" onClick={goBackToMenu}>
+        <Link className="back-button" to="/">
           ← Back to Main Menu
-        </button>
+        </Link>
         {children}
+        {relatedPage && (
+          <nav className="related-page-nav" aria-label="Related page">
+            <Link to={relatedPage.to}>{relatedPage.label} →</Link>
+          </nav>
+        )}
       </div>
     )
   }
@@ -2991,18 +3079,18 @@ function App() {
               and a short student worksheet.
             </p>
             <div className="hero-actions">
-              <button className="button primary" type="button" onClick={() => openPanel('start-here')}>
+              <Link className="button primary" to="/start-here">
                 Start Here
-              </button>
-              <button className="button secondary" type="button" onClick={() => openPanel('data')}>
+              </Link>
+              <Link className="button secondary" to="/viewer">
                 Explore the Data
-              </button>
-              <button className="button secondary" type="button" onClick={() => openPanel('worksheet')}>
+              </Link>
+              <Link className="button secondary" to="/worksheet">
                 Use the Worksheet
-              </button>
+              </Link>
             </div>
           </div>
-          <HeroImageCard onOpenModel={() => setIsSaturnModelOpen(true)} />
+          <HeroImageCard onOpenModel={() => setSaturnModelPath(normalizedPath)} />
         </section>
 
         <section className="section home-value-section tone-why" aria-label="Why this site">
@@ -3014,6 +3102,12 @@ function App() {
                 Built from a MIT PRIMES Math Junior project, the site is a reusable learning template:
                 students move from curiosity and mission background, to public data and local plots,
                 then to modeling questions they can write about and revise.
+              </p>
+              <p>
+                The lab connects Saturn’s rings and Cassini mission radio-occultation data with the
+                NASA Planetary Data System, optical-depth profiles, inverse problems, applied
+                mathematics, and stationary-phase ideas. Interactive student research tools make
+                those concepts visible without replacing the official scientific archives.
               </p>
             </div>
             <aside className="home-value-aside" aria-label="Homepage learning path">
@@ -3080,13 +3174,12 @@ function App() {
                 <div className="home-tool-copy">
                   <h3>{card.title}</h3>
                   <p>{card.text}</p>
-                  <button
+                  <Link
                     className="home-tool-link"
-                    type="button"
-                    onClick={() => openPanel(card.panelId)}
+                    to={PANEL_ROUTES[card.panelId]}
                   >
                     Open tool
-                  </button>
+                  </Link>
                 </div>
               </article>
             ))}
@@ -3158,30 +3251,28 @@ function App() {
           </div>
           <div className="home-module-grid">
             {homeModuleCards.map((item) => (
-              <button
+              <Link
                 className={`home-module-card tone-${item.category}`}
-                type="button"
                 key={item.id}
-                onClick={() => openPanel(item.id)}
+                to={PANEL_ROUTES[item.id]}
               >
                 <span className="home-module-label">{item.categoryLabel}</span>
                 <strong>{item.title}</strong>
                 <span>{item.description}</span>
-              </button>
+              </Link>
             ))}
           </div>
           <div className="home-secondary-links">
             <span className="home-secondary-label">Additional research pages</span>
             <div className="home-secondary-link-row">
               {secondaryModuleLinks.map((item) => (
-                <button
+                <Link
                   key={item.id}
                   className="home-secondary-link"
-                  type="button"
-                  onClick={() => openPanel(item.id)}
+                  to={PANEL_ROUTES[item.id]}
                 >
                   {item.title}
-                </button>
+                </Link>
               ))}
             </div>
           </div>
@@ -3205,6 +3296,20 @@ function App() {
               </article>
             ))}
           </div>
+        </section>
+
+        <section className="section home-credits-section" aria-labelledby="sources-credits-title">
+          <div className="section-heading">
+            <p className="eyebrow eyebrow-navy">Sources &amp; Credits</p>
+            <h2 id="sources-credits-title">Public data and educational use</h2>
+          </div>
+          <p>
+            Cassini Radio Science Subsystem (RSS) data shown here are educational local copies
+            derived from public NASA Planetary Data System products. This is an educational
+            research website; unpublished PRIMES data are not displayed. Website-generated
+            schematics and diagrams are labeled as author-generated or AI-assisted educational
+            graphics, while NASA and JPL imagery retains its source credit.
+          </p>
         </section>
       </div>
     )
@@ -3260,9 +3365,9 @@ function App() {
               remained confusing, and whether the site increased their interest in applied
               mathematics or scientific computing.
             </p>
-            <a className="button primary impact-feedback-button" href="#">
+            <button className="button primary impact-feedback-button" type="button" disabled>
               Open Feedback Form
-            </a>
+            </button>
           </div>
         </Section>
       </PanelShell>
@@ -3560,13 +3665,12 @@ function App() {
                     <h4>{item.title}</h4>
                     <p>{item.description}</p>
                     {item.panelId && (
-                      <button
-                        type="button"
+                      <Link
                         className="start-here-path-link"
-                        onClick={() => openPanel(item.panelId)}
+                        to={PANEL_ROUTES[item.panelId]}
                       >
                         Open this step
-                      </button>
+                      </Link>
                     )}
                   </div>
                 </li>
@@ -3583,15 +3687,15 @@ function App() {
               </p>
             </div>
             <div className="start-here-cta-actions">
-              <button className="button secondary" type="button" onClick={() => openPanel('background')}>
+              <Link className="button secondary" to="/background">
                 Mission Background
-              </button>
-              <button className="button secondary" type="button" onClick={() => openPanel('data')}>
+              </Link>
+              <Link className="button secondary" to="/viewer">
                 Data Viewer
-              </button>
-              <button className="button primary" type="button" onClick={() => openPanel('worksheet')}>
+              </Link>
+              <Link className="button primary" to="/worksheet">
                 Student Worksheet
-              </button>
+              </Link>
             </div>
           </div>
         </Section>
@@ -3730,9 +3834,9 @@ function App() {
                 reconstruction experiments.
               </li>
             </ul>
-            <button className="button secondary" type="button" onClick={() => openPanel('data')}>
+            <Link className="button secondary" to="/viewer">
               Open Data Viewer
-            </button>
+            </Link>
           </div>
 
           <div className="math-grid">
@@ -3858,9 +3962,9 @@ function App() {
       return (
         <PanelShell>
           <Section id="method-detail" eyebrow={selectedMethod.tag} title={selectedMethod.name}>
-            <button className="back-button inline-back-button" type="button" onClick={() => openPanel('algorithms')}>
+            <Link className="back-button inline-back-button" to="/algorithms">
               ← Back to Algorithms
-            </button>
+            </Link>
             <div className="method-detail-page">
               <div className="method-detail-copy">
                 <span className="method-status">{selectedMethod.status}</span>
@@ -3951,9 +4055,9 @@ function App() {
                   <p><strong>Why it matters:</strong> {method.matters}</p>
                   <div className="method-meta">
                     <div className="method-status">{method.status}</div>
-                    <button className="method-example-button" type="button" onClick={() => openMethod(method)}>
+                    <Link className="method-example-button" to={`/algorithms/${getMethodSlug(method.name)}`}>
                       View Example
-                    </button>
+                    </Link>
                   </div>
                 </article>
               ))}
@@ -4021,14 +4125,14 @@ function App() {
       <div className="portal-panel-wrap data-viewer-page">
         <div className="data-viewer-section">
           <div className="data-viewer-shell">
-            <button className="back-button data-viewer-back" type="button" onClick={goBackToMenu}>
+            <Link className="back-button data-viewer-back" to="/">
               ← Back to Main Menu
-            </button>
+            </Link>
 
             <header className="data-viewer-page-header">
               <div>
                 <p className="eyebrow">07 / Real Data Viewer</p>
-                <h2>Cassini Data Viewer</h2>
+                <h1>Cassini Data Viewer</h1>
                 <p className="data-viewer-page-lede">
                   Load Cassini RSS occultation samples (Rev007E, Rev010E, Rev054CE, Rev089CE,
                   Rev133E), inspect local radial windows of normal optical depth, review
@@ -4040,6 +4144,9 @@ function App() {
             </header>
 
             <CassiniDataViewer />
+            <nav className="related-page-nav data-viewer-related-nav" aria-label="Related page">
+              <Link to={RELATED_PAGES.data.to}>{RELATED_PAGES.data.label} →</Link>
+            </nav>
           </div>
           <footer className="data-viewer-footer">
             <p>
@@ -4093,9 +4200,27 @@ function App() {
 
   return (
     <div className="app-shell" id="top">
-      <NavBar onSelect={openPanel} />
+      <Helmet>
+        <title>{seo.title}</title>
+        <meta name="description" content={seo.description} />
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href={canonicalUrl} />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Saturn Rings Reconstruction Lab" />
+        <meta property="og:title" content={seo.title} />
+        <meta property="og:description" content={seo.description} />
+        <meta property="og:image" content={SOCIAL_IMAGE_URL} />
+        <meta property="og:image:alt" content="Saturn and its rings" />
+        <meta property="og:url" content={canonicalUrl} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={seo.title} />
+        <meta name="twitter:description" content={seo.description} />
+        <meta name="twitter:image" content={SOCIAL_IMAGE_URL} />
+        <script type="application/ld+json">{JSON.stringify(learningResourceStructuredData)}</script>
+      </Helmet>
+      <NavBar />
       <main>{renderActivePanel()}</main>
-      {isSaturnModelOpen && <SaturnModelModal onClose={() => setIsSaturnModelOpen(false)} />}
+      {isSaturnModelOpen && <SaturnModelModal onClose={() => setSaturnModelPath('')} />}
       {activePanel !== 'menu' && activePanel !== 'data' && (
         <footer className="site-footer">
           <p>

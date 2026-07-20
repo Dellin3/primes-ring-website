@@ -1,0 +1,18 @@
+{
+  "rewrites": [
+    { "source": "/start-here", "destination": "/index.html" },
+    { "source": "/research-guide", "destination": "/index.html" },
+    { "source": "/data-hub", "destination": "/index.html" },
+    { "source": "/math", "destination": "/index.html" },
+    { "source": "/viewer", "destination": "/index.html" },
+    { "source": "/worksheet", "destination": "/index.html" },
+    { "source": "/impact", "destination": "/index.html" },
+    { "source": "/overview", "destination": "/index.html" },
+    { "source": "/background", "destination": "/index.html" },
+    { "source": "/team", "destination": "/index.html" },
+    { "source": "/algorithms", "destination": "/index.html" },
+    { "source": "/algorithms/:slug", "destination": "/index.html" },
+    { "source": "/gallery", "destination": "/index.html" },
+    { "source": "/progress", "destination": "/index.html" }
+  ]
+}

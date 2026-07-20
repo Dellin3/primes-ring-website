@@ -78,7 +78,7 @@
   max-width: min(720px, 58vw);
 }
 
-.site-header nav button {
+.site-header nav a {
   padding: 6px 8px;
   border: 0;
   border-radius: 0;
@@ -91,8 +91,8 @@
   transition: color 160ms ease;
 }
 
-.site-header nav button:hover,
-.site-header nav button:focus-visible {
+.site-header nav a:hover,
+.site-header nav a:focus-visible {
   color: var(--blue);
   background: transparent;
   text-decoration: underline;
@@ -148,6 +148,7 @@
 
 .hero h1,
 .home-hero h1,
+.section h1,
 .section h2 {
   margin: 0;
   color: var(--navy);
@@ -307,6 +308,27 @@
 .back-button:focus-visible {
   border-color: var(--blue);
   color: var(--text-strong);
+}
+
+.related-page-nav {
+  width: min(1120px, calc(100% - 40px));
+  margin: 0 auto 64px;
+}
+
+.related-page-nav a {
+  display: inline-flex;
+  color: var(--blue);
+  font-weight: 700;
+  text-underline-offset: 0.2em;
+}
+
+.data-viewer-related-nav {
+  width: 100%;
+  margin: 24px 0 0;
+}
+
+.data-viewer-related-nav a {
+  color: var(--dv-gold);
 }
 
 .home-academic {
@@ -3805,7 +3827,7 @@
   color: var(--dv-gold);
 }
 
-.data-viewer-page-header h2 {
+.data-viewer-page-header h1 {
   margin: 0;
   color: var(--dv-text);
   font-family: var(--heading);
@@ -4635,7 +4657,7 @@
     gap: 2px;
   }
 
-  .site-header nav button {
+  .site-header nav a {
     padding: 7px 8px;
   }
 
