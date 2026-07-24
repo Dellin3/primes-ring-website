@@ -2,3 +2,4 @@ User-agent: *
 Allow: /
 
 Sitemap: https://primes-ring-website-p9yv.vercel.app/sitemap.xml
+Sitemap: https://primes-ring-website-p9yv.vercel.app/sitemap.txt
