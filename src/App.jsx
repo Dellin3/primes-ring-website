@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useMemo, useState } from 'react'
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import './App.css'
@@ -6,17 +6,14 @@ import './App.css'
 const SaturnModel = lazy(() => import('./components/SaturnModel.jsx'))
 
 const SITE_URL = 'https://primes-ring-website-p9yv.vercel.app'
+const RESEARCH_STARTER_LAB_URL = 'https://student-research-lab-theta.vercel.app/'
 const SOCIAL_IMAGE_URL = `${SITE_URL}/images/saturn-rings-hero.jpg`
 
 const PANEL_ROUTES = {
   menu: '/',
-  'start-here': '/start-here',
-  'how-to-start-research': '/research-guide',
   'data-hub': '/data-hub',
   math: '/math',
   data: '/viewer',
-  worksheet: '/worksheet',
-  impact: '/impact',
   overview: '/overview',
   background: '/background',
   team: '/team',
@@ -30,38 +27,24 @@ const ROUTE_PANELS = Object.fromEntries(
 )
 
 const RELATED_PAGES = {
-  'start-here': { to: '/background', label: 'Next step: Mission Background' },
-  'how-to-start-research': { to: '/data-hub', label: 'Next step: Explore the Data Hub' },
   'data-hub': { to: '/viewer', label: 'Next step: Open the Data Viewer' },
   math: { to: '/viewer', label: 'Related tool: Cassini Data Viewer' },
-  data: { to: '/worksheet', label: 'Next step: Student Worksheet' },
-  worksheet: { to: '/math', label: 'Related page: Mathematical Framework' },
-  impact: { to: '/start-here', label: 'Next step: Start the Learning Path' },
+  data: { to: '/math', label: 'Related page: Mathematical Framework' },
   overview: { to: '/background', label: 'Next step: Mission Background' },
   background: { to: '/data-hub', label: 'Next step: Cassini Data Hub' },
   team: { to: '/algorithms', label: 'Related page: Algorithm Modules' },
   algorithms: { to: '/math', label: 'Related page: Mathematical Framework' },
   gallery: { to: '/background', label: 'Related page: Mission Background' },
-  progress: { to: '/impact', label: 'Related page: Educational Goals' },
+  progress: { to: '/overview', label: 'Related page: Project Results' },
 }
 
 const DEFAULT_DESCRIPTION =
-  'Explore real Cassini RSS Saturn-ring occultation data, applied mathematics, optical-depth profiles, branch diagrams, interactive tools, and a guided student research pathway.'
+  'Explore a MIT PRIMES Saturn-ring reconstruction project using Cassini RSS radio-occultation data, optical-depth profiles, stationary phase, branch diagnostics, and interactive numerical tools.'
 
 const ROUTE_SEO = {
   '/': {
-    title: 'Saturn Rings Reconstruction Lab | Cassini Data and Applied Mathematics',
+    title: 'New Methods Toward High-Resolution Reconstruction of Saturn’s Rings | MIT PRIMES 2026',
     description: DEFAULT_DESCRIPTION,
-  },
-  '/start-here': {
-    title: 'Start Here | Saturn Rings Reconstruction Lab',
-    description:
-      'Begin a guided student pathway through Cassini radio occultation, Saturn ring data, inverse problems, and applied mathematics.',
-  },
-  '/research-guide': {
-    title: 'How to Start Research | Saturn Rings Reconstruction Lab',
-    description:
-      'Learn how to turn scientific curiosity into a research question, find reliable sources, and verify an AI-assisted literature workflow.',
   },
   '/data-hub': {
     title: 'Cassini Saturn Ring Data Hub | NASA PDS Resources',
@@ -78,19 +61,9 @@ const ROUTE_SEO = {
     description:
       'Interactively explore public Cassini RSS radio-occultation profiles, compare local radial windows, inspect optical-depth statistics and residuals, and export selected data.',
   },
-  '/worksheet': {
-    title: 'Student Saturn Rings Research Worksheet',
-    description:
-      'Use a guided student worksheet to observe, measure, interpret, and model public Cassini Saturn-ring radio-occultation data.',
-  },
-  '/impact': {
-    title: 'Project Overview and Educational Goals | Saturn Rings Lab',
-    description:
-      'Review the educational goals, intended student audience, and public-learning purpose of the Saturn Rings Reconstruction Lab.',
-  },
   '/overview': {
-    title: 'Saturn Rings Lab Project Overview',
-    description: 'Read an overview of this educational Saturn-ring reconstruction research portal.',
+    title: 'Saturn Rings Reconstruction Results | MIT PRIMES Project',
+    description: 'Review current results, diagnostics, and project contributions from the Saturn-ring reconstruction research portfolio.',
   },
   '/background': {
     title: 'Cassini Radio Occultation Mission Background | Saturn Rings Lab',
@@ -119,7 +92,7 @@ const FIGURE_SOURCES = {
     'Source: NASA/JPL-Caltech/Space Science Institute. Cassini mission imagery. Cropped for layout.',
   radioOccultation: 'Source: NASA/JPL-Caltech. Radio occultation explanatory figure.',
   scientificViz: 'Source: NASA/JPL-Caltech. Cassini-derived scientific visualization.',
-  schematic: 'Source: Author-generated schematic for this learning module.',
+  schematic: 'Source: Author-generated schematic for this research project.',
   csv:
     'Source: NASA Planetary Data System, PDS Ring-Moon Systems Node, CORSS_8001 Cassini RSS ring occultation profiles. Converted from public PDS TAB products into local CSV files for educational visualization.',
 }
@@ -127,198 +100,78 @@ const FIGURE_SOURCES = {
 const VIEWER_EDUCATIONAL_NOTE =
   'CSV files used on this site are educational local copies derived from public Cassini RSS occultation products. Unpublished PRIMES project data is not displayed.'
 
-const homeModuleCards = [
+const researchPipelineSteps = [
   {
-    id: 'start-here',
-    title: 'Start Here',
-    description: 'Begin with the learning path for this Saturn-rings research case study.',
-    category: 'learning',
-    categoryLabel: 'Learning',
+    title: 'Cassini RSS Data',
+    detail: 'Real radio-occultation amplitude / phase profiles',
+    to: '/viewer',
   },
   {
-    id: 'how-to-start-research',
-    title: 'How to Start Research',
-    description:
-      'Turn curiosity into a research question, with an AI-assisted workflow for reading and verification.',
-    category: 'learning',
-    categoryLabel: 'Learning',
+    title: 'Phase Model',
+    detail: 'ψ(φ; ρ)',
+    to: '/math',
   },
   {
-    id: 'data-hub',
-    title: 'Data Hub',
-    description: 'Find official NASA/PDS sources for Cassini occultation datasets.',
-    category: 'data',
-    categoryLabel: 'Data & Archives',
+    title: 'Stationary Roots',
+    detail: '∂ψ/∂φ = 0',
+    to: '/math',
   },
   {
-    id: 'worksheet',
-    title: 'Student Worksheet',
-    description: 'Practice explaining occultation, inverse problems, and local diagnostics.',
-    category: 'learning',
-    categoryLabel: 'Learning',
+    title: 'Root Tracking',
+    detail: 'Newton / Halley / continuation / PAC',
+    to: '/algorithms',
   },
   {
-    id: 'impact',
-    title: 'Impact & Feedback',
-    description: 'Public learning goals, evaluation metrics, and student feedback.',
-    category: 'impact',
-    categoryLabel: 'Impact',
+    title: 'Branch Bookkeeping',
+    detail: 'identity + ψ + ψ″ + amplitude + status',
+    to: '/algorithms/branch-bookkeeping',
   },
   {
-    id: 'overview',
-    title: 'Project Overview',
-    description: 'See how this MIT PRIMES project is organized as a research portal.',
-    category: 'research',
-    categoryLabel: 'Research',
+    title: 'Reliability Diagnostics',
+    detail: 'curvature + separation + jump + confidence',
+    to: '/math',
   },
   {
-    id: 'background',
-    title: 'Mission Background',
-    description: 'Learn how Cassini radio occultation probes Saturn’s ring structure.',
-    category: 'research',
-    categoryLabel: 'Research',
-  },
-  {
-    id: 'math',
-    title: 'Mathematical Framework',
-    description: 'Explore stationary phase, branch structure, and reconstruction ideas.',
-    category: 'research',
-    categoryLabel: 'Research',
-  },
-  {
-    id: 'data',
-    title: 'Real Data Viewer',
-    description: 'Inspect a local Cassini radial window, compute statistics, and export CSV.',
-    category: 'data',
-    categoryLabel: 'Data & Tools',
+    title: 'Reconstruction',
+    detail: 'sum reliable contributions; flag delicate regions',
+    to: '/overview',
   },
 ]
 
-const secondaryModuleLinks = [
-  { id: 'team', title: 'Team Members' },
-  { id: 'algorithms', title: 'Algorithm Modules' },
-  { id: 'gallery', title: 'Visual Gallery' },
-  { id: 'progress', title: 'Progress & Next Steps' },
-]
-
-const homePipelineSteps = [
-  { label: 'Physical Observation', tone: 'navy' },
-  { label: 'Public Cassini Data', tone: 'blue' },
-  { label: 'Local Data Viewer', tone: 'blue' },
-  { label: 'Mathematical Model', tone: 'gold' },
-  { label: 'Student Worksheet', tone: 'sage' },
-  { label: 'Research Question', tone: 'sage' },
-]
-
-const homeFeatureCards = [
+const coreResearchMethods = [
   {
-    title: 'Research Case Study',
-    label: 'Applied mathematics',
-    tone: 'research',
-    text: 'Cassini radio occultation turns a radio signal through Saturn’s rings into an inverse problem: reconstruct radial structure from an indirect measurement.',
-    figure: 'image',
-    image: '/images/giant planets and their rings.png',
-    imageAlt: 'Scientific comparison of giant planets and their ring systems',
-    fit: 'cover',
-    caption: 'Figure: Occultation-sensitive ring material motivates the reconstruction case study.',
-    source: FIGURE_SOURCES.scientificViz,
+    title: 'Phase Interpolation',
+    text: 'Study numerical interpolation of the phase function to reduce repeated evaluation cost, including cubic spline, PCHIP, and Floater–Hormann comparisons.',
   },
   {
-    title: 'Interactive Research Tools',
-    label: 'Hands-on exploration',
-    tone: 'data',
-    text: 'Students inspect a local Cassini radial window, compute basic statistics, and compare what the plotted signal suggests with simple mathematical checks.',
-    figure: 'data-viewer',
-    fit: 'contain',
-    caption: 'Figure: Schematic of a local radius–signal plot of the kind used in the Data Viewer.',
-    source: FIGURE_SOURCES.schematic,
+    title: 'Stationary Root Finding',
+    text: 'A fixed profile parameter may have several stationary angles. One Newton or Halley run generally recovers only the root near its initial guess.',
   },
   {
-    title: 'Student Research Pathway',
-    label: 'Learning module',
-    tone: 'learning',
-    text: 'A guided path—mission background, local data, worksheet questions, and feedback—shows how classroom mathematics can become a research question.',
-    figure: 'image',
-    image: '/images/student-research-pathway.png',
-    imageAlt: 'Student research pathway from interest and sources to a structured research output',
-    fit: 'contain',
-    caption:
-      'Figure: Student research pathway from interest and sources to a structured research output.',
-    source: 'Source: AI-assisted educational graphic created for this website.',
-  },
-]
-
-const homeToolPreviewCards = [
-  {
-    title: 'Real Data Viewer',
-    text: 'Choose a radial window from a Cassini sample, inspect the local signal, and export that window as CSV for later analysis.',
-    tone: 'data',
-    panelId: 'data',
-    figure: 'data-viewer',
-    fit: 'contain',
-    caption: 'Figure: Local radial-window plot schematic for the Cassini Data Viewer workflow.',
-    source: FIGURE_SOURCES.schematic,
+    title: 'Continuation & PAC',
+    text: 'Track roots as the profile parameter changes. Pseudo-arclength continuation is designed to follow a branch through folds where natural continuation can fail.',
   },
   {
-    title: 'Toy Branch Diagram',
-    text: 'A simplified fold model shows how stationary roots appear, merge, or split as a parameter changes.',
-    tone: 'research',
-    panelId: 'math',
-    figure: 'branch',
-    fit: 'contain',
-    caption: 'Figure: Branch-structure schematic near a fold, as in the toy diagram.',
-    source: FIGURE_SOURCES.schematic,
-  },
-]
-
-const homeAudienceCards = [
-  {
-    title: 'Students',
-    text: 'High school students who know calculus or physics but have not yet seen how those ideas appear in a research-style occultation problem.',
-    tone: 'sage',
+    title: 'Branch Bookkeeping',
+    text: 'The layer between root finding and reconstruction: preserve branch identity and attach the phase, curvature, amplitude, and status needed downstream.',
   },
   {
-    title: 'Teachers & club leaders',
-    text: 'Teachers and math/STEM club mentors who want a ready case study with public data links, a worksheet, and a clear learning sequence.',
-    tone: 'beige',
-  },
-]
-
-const projectUpdateCards = [
-  {
-    status: 'Completed',
-    statusTone: 'completed',
-    title: 'Research guide published',
-    text: 'The How to Start Research page now combines the interest-to-question roadmap with a cautious AI literature workflow.',
+    title: 'Bifurcation Diagnostics',
+    text: 'Use local Taylor information and a discriminant-style test to identify delicate configurations where roots approach, merge, or change character.',
   },
   {
-    status: 'Completed',
-    statusTone: 'completed',
-    title: 'Data Hub linked to official archives',
-    text: 'Students can open NASA/PDS/JPL Cassini occultation and ring product pages from the Data Hub.',
-  },
-  {
-    status: 'In progress',
-    statusTone: 'progress',
-    title: 'Student mini-lab worksheet structured',
-    text: 'The Student Worksheet now uses Observe → Measure → Interpret → Model → research question → mentor reflection sections.',
-  },
-  {
-    status: 'Next',
-    statusTone: 'next',
-    title: 'Feedback pilot for clubs and classrooms',
-    text: 'Impact metrics and a feedback form will be used in a small school and club pilot later this year.',
+    title: 'Multivariate Interpolation',
+    text: 'Near a bifurcation, stationary-angle structure is genuinely multi-branch—not a collection of globally simple, single-valued functions.',
   },
 ]
 
 const compactNavItems = [
-  { id: 'start-here', title: 'Start Here' },
-  { id: 'how-to-start-research', title: 'Research Guide' },
-  { id: 'data-hub', title: 'Data Hub' },
+  { id: 'menu', title: 'Home' },
+  { id: 'overview', title: 'Research' },
   { id: 'math', title: 'Math' },
+  { id: 'data-hub', title: 'Data' },
   { id: 'data', title: 'Viewer' },
-  { id: 'worksheet', title: 'Worksheet' },
-  { id: 'impact', title: 'Impact' },
+  { id: 'background', title: 'Mission' },
 ]
 
 function getMethodSlug(methodName) {
@@ -842,224 +695,6 @@ const teamMembers = [
   },
 ]
 
-const startHereLearnCards = [
-  {
-    title: 'What is radio occultation?',
-    text: 'Learn how a spacecraft radio signal passing through Saturn’s rings becomes a measurement of ring structure rather than a direct image.',
-  },
-  {
-    title: 'Why is this an inverse problem?',
-    text: 'See why scientists infer hidden ring properties from an indirect signal instead of observing structure directly.',
-  },
-  {
-    title: 'How can data become a research question?',
-    text: 'Follow how local data inspection, modeling, and reflection can turn curiosity into a testable research idea.',
-  },
-]
-
-const startHerePathSteps = [
-  {
-    step: 1,
-    title: 'Mission Background',
-    description: 'Understand radio occultation and the Cassini mission setting.',
-    panelId: 'background',
-  },
-  {
-    step: 2,
-    title: 'Inverse Problem Context',
-    description: 'Learn why the measured signal is indirect and what structure we try to infer.',
-    panelId: 'background',
-  },
-  {
-    step: 3,
-    title: 'Mathematical Framework',
-    description: 'Explore stationary phase, formulas, and the ideas behind reconstruction.',
-    panelId: 'math',
-  },
-  {
-    step: 4,
-    title: 'Toy Branch Diagram',
-    description: 'Try a simplified model to see how roots and branches split or merge.',
-    panelId: 'math',
-  },
-  {
-    step: 5,
-    title: 'Cassini Data Viewer',
-    description: 'Inspect a local radial window, compute statistics, and export a sample.',
-    panelId: 'data',
-  },
-  {
-    step: 6,
-    title: 'Student Worksheet',
-    description: 'Answer guided questions that connect observation, math, and research thinking.',
-    panelId: 'worksheet',
-  },
-  {
-    step: 7,
-    title: 'Impact & Feedback',
-    description: 'Share what became clearer and help improve the learning module.',
-    panelId: 'impact',
-  },
-]
-
-const studentWorksheetSections = [
-  {
-    id: 'observe',
-    title: 'Observe',
-    prompt:
-      'Open the Data Viewer, choose one Cassini RSS sample, and look at the full radius–optical-depth curve.',
-    questions: [
-      'Which dataset did you choose (Rev and band)?',
-      'What is the overall radius range of the sample?',
-      'Where does the curve look smooth, and where does it change sharply?',
-    ],
-  },
-  {
-    id: 'measure',
-    title: 'Measure',
-    prompt: 'Select one local radial window and record the window statistics shown in the Viewer.',
-    questions: [
-      'What is the selected window radius range (km)?',
-      'How many points are in the window?',
-      'What are the mean, median, and standard deviation of the y-variable in that window?',
-      'How many local peaks does the window contain?',
-    ],
-  },
-  {
-    id: 'interpret',
-    title: 'Interpret',
-    prompt: 'Connect the plot features to the scientific setting of radio occultation.',
-    questions: [
-      'Why is radio occultation different from taking a direct photograph of Saturn’s rings?',
-      'What is the measured signal in this project, and what physical structure are we trying to infer?',
-      'Why can noise or small measurement errors make reconstruction difficult?',
-    ],
-  },
-  {
-    id: 'model',
-    title: 'Model',
-    prompt:
-      'Use the Mathematical Framework page and the toy branch diagram to connect classroom math to the Viewer.',
-    questions: [
-      'What is the forward problem in the Saturn rings setting?',
-      'What is the inverse problem in the Saturn rings setting?',
-      'What does a stationary point mean intuitively in an oscillatory integral?',
-      'In the toy branch diagram, when do roots split or merge, and why might that matter for reconstruction?',
-    ],
-  },
-  {
-    id: 'research-question',
-    title: 'Write a research question',
-    prompt:
-      'Turn one observation from the Data Viewer into a specific question that could be tested with math, code, or more data.',
-    questions: [
-      'Write one research question based on a local window you inspected.',
-      'What quantity would you need to measure or compute to answer that question?',
-      'What would count as evidence that your answer is reliable?',
-    ],
-  },
-  {
-    id: 'reflection',
-    title: 'Reflection / next question for a mentor',
-    prompt:
-      'Summarize what became clearer and prepare one concise question you could ask a mentor or club advisor.',
-    questions: [
-      'What part of the project helped you most understand how classroom math becomes research?',
-      'What is still confusing after using the Viewer and Math pages?',
-      'Write one short, specific question you would ask a mentor next.',
-    ],
-  },
-]
-
-const researchRoadmapSteps = [
-  {
-    title: 'Choose a concrete interest domain.',
-    detail: 'Example: astronomy + physics + mathematics.',
-  },
-  {
-    title: 'Build a literature map.',
-    detail: 'Search for review articles, public datasets, core papers, and beginner explanations.',
-  },
-  {
-    title: 'Extract expert thinking patterns.',
-    detail:
-      'Ask: What do experts measure? What models do they use? What assumptions do they make? How do they validate results?',
-  },
-  {
-    title: 'Learn through questions.',
-    detail:
-      'Use AI and papers to generate beginner-to-advanced questions. If a question is confusing, identify the missing prerequisite and learn it.',
-  },
-  {
-    title: 'Build a toy model.',
-    detail: 'Before using full real data, create a simplified version of the problem that can run locally.',
-  },
-  {
-    title: 'Move to real data.',
-    detail: 'Use public datasets or small local windows rather than trying to process everything at once.',
-  },
-  {
-    title: 'Form a research question.',
-    detail: 'Turn confusion into a specific question that can be tested with math, code, or data.',
-  },
-  {
-    title: 'Contact experts respectfully.',
-    detail:
-      'Send concise emails with your result, graph, code, and specific question. Iterate based on feedback.',
-  },
-  {
-    title: 'Produce an output.',
-    detail: 'Build a report, website, notebook, dataset, visualization, or paper draft.',
-  },
-]
-
-const aiWorkflowSteps = [
-  {
-    letter: 'A',
-    title: 'Start with a field',
-    detail: 'Example: Saturn rings, radio occultation, inverse problems, applied mathematics.',
-  },
-  {
-    letter: 'B',
-    title: 'Collect source materials',
-    detail:
-      'Include papers, textbooks, public datasets, lecture notes, NASA/PDS documentation, and review articles.',
-  },
-  {
-    letter: 'C',
-    title: 'Ask AI to build a literature map',
-    detail:
-      'Group these papers by topic, identify the central questions, list the main mathematical tools, and explain what a beginner should read first.',
-    isPrompt: true,
-  },
-  {
-    letter: 'D',
-    title: 'Ask AI to extract expert thinking patterns',
-    detail:
-      'What assumptions do experts make in this field? What quantities do they measure? What models do they trust? How do they check whether a result is reliable?',
-    isPrompt: true,
-  },
-  {
-    letter: 'E',
-    title: 'Ask AI to generate a problem ladder',
-    detail:
-      'Create 10 questions from beginner to research level that would help a high school student understand this field.',
-    isPrompt: true,
-  },
-  {
-    letter: 'F',
-    title: 'Verify everything',
-    detail:
-      'Students must check original papers, official datasets, equations, and code. AI can hallucinate, so every claim should be traced back to a reliable source.',
-  },
-  {
-    letter: 'G',
-    title: 'Turn confusion into research',
-    detail:
-      'When a student repeatedly gets stuck on a question, that confusion may reveal a real learning path or research direction rather than a dead end.',
-  },
-]
-
 const dataHubSources = [
   {
     title: 'PDS Ring-Moon Systems Node',
@@ -1172,45 +807,6 @@ const dataHubSources = [
   },
 ]
 
-function buildWorksheetText() {
-  const lines = [
-    'Student Mini-Lab Worksheet',
-    'Saturn Rings Reconstruction Lab',
-    '',
-    'Use the Data Viewer and Mathematical Framework pages while answering.',
-    '',
-  ]
-
-  studentWorksheetSections.forEach((section) => {
-    lines.push(`## ${section.title}`)
-    lines.push(section.prompt)
-    lines.push('')
-    section.questions.forEach((question, index) => {
-      lines.push(`${index + 1}. ${question}`)
-    })
-    lines.push('')
-  })
-
-  lines.push(VIEWER_EDUCATIONAL_NOTE)
-  lines.push(FIGURE_SOURCES.csv)
-
-  return lines.join('\n')
-}
-
-const whoThisHelps = [
-  'High school students interested in applied mathematics or scientific computing.',
-  'Students who have learned calculus, physics, or linear algebra but have not seen how those tools appear in research.',
-  'Teachers, club leaders, or peer mentors looking for a concrete STEM enrichment case study.',
-]
-
-const impactMetrics = [
-  { label: 'Students who tested the site', value: 'TBD' },
-  { label: 'Feedback responses collected', value: 'TBD' },
-  { label: 'Math/STEM club presentations', value: 'TBD' },
-  { label: 'Website visitors', value: 'TBD' },
-  { label: 'Worksheets completed', value: 'TBD' },
-]
-
 const progressGroups = [
   {
     title: 'Completed',
@@ -1221,13 +817,13 @@ const progressGroups = [
       'Team algorithm module layout',
       'Multi-rev Cassini RSS Data Viewer',
       'Local window export with dataset-aware filenames',
-      'Student mini-lab worksheet sections',
+      'Optical-depth statistics and moving-average residuals',
     ],
   },
   {
     title: 'In progress',
     items: [
-      'Classroom and club feedback collection',
+      'Stationary-root reliability checks',
       'Derivative diagnostics',
       'Stationary phase visualization refinements',
       'Branch bookkeeping prototype',
@@ -1238,7 +834,7 @@ const progressGroups = [
     items: [
       'Optional overlay comparison across revs',
       'Add derivative plot in the Viewer',
-      'Expand mentor feedback pilot',
+      'Expand branch confidence and bifurcation diagnostics',
       'Ask teammates/mentor which names and contributions can be shown publicly',
     ],
   },
@@ -1549,12 +1145,15 @@ function NavBar() {
             {item.title}
           </Link>
         ))}
+        <a href={RESEARCH_STARTER_LAB_URL} target="_blank" rel="noopener noreferrer">
+          Learn ↗
+        </a>
       </nav>
     </header>
   )
 }
 
-// Retained for future diagram variants used by this learning module.
+// Retained for future diagram variants used by this research project.
 // eslint-disable-next-line no-unused-vars
 function SchematicDataViewerFigure({ compact = false }) {
   return (
@@ -1590,74 +1189,6 @@ function SchematicDataViewerFigure({ compact = false }) {
   )
 }
 
-function SchematicPathwayFigure() {
-  const row1 = [
-    { x: 22, label: 'Interest' },
-    { x: 132, label: 'Sources' },
-    { x: 242, label: 'Questions' },
-  ]
-  const row2 = [
-    { x: 22, label: 'Toy Model' },
-    { x: 132, label: 'Data' },
-    { x: 242, label: 'Output' },
-  ]
-
-  return (
-    <svg
-      className="home-schematic home-schematic-pathway"
-      viewBox="0 0 360 200"
-      role="img"
-      aria-label="Research pathway from interest to output"
-    >
-      <rect className="schematic-panel" x="8" y="8" width="344" height="184" rx="4" />
-      <text className="schematic-title" x="22" y="28">
-        Research pathway
-      </text>
-      <defs>
-        <marker id="pathwayArrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
-          <path d="M0,0 L6,3 L0,6 Z" fill="#5f7368" />
-        </marker>
-      </defs>
-      {row1.map((step, index) => (
-        <g key={`r1-${step.label}`}>
-          <rect className="schematic-box" x={step.x} y="44" width="90" height="36" rx="3" />
-          <text className="schematic-box-label" x={step.x + 45} y="66" textAnchor="middle">
-            {step.label}
-          </text>
-          {index < row1.length - 1 && (
-            <path
-              className="schematic-arrow"
-              d={`M${step.x + 94} 62 L${step.x + 106} 62`}
-              markerEnd="url(#pathwayArrow)"
-            />
-          )}
-        </g>
-      ))}
-      <path className="schematic-arrow" d="M287 84 L287 100 L67 100 L67 116" markerEnd="url(#pathwayArrow)" />
-      {row2.map((step, index) => (
-        <g key={`r2-${step.label}`}>
-          <rect className="schematic-box" x={step.x} y="120" width="90" height="36" rx="3" />
-          <text className="schematic-box-label" x={step.x + 45} y="142" textAnchor="middle">
-            {step.label}
-          </text>
-          {index < row2.length - 1 && (
-            <path
-              className="schematic-arrow"
-              d={`M${step.x + 94} 138 L${step.x + 106} 138`}
-              markerEnd="url(#pathwayArrow)"
-            />
-          )}
-        </g>
-      ))}
-      <text className="schematic-note" x="22" y="180">
-        Interest → Sources → Questions → Toy Model → Data → Output
-      </text>
-    </svg>
-  )
-}
-
-// Retained for future diagram variants used by this learning module.
-// eslint-disable-next-line no-unused-vars
 function SchematicBranchFigure({ compact = false }) {
   return (
     <svg
@@ -1673,10 +1204,10 @@ function SchematicBranchFigure({ compact = false }) {
       <line className="schematic-axis-line" x1="48" y1="156" x2="330" y2="156" />
       <line className="schematic-axis-line" x1="48" y1="42" x2="48" y2="156" />
       <text className="schematic-axis" x="188" y="188">
-        parameter x
+        profile parameter ρ
       </text>
       <text className="schematic-axis" x="18" y="112" transform="rotate(-90 18 112)">
-        root y
+        stationary angle φ
       </text>
       <path
         className="schematic-branch upper"
@@ -1701,40 +1232,6 @@ function SchematicBranchFigure({ compact = false }) {
   )
 }
 
-function SchematicWorksheetFigure() {
-  const items = [
-    'Define the occultation measurement',
-    'Identify forward vs inverse problem',
-    'Inspect one local radial window',
-    'Record one research question',
-  ]
-
-  return (
-    <svg
-      className="home-schematic home-schematic-worksheet"
-      viewBox="0 0 360 200"
-      role="img"
-      aria-label="Mini-lab worksheet checklist schematic"
-    >
-      <rect className="schematic-panel" x="8" y="8" width="344" height="184" rx="4" />
-      <text className="schematic-title" x="22" y="30">
-        Mini-lab checklist
-      </text>
-      {items.map((item, index) => {
-        const y = 52 + index * 32
-        return (
-          <g key={item}>
-            <rect className="schematic-check" x="24" y={y - 10} width="14" height="14" rx="2" />
-            <text className="schematic-checklist-label" x="50" y={y + 1}>
-              {index + 1}. {item}
-            </text>
-          </g>
-        )
-      })}
-    </svg>
-  )
-}
-
 function FigureCaption({ caption, source, className = '', as: Tag = 'figcaption' }) {
   if (!caption && !source) return null
 
@@ -1746,64 +1243,132 @@ function FigureCaption({ caption, source, className = '', as: Tag = 'figcaption'
   )
 }
 
-function HomeFigureMedia({ figure, image, imageAlt, caption, source, fit = 'cover' }) {
-  let visual = null
-  if (figure === 'data-viewer') {
-    visual = <img src="/images/data viewer.png" alt="Cassini Data Viewer dashboard preview" />
-  } else if (figure === 'pathway') {
-    visual = <SchematicPathwayFigure />
-  } else if (figure === 'branch') {
-    visual = <img src="/images/bifurcation.jpg" alt="Bifurcation and branch-structure preview" />
-  } else if (figure === 'worksheet') {
-    visual = <SchematicWorksheetFigure />
-  } else if (image) {
-    visual = (
-      <img
-        className={fit === 'contain' ? 'figure-fit-contain' : 'figure-fit-cover'}
-        src={image}
-        alt={imageAlt || ''}
-      />
+function HeroScientificFigure({ onOpenModel }) {
+  const figureRef = useRef(null)
+  const [isActive, setIsActive] = useState(false)
+
+  useEffect(() => {
+    const figure = figureRef.current
+    if (!figure || typeof IntersectionObserver === 'undefined') return undefined
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsActive(entry.isIntersecting),
+      { threshold: 0.18 },
     )
-  }
+    observer.observe(figure)
+    return () => observer.disconnect()
+  }, [])
 
   return (
-    <figure className="home-figure-block">
-      <div className={`home-feature-media${fit === 'contain' ? ' media-diagram' : ''}`}>{visual}</div>
-      <FigureCaption caption={caption} source={source} className="home-figure-caption" />
-    </figure>
-  )
-}
+    <figure
+      ref={figureRef}
+      className={`research-figure mission-hero-figure hero-science-figure${isActive ? ' is-active' : ''}`}
+    >
+      <div className="hero-science-frame">
+        <svg
+          className="occultation-schematic"
+          viewBox="0 0 600 440"
+          role="img"
+          aria-labelledby="occultation-title occultation-description"
+        >
+          <title id="occultation-title">Cassini RSS ring radio-occultation inverse problem</title>
+          <desc id="occultation-description">
+            Cassini transmits a coherent radio signal through Saturn’s ring plane. Earth-based Deep
+            Space Network stations receive the altered amplitude and phase, from which the radial
+            optical-depth structure is inferred.
+          </desc>
+          <defs>
+            <marker id="hero-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto">
+              <path d="M0 0 L8 4 L0 8 Z" />
+            </marker>
+            <clipPath id="amplitude-trace-clip">
+              <rect x="400" y="277" width="172" height="54" />
+            </clipPath>
+            <clipPath id="phase-trace-clip">
+              <rect x="400" y="345" width="172" height="46" />
+            </clipPath>
+          </defs>
 
-function ToolPreviewVisual({ figure }) {
-  if (figure === 'data-viewer') {
-    return <img src="/images/data viewer.png" alt="Cassini Data Viewer dashboard preview" />
-  }
-  if (figure === 'branch') {
-    return <img src="/images/bifurcation.jpg" alt="Bifurcation and branch-structure preview" />
-  }
-  if (figure === 'pathway') return <SchematicPathwayFigure />
-  if (figure === 'worksheet') return <SchematicWorksheetFigure />
-  return null
-}
+          <text className="figure-overline" x="24" y="26">MEASUREMENT MODEL</text>
+          <text className="figure-note end" x="576" y="26" textAnchor="end">SCHEMATIC · NOT TO SCALE</text>
+          <line className="figure-rule" x1="24" y1="38" x2="576" y2="38" />
 
-function HeroImageCard({ onOpenModel }) {
-  return (
-    <figure className="visual-card hero-image-card research-figure mission-hero-figure">
-      <div className="mission-hero-frame">
-        <img
-          className="figure-fit-cover"
-          src="/images/saturn-rings-hero.jpg"
-          alt="Saturn and its rings used as the homepage research case study hero"
-        />
+          <g className="figure-annotation propagation-annotation" tabIndex="0" role="group" aria-label="Radio signal propagation through the rings">
+            <text className="figure-label stage-heading" x="300" y="63" textAnchor="middle">RADIO OCCULTATION</text>
+            <text className="endpoint-label" x="42" y="100">CASSINI / TX</text>
+            <text className="secondary-note" x="42" y="117">coherent radio source</text>
+            <circle className="endpoint-mark tx" cx="75" cy="151" r="8" />
+            <line className="signal-direction" x1="86" y1="151" x2="505" y2="151" markerEnd="url(#hero-arrow)" />
+            <g className="incoming-wavefronts">
+              <path d="M99 128 C124 119 147 119 172 128" />
+              <path d="M99 151 C124 142 147 142 172 151" />
+              <path d="M99 174 C124 165 147 165 172 174" />
+              <path d="M177 128 C202 119 225 119 250 128" />
+              <path d="M177 151 C202 142 225 142 250 151" />
+              <path d="M177 174 C202 165 225 165 250 174" />
+            </g>
+            <g className="ring-plane">
+              <path className="ring-plane-guide" d="M250 205 L338 93" />
+              <path className="ring-plane-band light" d="M258 211 L346 99" />
+              <path className="ring-plane-band medium" d="M269 218 L357 106" />
+              <path className="ring-plane-band dark" d="M282 224 L370 112" />
+              <path className="ring-plane-band gap" d="M295 231 L383 119" />
+            </g>
+            <text className="endpoint-label ring-plane-label" x="310" y="239" textAnchor="middle">SATURN RING PLANE</text>
+            <text className="secondary-note ring-plane-note" x="310" y="254" textAnchor="middle">varying optical depth</text>
+            <g className="diffracted-wavefronts">
+              <path d="M351 128 C375 111 399 145 425 126 S468 142 493 127" />
+              <path d="M351 151 C376 132 399 171 425 148 S468 167 493 149" />
+              <path d="M351 174 C376 159 399 190 425 172 S468 185 493 173" />
+            </g>
+            <circle className="endpoint-mark rx" cx="522" cy="151" r="8" />
+            <text className="endpoint-label" x="558" y="100" textAnchor="end">EARTH · DSN / RX</text>
+            <text className="secondary-note" x="558" y="117" textAnchor="end">received on Earth</text>
+          </g>
+
+          <line className="figure-rule section-rule" x1="24" y1="269" x2="576" y2="269" />
+
+          <g className="figure-annotation structure-annotation" tabIndex="0" role="group" aria-label="Inferred radial ring structure">
+            <text className="figure-label" x="28" y="292">RING STRUCTURE</text>
+            <text className="secondary-note" x="28" y="308">inferred radial optical depth τ(ρ)</text>
+            <line className="plot-axis" x1="31" y1="382" x2="216" y2="382" />
+            <line className="plot-axis" x1="31" y1="323" x2="31" y2="382" />
+            <path className="structure-area" d="M31 376 L45 376 L45 361 L60 361 L60 337 L82 337 L82 374 L98 374 L98 351 L118 351 L118 330 L151 330 L151 357 L170 357 L170 344 L192 344 L192 369 L216 369 L216 382 L31 382 Z" />
+            <path className="structure-profile" d="M31 376 L45 376 L45 361 L60 361 L60 337 L82 337 L82 374 L98 374 L98 351 L118 351 L118 330 L151 330 L151 357 L170 357 L170 344 L192 344 L192 369 L216 369" />
+            <text className="axis-label" x="210" y="397">ρ</text>
+            <text className="observation-status inferred" x="31" y="416">INFERRED</text>
+          </g>
+
+          <g className="figure-annotation signal-annotation" tabIndex="0" role="group" aria-label="Amplitude and phase received at Earth">
+            <text className="figure-label" x="400" y="292">RECEIVED SIGNAL</text>
+            <text className="trace-label" x="400" y="311">AMPLITUDE</text>
+            <line className="plot-axis" x1="400" y1="329" x2="572" y2="329" />
+            <g clipPath="url(#amplitude-trace-clip)">
+              <path className="signal-trace-base" d="M400 317 C414 313 424 324 437 316 S460 309 474 320 S498 324 511 312 S536 307 548 317 S563 322 572 314" />
+              <path className="signal-trace-draw" d="M400 317 C414 313 424 324 437 316 S460 309 474 320 S498 324 511 312 S536 307 548 317 S563 322 572 314" />
+            </g>
+            <text className="trace-label" x="400" y="351">PHASE</text>
+            <line className="plot-axis" x1="400" y1="382" x2="572" y2="382" />
+            <g clipPath="url(#phase-trace-clip)">
+              <path className="signal-trace-base phase" d="M400 370 C417 368 424 354 440 363 S462 379 477 365 S501 350 515 362 S536 377 551 364 S565 355 572 359" />
+              <path className="signal-trace-draw phase" d="M400 370 C417 368 424 354 440 363 S462 379 477 365 S501 350 515 362 S536 377 551 364 S565 355 572 359" />
+            </g>
+            <text className="observation-status observed" x="572" y="416" textAnchor="end">DIRECTLY OBSERVED</text>
+          </g>
+
+          <path className="inverse-path" markerEnd="url(#hero-arrow)" d="M464 404 C416 434 223 434 153 404" />
+          <text className="inverse-label" x="307" y="413" textAnchor="middle">INVERSE RECONSTRUCTION</text>
+
+        </svg>
       </div>
       <figcaption className="mission-hero-caption">
         <FigureCaption
           as="div"
-          caption="Figure: Saturn’s rings as the visual entry point for the radio-occultation reconstruction lab."
-          source={FIGURE_SOURCES.cassiniImagery}
+          caption="FIG. 01 — RADIO OCCULTATION · Cassini transmits through the rings; Earth-based DSN stations receive the altered signal used to infer ring structure."
+          source="Author-generated conceptual schematic; not raw Cassini data."
         />
-        <button className="open-model-button" type="button" onClick={onOpenModel}>
-          Open 3D Saturn Model
+        <button className="hero-model-link" type="button" onClick={onOpenModel}>
+          Explore mission geometry in 3D →
         </button>
       </figcaption>
     </figure>
@@ -1836,6 +1401,229 @@ function SaturnModelModal({ onClose }) {
         </div>
       </div>
     </div>
+  )
+}
+
+function StationaryRootReliabilityExplorer() {
+  const [rho, setRho] = useState(0.34)
+  const foldRho = 1
+  const plot = { left: 62, right: 620, top: 52, bottom: 330, midY: 190 }
+  const xScale = (value) => plot.left + (value / 1.15) * (plot.right - plot.left)
+  const yScale = (value) => plot.midY - (value / 1.3) * 128
+
+  const branchPaths = useMemo(() => {
+    const upper = []
+    const lower = []
+    for (let index = 0; index <= 140; index += 1) {
+      const value = index / 140
+      const root = Math.sqrt(Math.max(0, 1 - value))
+      const mappedX = 62 + (value / 1.15) * (620 - 62)
+      const upperY = 190 - (root / 1.3) * 128
+      const lowerY = 190 - (-root / 1.3) * 128
+      upper.push(`${index === 0 ? 'M' : 'L'} ${mappedX.toFixed(2)} ${upperY.toFixed(2)}`)
+      lower.push(`${index === 0 ? 'M' : 'L'} ${mappedX.toFixed(2)} ${lowerY.toFixed(2)}`)
+    }
+    return { upper: upper.join(' '), lower: lower.join(' ') }
+  }, [])
+
+  const isBeforeFold = rho < foldRho
+  const rootMagnitude = isBeforeFold ? Math.sqrt(foldRho - rho) : 0
+  const separation = isBeforeFold ? 2 * rootMagnitude : 0
+  const curvature = isBeforeFold ? 2 * rootMagnitude : 0
+  const jump = isBeforeFold ? 1 / (2 * Math.max(rootMagnitude, 0.08)) : 6.25
+  const confidence = isBeforeFold
+    ? Math.max(0, Math.min(1, separation / 1.1, curvature / 1, 2.2 / jump))
+    : 0
+  const selectedX = xScale(rho)
+  const selectedRoots = isBeforeFold ? [rootMagnitude, -rootMagnitude] : []
+
+  const state =
+    confidence > 0.66
+      ? {
+          key: 'stable',
+          label: 'Stable',
+          text: 'Two well-separated roots. Branch identity is clear.',
+        }
+      : confidence > 0.25
+        ? {
+            key: 'delicate',
+            label: 'Delicate',
+            text: 'Roots approach and local diagnostics warn that ordinary continuation may become unreliable.',
+          }
+        : {
+            key: 'bifurcation',
+            label: 'Bifurcation neighborhood',
+            text: 'The branches merge or disappear. Flag this region for local refinement or special treatment.',
+          }
+
+  const confidenceLabel = confidence > 0.66 ? 'High' : confidence > 0.25 ? 'Medium' : 'Low'
+  const diagnostics = [
+    {
+      label: 'Branch separation',
+      symbol: 'Δφ',
+      value: separation.toFixed(2),
+      level: Math.min(1, separation / 1.6),
+      title: 'Minimum angular separation between the two stationary-root branches.',
+    },
+    {
+      label: 'Local curvature',
+      symbol: '|ψ″|',
+      value: curvature.toFixed(2),
+      level: Math.min(1, curvature / 1.6),
+      title: 'A schematic curvature proxy that becomes small as the roots meet.',
+    },
+    {
+      label: 'Continuity / jump',
+      symbol: 'q_jump',
+      value: jump.toFixed(2),
+      level: Math.min(1, jump / 4),
+      inverse: true,
+      title: 'A schematic branch-angle change rate; larger values indicate more delicate tracking.',
+    },
+    {
+      label: 'Local confidence',
+      symbol: 'C_s',
+      value: confidence.toFixed(2),
+      level: confidence,
+      title: 'The minimum of normalized local diagnostics in this conceptual model.',
+    },
+  ]
+
+  return (
+    <section id="root-reliability" className="section root-reliability-section" aria-labelledby="root-reliability-title">
+      <div className="section-heading">
+        <p className="eyebrow eyebrow-gold">Interactive Explanation</p>
+        <h2 id="root-reliability-title">Watch a stationary-root branch become unreliable</h2>
+        <p className="section-lede">
+          As the profile parameter ρ changes, stationary roots can approach, merge, or disappear.
+          Track the branches and watch the local reliability diagnostics respond.
+        </p>
+      </div>
+
+      <div className="root-explorer">
+        <div className="root-figure-column">
+          <figure className="root-branch-figure">
+            <div className="root-figure-meta">
+              <span>Stationary-root branches</span>
+              <span>Interactive schematic — not Cassini measurement data.</span>
+            </div>
+            <svg
+              className="root-branch-svg"
+              viewBox="0 0 680 380"
+              role="img"
+              aria-labelledby="root-plot-title root-plot-description"
+            >
+              <title id="root-plot-title">Two stationary-root branches approaching a fold</title>
+              <desc id="root-plot-description">
+                Two roots approach as rho increases, meet at rho equals one, and are absent beyond
+                the fold. A vertical guide marks the selected rho.
+              </desc>
+              {[0, 0.25, 0.5, 0.75, 1].map((value) => (
+                <g key={`rho-${value}`}>
+                  <line className="root-grid-line" x1={xScale(value)} x2={xScale(value)} y1={plot.top} y2={plot.bottom} />
+                  <text className="root-tick" x={xScale(value)} y="351" textAnchor="middle">{value.toFixed(2)}</text>
+                </g>
+              ))}
+              {[-1, -0.5, 0, 0.5, 1].map((value) => (
+                <g key={`phi-${value}`}>
+                  <line className="root-grid-line" x1={plot.left} x2={plot.right} y1={yScale(value)} y2={yScale(value)} />
+                  <text className="root-tick" x="49" y={yScale(value) + 4} textAnchor="end">{value.toFixed(1)}</text>
+                </g>
+              ))}
+              <line className="root-axis" x1={plot.left} x2={plot.right} y1={plot.bottom} y2={plot.bottom} />
+              <line className="root-axis" x1={plot.left} x2={plot.left} y1={plot.top} y2={plot.bottom} />
+              <rect className="fold-neighborhood" x={xScale(0.92)} y={plot.top} width={xScale(1.08) - xScale(0.92)} height={plot.bottom - plot.top} />
+              <text className="fold-label" x={xScale(1)} y="70" textAnchor="middle">fold neighborhood</text>
+              <path className="root-branch root-upper" d={branchPaths.upper} />
+              <path className="root-branch root-lower" d={branchPaths.lower} />
+              <line className="selected-rho-guide" x1={selectedX} x2={selectedX} y1={plot.top} y2={plot.bottom} />
+              {selectedRoots.map((root, index) => {
+                const markerY = yScale(root)
+                return (
+                  <g key={`${index}-${root.toFixed(4)}`}>
+                    <line className="root-diagnostic-leader" x1={selectedX} x2={plot.right} y1={markerY} y2={markerY} />
+                    <circle className="selected-root-halo" cx={selectedX} cy={markerY} r="8" />
+                    <circle className="selected-root-marker" cx={selectedX} cy={markerY} r="4">
+                      <title>Stationary root φ_s = {root.toFixed(3)}</title>
+                    </circle>
+                  </g>
+                )
+              })}
+              {!isBeforeFold && (
+                <g>
+                  <circle className="fold-marker" cx={xScale(1)} cy={yScale(0)} r="5" />
+                  <text className="no-root-note" x={selectedX} y={yScale(0) - 16} textAnchor="middle">
+                    {rho === foldRho ? 'merged root' : 'no two-root branch'}
+                  </text>
+                </g>
+              )}
+              <text className="root-axis-label" x={(plot.left + plot.right) / 2} y="375" textAnchor="middle">profile parameter ρ</text>
+              <text className="root-axis-label" x="15" y={(plot.top + plot.bottom) / 2} textAnchor="middle" transform={`rotate(-90 15 ${(plot.top + plot.bottom) / 2})`}>
+                stationary angle φ_s
+              </text>
+            </svg>
+            <div className="root-slider-wrap">
+              <label htmlFor="root-rho-slider">
+                <span>Selected profile parameter</span>
+                <output htmlFor="root-rho-slider">ρ = {rho.toFixed(3)}</output>
+              </label>
+              <input
+                id="root-rho-slider"
+                type="range"
+                min="0"
+                max="1.15"
+                step="0.002"
+                value={rho}
+                aria-describedby="root-slider-note"
+                onChange={(event) => setRho(Number(event.target.value))}
+              />
+              <p id="root-slider-note">Use the arrow keys for fine control. The schematic fold occurs at ρ = 1.</p>
+            </div>
+          </figure>
+        </div>
+
+        <aside className="root-diagnostics" aria-live="polite">
+          <div className={`root-state state-${state.key}`}>
+            <span>Current regime</span>
+            <strong>{state.label}</strong>
+            <p>{state.text}</p>
+          </div>
+          <div className="diagnostic-list">
+            {diagnostics.map((diagnostic) => (
+              <div className="root-diagnostic" key={diagnostic.label} title={diagnostic.title}>
+                <div className="diagnostic-heading">
+                  <span>{diagnostic.label}</span>
+                  <i>{diagnostic.symbol}</i>
+                </div>
+                <div className="diagnostic-reading">
+                  <strong>{diagnostic.label === 'Local confidence' ? confidenceLabel : diagnostic.value}</strong>
+                  <span>{diagnostic.label === 'Local confidence' ? `C_s = ${diagnostic.value}` : 'schematic units'}</span>
+                </div>
+                <div className={`diagnostic-meter${diagnostic.inverse ? ' inverse' : ''}`} aria-hidden="true">
+                  <span style={{ width: `${diagnostic.level * 100}%` }} />
+                </div>
+              </div>
+            ))}
+          </div>
+        </aside>
+      </div>
+
+      <div className="root-explorer-why">
+        <div>
+          <span>Why this matters</span>
+          <p>
+            Branch bookkeeping preserves root identity as ρ changes. Local diagnostics attach
+            reliability information before reconstruction, so numerically delicate neighborhoods
+            can be treated explicitly rather than silently propagated downstream.
+          </p>
+        </div>
+        <div className="root-contribution-link">
+          <span>Student contribution — Dell Li</span>
+          <p>Branch identity, bookkeeping, and local reliability diagnostics.</p>
+          <a href="#dell-contribution">Explore Dell&apos;s contribution →</a>
+        </div>
+      </div>
+    </section>
   )
 }
 
@@ -2996,7 +2784,6 @@ function App() {
   const [selectedMemberIndex, setSelectedMemberIndex] = useState(0)
   const [saturnModelPath, setSaturnModelPath] = useState('')
   const isSaturnModelOpen = saturnModelPath === normalizedPath
-  const [worksheetCopied, setWorksheetCopied] = useState(false)
   const selectedPipelineStep = pipelineSteps[selectedPipelineIndex]
   const selectedMember = teamMembers[selectedMemberIndex]
   const selectedMethod = numericalMethodsToolkit.find((method) => getMethodSlug(method.name) === activeMethodSlug)
@@ -3009,19 +2796,22 @@ function App() {
     : baseSeo
   const canonicalPath = activePanel ? normalizedPath : '/'
   const canonicalUrl = `${SITE_URL}${canonicalPath}`
-  const learningResourceStructuredData = {
+  const researchProjectStructuredData = {
     '@context': 'https://schema.org',
-    '@type': 'LearningResource',
-    name: 'Saturn Rings Reconstruction Lab',
+    '@type': 'ResearchProject',
+    name: 'New Methods Toward High-Resolution Reconstruction of Saturn’s Rings',
     url: `${SITE_URL}/`,
     description: DEFAULT_DESCRIPTION,
-    educationalUse: 'Instruction and independent study',
-    learningResourceType: 'Interactive research lab',
     about: [
       'Saturn rings',
       'Cassini radio occultation',
       'Inverse problems',
       'Applied mathematics',
+    ],
+    member: [
+      { '@type': 'Person', name: 'Dell Li' },
+      { '@type': 'Person', name: 'Maiya Qiu' },
+      { '@type': 'Person', name: 'Yutong Zhao' },
     ],
   }
 
@@ -3033,16 +2823,6 @@ function App() {
 
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }, [activePanel, navigate, normalizedPath])
-
-  async function copyWorksheet() {
-    try {
-      await navigator.clipboard.writeText(buildWorksheetText())
-      setWorksheetCopied(true)
-      window.setTimeout(() => setWorksheetCopied(false), 2200)
-    } catch {
-      setWorksheetCopied(false)
-    }
-  }
 
   function PanelShell({ children }) {
     const relatedPage = RELATED_PAGES[activePanel]
@@ -3067,146 +2847,157 @@ function App() {
       <div className="home-academic">
         <section className="section home-hero home-hero-mission tone-hero">
           <div className="home-hero-copy">
-            <p className="eyebrow eyebrow-gold">Research Module</p>
-            <p className="hero-program-line">MIT PRIMES Math Junior</p>
-            <h1>Saturn Rings Reconstruction Lab</h1>
+            <p className="eyebrow eyebrow-gold">MIT PRIMES 2026 · Mathematics Research</p>
+            <h1 className="hero-project-title">
+              <span>NEW METHODS TOWARD</span>
+              <span>HIGH-RESOLUTION</span>
+              <span>RECONSTRUCTION OF</span>
+              <span>SATURN’S RINGS</span>
+            </h1>
+            <p className="hero-authors">Dell Li · Maiya Qiu · Yutong Zhao</p>
+            <p className="hero-mentor">Mentored by Dr. Ryan Maguire</p>
             <p className="hero-subtitle">
-              Radio occultation, inverse problems, and applied mathematics through Saturn’s rings.
+              Numerical methods for reconstructing Saturn’s ring structure from Cassini
+              radio-occultation data, with a focus on stationary-phase root tracking, bifurcations,
+              and reconstruction reliability.
             </p>
-            <p className="hero-lede">
-              Cassini’s radio signal through the rings is an indirect measurement, not a photograph.
-              This lab moves from that observation to public data, a local viewer, modeling ideas,
-              and a short student worksheet.
-            </p>
+            <div className="research-topic-list" aria-label="Research topics">
+              {['Radio Occultation', 'Inverse Problems', 'Stationary Phase', 'Numerical Continuation', 'Bifurcation Diagnostics'].map(
+                (topic) => <span key={topic}>{topic}</span>,
+              )}
+            </div>
             <div className="hero-actions">
-              <Link className="button primary" to="/start-here">
-                Start Here
-              </Link>
+              <a className="button primary" href="#research-question">
+                Explore the Research
+              </a>
               <Link className="button secondary" to="/viewer">
-                Explore the Data
+                Open Cassini Data Viewer
               </Link>
-              <Link className="button secondary" to="/worksheet">
-                Use the Worksheet
+              <Link className="hero-text-link" to="/math">
+                See the Mathematics →
               </Link>
             </div>
           </div>
-          <HeroImageCard onOpenModel={() => setSaturnModelPath(normalizedPath)} />
+          <HeroScientificFigure onOpenModel={() => setSaturnModelPath(normalizedPath)} />
         </section>
 
-        <section className="section home-value-section tone-why" aria-label="Why this site">
-          <div className="home-value-panel tone-callout">
-            <div className="home-value-panel-copy">
-              <p className="eyebrow eyebrow-navy">Why This Site</p>
-              <h2>A Saturn rings case study for learning research mathematics</h2>
-              <p>
-                Built from a MIT PRIMES Math Junior project, the site is a reusable learning template:
-                students move from curiosity and mission background, to public data and local plots,
-                then to modeling questions they can write about and revise.
-              </p>
-              <p>
-                The lab connects Saturn’s rings and Cassini mission radio-occultation data with the
-                NASA Planetary Data System, optical-depth profiles, inverse problems, applied
-                mathematics, and stationary-phase ideas. Interactive student research tools make
-                those concepts visible without replacing the official scientific archives.
-              </p>
-            </div>
-            <aside className="home-value-aside" aria-label="Homepage learning path">
-              <p className="home-value-aside-label">Homepage path</p>
-              <ol className="home-value-aside-list">
-                <li>Observe Saturn ring occultation</li>
-                <li>Inspect public Cassini samples</li>
-                <li>Connect math to a research question</li>
-              </ol>
-            </aside>
-          </div>
-        </section>
-
-        <section className="section home-features-section tone-snapshot" aria-label="Research snapshot cards">
+        <section id="research-question" className="section research-question-section tone-why">
           <div className="section-heading">
-            <p className="eyebrow eyebrow-gold">Research Snapshot</p>
-            <h2>What you can explore</h2>
+            <p className="eyebrow eyebrow-navy">The Research Question</p>
+            <h2>
+              How can we reconstruct fine-scale structure in Saturn’s rings faster and more reliably
+              when stationary-phase roots merge, split, or disappear?
+            </h2>
             <p className="section-lede">
-              Three entry points into the case study: the scientific setting, interactive tools, and
-              the student learning path.
+              The observed diffracted signal is modeled by a Huygens–Fresnel-type integral whose
+              dominant contributions arise at stationary points of the phase.
             </p>
           </div>
-          <div className="home-feature-grid">
-            {homeFeatureCards.map((card) => (
-              <article className={`home-feature-card tone-${card.tone}`} key={card.title}>
-                <HomeFigureMedia
-                  figure={card.figure}
-                  image={card.image}
-                  imageAlt={card.imageAlt}
-                  caption={card.caption}
-                  source={card.source}
-                  fit={card.fit}
-                />
-                <div className="home-feature-copy">
-                  <span className="home-card-label">{card.label}</span>
-                  <h3>{card.title}</h3>
-                  <p>{card.text}</p>
-                </div>
+          <div className="research-question-flow">
+            {[
+              ['Observation', 'Cassini radio signals pass through Saturn’s rings. Ring structure modifies the signal through attenuation, phase shift, and diffraction.'],
+              ['Inverse Problem', 'Use the received radio-occultation signal to infer the underlying radial structure of the rings.'],
+              ['Numerical Challenge', 'The stationary angles may form multiple branches. Near folds and bifurcations, roots can approach, merge, disappear, or become unstable to track.'],
+            ].map(([title, text], index) => (
+              <article className="research-question-stage" key={title}>
+                <span className="stage-index">{String(index + 1).padStart(2, '0')}</span>
+                <h3>{title}</h3>
+                <p>{text}</p>
               </article>
             ))}
           </div>
         </section>
 
-        <section className="section home-tools-section tone-tools" aria-label="Interactive tools preview">
+        <StationaryRootReliabilityExplorer />
+
+        <section className="section home-features-section tone-snapshot" aria-label="Core research methods">
           <div className="section-heading">
-            <p className="eyebrow eyebrow-blue">Interactive Tools</p>
-            <h2>Tools used in the case study</h2>
+            <p className="eyebrow eyebrow-gold">Core Research Methods</p>
+            <h2>Numerical structure of the reconstruction problem</h2>
             <p className="section-lede">
-              Use the Data Viewer for local Cassini windows, then the toy branch diagram for
-              multi-root intuition behind reconstruction experiments.
+              The project investigates the full path from fast phase evaluation to multi-branch
+              stationary-root records suitable for reliability-aware reconstruction.
             </p>
           </div>
-          <div className="home-tools-grid">
-            {homeToolPreviewCards.map((card) => (
-              <article className={`home-tool-card tone-${card.tone}`} key={card.title}>
-                <figure className="home-tool-figure">
-                  <div className={`home-tool-preview tone-${card.tone} media-diagram`}>
-                    <ToolPreviewVisual figure={card.figure} />
-                  </div>
-                  <figcaption className="home-figure-caption">
-                    <FigureCaption as="div" caption={card.caption} source={card.source} />
-                  </figcaption>
-                </figure>
-                <div className="home-tool-copy">
-                  <h3>{card.title}</h3>
-                  <p>{card.text}</p>
-                  <Link
-                    className="home-tool-link"
-                    to={PANEL_ROUTES[card.panelId]}
-                  >
-                    Open tool
-                  </Link>
-                </div>
+          <div className="research-method-grid">
+            {coreResearchMethods.map((method, index) => (
+              <article className="research-method-card" key={method.title}>
+                <span className="method-number">{String(index + 1).padStart(2, '0')}</span>
+                <h3>{method.title}</h3>
+                <p>{method.text}</p>
               </article>
             ))}
+          </div>
+        </section>
+
+        <section id="dell-contribution" className="section contributor-section tone-tools" aria-label="Contributor focus">
+          <div className="section-heading">
+            <p className="eyebrow eyebrow-blue">Contributor Focus</p>
+            <h2>Dell Li · branch identity and local reliability</h2>
+            <p className="section-lede">
+              Dell’s work focuses on the interface between stationary-root computation and
+              reconstruction: preserving branch identity, detecting numerically delicate regions,
+              and attaching local reliability information to each stationary-root record.
+            </p>
+          </div>
+          <div className="contributor-pipeline" aria-label="Dell contribution pipeline">
+            <span>Root Finding</span><b>→</b>
+            <strong>Branch Bookkeeping <em>— Dell</em></strong><b>→</b>
+            <strong>Local Reliability Diagnostics <em>— Dell</em></strong><b>→</b>
+            <span>Reconstruction</span>
+          </div>
+          <div className="returned-record">
+            <span className="scientific-status status-draft">Stationary-Root Record</span>
+            <p className="record-label">Returned stationary-root record</p>
+            <div className="record-equation" aria-label="Stationary root record">
+              ( φ<sub>s</sub>(ρ<sub>j</sub>), ψ(φ<sub>s</sub>;ρ<sub>j</sub>), ψ″(φ<sub>s</sub>;ρ<sub>j</sub>),
+              a(φ<sub>s</sub>;ρ<sub>j</sub>), branch label, status flag, C<sub>s</sub>(ρ<sub>j</sub>) )
+            </div>
+          </div>
+        </section>
+
+        <section className="section bifurcation-feature-section" aria-label="Near a bifurcation">
+          <div className="bifurcation-feature-grid">
+            <figure className="bifurcation-home-figure">
+              <SchematicBranchFigure />
+              <FigureCaption
+                caption="Figure 02. Author-generated toy branch schematic in (ρ, φ); not Cassini data."
+                source={FIGURE_SOURCES.schematic}
+              />
+            </figure>
+            <div>
+              <p className="eyebrow eyebrow-gold">Near a Bifurcation</p>
+              <h2>Do not interpolate one smooth branch through the event</h2>
+              <ul className="bifurcation-notes">
+                <li>Away from a bifurcation, branches are separated and can be tracked independently.</li>
+                <li>Near a merge or fold, branch separation decreases and ψ″ may become small.</li>
+                <li>Flag the neighborhood for local refinement or special treatment.</li>
+              </ul>
+              <Link className="home-tool-link" to="/math#stationary-demo">Inspect the branch mathematics →</Link>
+            </div>
           </div>
         </section>
 
         <section className="section home-pipeline-section tone-pipeline" aria-label="Research pipeline">
           <div className="section-heading">
             <p className="eyebrow eyebrow-gold">Research Pipeline</p>
-            <h2>From occultation data to student learning path</h2>
+            <h2>From Cassini data to reliability-aware reconstruction</h2>
             <p className="section-lede">
-              Physical observation → public Cassini data → local data viewer → mathematical model →
-              student worksheet → research question.
+              Each stage carries physical or numerical information forward; root identity and local
+              reliability cannot be recovered after they have been discarded.
             </p>
           </div>
-          <figure className="home-pipeline-figure">
-            <ol className="home-pipeline">
-              {homePipelineSteps.map((step, index) => (
-                <li className="home-pipeline-step" key={step.label}>
-                  <span className="home-pipeline-index" aria-hidden="true">
-                    {String(index + 1).padStart(2, '0')}
-                  </span>
-                  <span className={`home-pipeline-label tone-${step.tone}`}>{step.label}</span>
-                  {index < homePipelineSteps.length - 1 && (
-                    <span className="home-pipeline-arrow" aria-hidden="true">
-                      →
-                    </span>
+          <figure className="research-pipeline-figure">
+            <ol className="research-pipeline">
+              {researchPipelineSteps.map((step, index) => (
+                <li className="research-pipeline-step" key={step.title}>
+                  <Link to={step.to}>
+                    <span className="pipeline-number">{String(index + 1).padStart(2, '0')}</span>
+                    <strong>{step.title}</strong>
+                    <span>{step.detail}</span>
+                  </Link>
+                  {index < researchPipelineSteps.length - 1 && (
+                    <span className="research-pipeline-arrow" aria-hidden="true">→</span>
                   )}
                 </li>
               ))}
@@ -3214,242 +3005,121 @@ function App() {
             <figcaption>
               <FigureCaption
                 as="div"
-                caption="Figure: Observation and public data feed a mathematical model; local viewing and the worksheet then support a written research question."
+                caption="Figure 03. Proposed computational pipeline. Links open only existing research, mathematics, data, and algorithm pages."
                 source={FIGURE_SOURCES.schematic}
               />
             </figcaption>
           </figure>
         </section>
 
-        <section className="section home-audience-section tone-audience" aria-label="Who this is for">
+        <section className="section reliability-preview-section tone-nav" aria-label="Reliability diagnostic preview">
           <div className="section-heading">
-            <p className="eyebrow eyebrow-sage">Audience</p>
-            <h2>Who this is for</h2>
-            <p className="section-lede">
-              Designed for high school learners and mentors who want a concrete applied-math case
-              study with public data and guided practice.
-            </p>
-          </div>
-          <div className="home-audience-grid">
-            {homeAudienceCards.map((card) => (
-              <article className={`home-audience-card tone-${card.tone}`} key={card.title}>
-                <h3>{card.title}</h3>
-                <p>{card.text}</p>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        <section className="section home-modules-section tone-nav" aria-label="Site modules">
-          <div className="section-heading">
-            <p className="eyebrow eyebrow-navy">Secondary Navigation</p>
-            <h2>Explore the full research lab</h2>
+            <p className="eyebrow eyebrow-navy">Reliability-Diagnostic Preview</p>
+            <h2>A local confidence score for each stationary contribution</h2>
             <p className="section-lede home-modules-lede">
-              After the overview, open a focused page—math, viewer, worksheet, archives, or team
-              notes—without leaving the research narrative.
+              The project investigates a restrained diagnostic that combines curvature, nearby
+              branch separation, and branch-angle jump. Thresholds remain in validation.
             </p>
           </div>
-          <div className="home-module-grid">
-            {homeModuleCards.map((item) => (
-              <Link
-                className={`home-module-card tone-${item.category}`}
-                key={item.id}
-                to={PANEL_ROUTES[item.id]}
-              >
-                <span className="home-module-label">{item.categoryLabel}</span>
-                <strong>{item.title}</strong>
-                <span>{item.description}</span>
-              </Link>
-            ))}
-          </div>
-          <div className="home-secondary-links">
-            <span className="home-secondary-label">Additional research pages</span>
-            <div className="home-secondary-link-row">
-              {secondaryModuleLinks.map((item) => (
-                <Link
-                  key={item.id}
-                  className="home-secondary-link"
-                  to={PANEL_ROUTES[item.id]}
-                >
-                  {item.title}
-                </Link>
-              ))}
+          <div className="reliability-preview-grid">
+            <div className="reliability-equations">
+              <span className="scientific-status status-validation">In Validation</span>
+              <p><i>q</i><sub>curv</sub> = |ψ″|</p>
+              <p><i>q</i><sub>sep</sub> = minimum separation from another stationary branch</p>
+              <p><i>q</i><sub>jump</sub> = change in branch angle / Δρ</p>
+              <p className="confidence-equation">
+                C<sub>s</sub> = min(1, q<sub>curv</sub>/τ<sub>curv</sub>,
+                q<sub>sep</sub>/τ<sub>sep</sub>, τ<sub>jump</sub>/(q<sub>jump</sub> + ε))
+              </p>
+              <Link className="home-tool-link" to="/math">See the mathematical framework →</Link>
+            </div>
+            <div className="confidence-scale">
+              <div className="confidence-level high">
+                <strong>High confidence</strong>
+                <span>ordinary stationary-phase contribution is appropriate</span>
+              </div>
+              <div className="confidence-level intermediate">
+                <strong>Intermediate</strong>
+                <span>refine locally / reevaluate roots</span>
+              </div>
+              <div className="confidence-level low">
+                <strong>Low confidence</strong>
+                <span>flag for special local treatment</span>
+              </div>
             </div>
           </div>
         </section>
 
-        <section className="section home-updates-section tone-updates" aria-label="Project updates">
+        <section className="section data-provenance-section tone-updates" aria-label="Cassini data provenance">
           <div className="section-heading">
-            <p className="eyebrow eyebrow-gold">Updates</p>
-            <h2>Project Updates</h2>
+            <p className="eyebrow eyebrow-gold">Real Public Data</p>
+            <h2>Cassini RSS data provenance</h2>
             <p className="section-lede">
-              Status notes for completed work, current classroom testing, and planned feedback
-              pilots.
+              The viewer uses local CSV conversions of public Cassini Radio Science Subsystem ring
+              occultation profiles from the NASA Planetary Data System Ring-Moon Systems Node.
             </p>
           </div>
-          <div className="home-updates-grid">
-            {projectUpdateCards.map((card) => (
-              <article className={`home-update-card status-${card.statusTone}`} key={card.title}>
-                <span className="home-update-status">{card.status}</span>
-                <h3>{card.title}</h3>
-                <p>{card.text}</p>
-              </article>
-            ))}
+          <div className="data-provenance-grid">
+            <figure className="data-provenance-preview">
+              <img src="/images/data viewer.png" alt="Cassini RSS Data Viewer showing a radial optical-depth profile" />
+              <FigureCaption
+                caption="Figure 04. Implemented viewer for real public Cassini/PDS-derived profiles."
+                source={FIGURE_SOURCES.csv}
+              />
+            </figure>
+            <div className="data-product-list">
+              <span className="scientific-status status-implemented">Implemented</span>
+              <p className="data-product-intro">Available local samples include:</p>
+              <ul>
+                {cassiniDatasets.map((dataset) => (
+                  <li key={dataset.id}>
+                    <strong>{dataset.rev} · {dataset.band}</strong>
+                    <span>{dataset.productId} · {dataset.resolution}</span>
+                  </li>
+                ))}
+              </ul>
+              <div className="data-links">
+                <Link className="button primary" to="/viewer">Open Cassini Data Viewer</Link>
+                <Link className="button secondary" to="/data-hub">Inspect official data sources</Link>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="section home-research-starter-section learning-resources-section" aria-labelledby="research-starter-title">
+          <div className="home-value-panel tone-callout">
+            <div className="home-value-panel-copy">
+              <p className="eyebrow eyebrow-navy">Research Learning Resources</p>
+              <h2 id="research-starter-title">Learn from the project</h2>
+              <p>
+                The scientific project remains primary. Student pathways, worksheet material,
+                teacher and club-leader guidance, toy models, and responsible research resources
+                remain available as a secondary layer.
+              </p>
+              <div className="learning-link-row">
+                <a className="button secondary" href={RESEARCH_STARTER_LAB_URL} target="_blank" rel="noopener noreferrer">
+                  Open Research Starter Lab ↗
+                </a>
+                <Link className="button secondary" to="/background">Mission Background</Link>
+                <Link className="button secondary" to="/gallery">Visual Resources</Link>
+              </div>
+            </div>
           </div>
         </section>
 
         <section className="section home-credits-section" aria-labelledby="sources-credits-title">
           <div className="section-heading">
             <p className="eyebrow eyebrow-navy">Sources &amp; Credits</p>
-            <h2 id="sources-credits-title">Public data and educational use</h2>
+            <h2 id="sources-credits-title">Public data and scientific sources</h2>
           </div>
           <p>
             Cassini Radio Science Subsystem (RSS) data shown here are educational local copies
-            derived from public NASA Planetary Data System products. This is an educational
-            research website; unpublished PRIMES data are not displayed. Website-generated
-            schematics and diagrams are labeled as author-generated or AI-assisted educational
-            graphics, while NASA and JPL imagery retains its source credit.
+            derived from public NASA Planetary Data System products. This research portfolio does
+            not display unpublished PRIMES data. Website-generated schematics and diagrams are
+            labeled accurately, while NASA and JPL imagery retains its source credit.
           </p>
         </section>
       </div>
-    )
-  }
-
-  function renderImpactFeedback() {
-    return (
-      <PanelShell>
-        <Section id="impact" eyebrow="Public Learning Module" title="Impact & Feedback" tone="impact">
-          <div className="impact-intro">
-            <p>
-              This site is being developed as a public learning module for high school students
-              interested in applied mathematics, inverse problems, scientific computing, and
-              research. The project uses Saturn ring radio occultation as a concrete case study to
-              help students see how real research moves from physical observation to mathematical
-              modeling, numerical diagnostics, and visualization.
-            </p>
-          </div>
-
-          <div className="impact-section portal-spaced">
-            <div className="impact-section-heading">
-              <h3>Who this helps</h3>
-            </div>
-            <div className="impact-audience-grid">
-              {whoThisHelps.map((item) => (
-                <article className="impact-audience-card" key={item}>
-                  <p>{item}</p>
-                </article>
-              ))}
-            </div>
-          </div>
-
-          <div className="impact-section portal-spaced">
-            <div className="impact-section-heading">
-              <h3>Impact Metrics</h3>
-            </div>
-            <div className="impact-metrics-grid">
-              {impactMetrics.map((metric) => (
-                <article className="impact-metric-card" key={metric.label}>
-                  <span className="impact-metric-value">{metric.value}</span>
-                  <p className="impact-metric-label">{metric.label}</p>
-                </article>
-              ))}
-            </div>
-          </div>
-
-          <div className="impact-feedback-panel portal-spaced">
-            <div className="impact-section-heading">
-              <h3>Feedback Survey</h3>
-            </div>
-            <p>
-              A feedback form will be added here for students to report what became clearer, what
-              remained confusing, and whether the site increased their interest in applied
-              mathematics or scientific computing.
-            </p>
-            <button className="button primary impact-feedback-button" type="button" disabled>
-              Open Feedback Form
-            </button>
-          </div>
-        </Section>
-      </PanelShell>
-    )
-  }
-
-  function renderHowToStartResearch() {
-    return (
-      <PanelShell>
-        <Section
-          id="how-to-start-research"
-          eyebrow="Research Template"
-          title="How to Start Research from Interest"
-          tone="learning"
-        >
-          <div className="research-roadmap-intro">
-            <p className="research-roadmap-subtitle">
-              A case-based roadmap for turning curiosity into a research question, including an
-              AI-assisted workflow for mapping papers and verifying sources.
-            </p>
-            <p className="research-roadmap-note">
-              This website uses Saturn ring radio occultation as one example. The same
-              structure can be adapted to other fields, such as biology, economics, climate
-              science, or machine learning.
-            </p>
-          </div>
-
-          <div className="research-section-block">
-            <div className="research-section-heading">
-              <h3>From interest to research question</h3>
-              <p>Use this general roadmap to move from curiosity toward a testable question.</p>
-            </div>
-            <div className="research-roadmap-grid">
-              {researchRoadmapSteps.map((step, index) => (
-                <article className="research-roadmap-card" key={step.title}>
-                  <span className="research-roadmap-number" aria-hidden="true">
-                    {index + 1}
-                  </span>
-                  <div className="research-roadmap-copy">
-                    <h3>{step.title}</h3>
-                    <p>{step.detail}</p>
-                  </div>
-                </article>
-              ))}
-            </div>
-          </div>
-
-          <div className="research-section-block portal-spaced">
-            <div className="research-section-heading">
-              <h3>Using AI to enter a research field</h3>
-              <p>
-                How to use AI to map literature, extract expert thinking, and generate learning
-                questions.
-              </p>
-            </div>
-            <p className="ai-workflow-warning">
-              AI should guide reading and questioning, not fabricate results, citations, data, or
-              professor responses.
-            </p>
-            <div className="ai-workflow-grid">
-              {aiWorkflowSteps.map((step) => (
-                <article className="ai-workflow-card" key={step.letter}>
-                  <span className="ai-workflow-letter" aria-hidden="true">
-                    {step.letter}
-                  </span>
-                  <div className="ai-workflow-copy">
-                    <h3>{step.title}</h3>
-                    {step.isPrompt ? (
-                      <>
-                        <span className="ai-workflow-prompt-label">Prompt example</span>
-                        <p className="ai-workflow-prompt">“{step.detail}”</p>
-                      </>
-                    ) : (
-                      <p>{step.detail}</p>
-                    )}
-                  </div>
-                </article>
-              ))}
-            </div>
-          </div>
-        </Section>
-      </PanelShell>
     )
   }
 
@@ -3532,186 +3202,15 @@ function App() {
     )
   }
 
-  function renderStudentWorksheet() {
-    return (
-      <PanelShell>
-        <Section id="worksheet" eyebrow="Learning Activity" title="Student Mini-Lab Worksheet" tone="learning">
-          <figure className="panel-lead-figure research-figure worksheet-lead-schematic">
-            <SchematicWorksheetFigure />
-            <figcaption>
-              <FigureCaption
-                as="div"
-                caption="Figure: Mini-lab pathway from observation and measurement to modeling, a written research question, and a mentor follow-up."
-                source={FIGURE_SOURCES.schematic}
-              />
-            </figcaption>
-          </figure>
-          <div className="worksheet-intro">
-            <p className="worksheet-subtitle">
-              A structured mini-lab for students exploring radio occultation, inverse problems, and
-              Saturn ring reconstruction with the Data Viewer and Mathematical Framework.
-            </p>
-            <p className="worksheet-note">
-              Work section by section. Use one Cassini RSS sample in the Viewer while answering
-              Observe and Measure. Return to Math for Model. Data note: Viewer files are educational
-              extracts; official archives are listed in the Data Hub.
-            </p>
-            <button
-              className="button secondary copy-worksheet-button"
-              type="button"
-              onClick={copyWorksheet}
-            >
-              {worksheetCopied ? 'Copied!' : 'Copy Worksheet'}
-            </button>
-          </div>
-          <div className="worksheet-sections">
-            {studentWorksheetSections.map((section) => (
-              <section className="worksheet-section-card" key={section.id}>
-                <div className="worksheet-section-heading">
-                  <p className="eyebrow eyebrow-sage">Mini-lab section</p>
-                  <h3>{section.title}</h3>
-                  <p>{section.prompt}</p>
-                </div>
-                <div className="worksheet-grid">
-                  {section.questions.map((question, index) => (
-                    <article className="worksheet-question-card" key={`${section.id}-${question}`}>
-                      <span className="worksheet-question-number" aria-hidden="true">
-                        {index + 1}
-                      </span>
-                      <p className="worksheet-question-text">{question}</p>
-                    </article>
-                  ))}
-                </div>
-              </section>
-            ))}
-          </div>
-        </Section>
-      </PanelShell>
-    )
-  }
-
-  function renderStartHere() {
-    return (
-      <PanelShell>
-        <Section id="start-here" eyebrow="Welcome / Start Here" title="Start Here: An Applied Math Research Case Study" tone="learning">
-          <figure className="start-here-banner research-figure">
-            <img
-              className="figure-fit-cover"
-              src="/images/cassini-occultation.jpg"
-              alt="Cassini radio occultation research context"
-            />
-            <figcaption>
-              <FigureCaption
-                as="div"
-                caption="Figure: Cassini radio occultation as the entry point for this applied-math case study."
-                source={FIGURE_SOURCES.radioOccultation}
-              />
-            </figcaption>
-          </figure>
-
-          <div className="start-here-intro two-column portal-spaced">
-            <p>
-              This site is designed for high school students who are curious about applied
-              mathematics, scientific computing, and research. Using Saturn’s rings as a
-              concrete case study, it shows how a real scientific problem can move from
-              physical observation to mathematical modeling, numerical analysis, and
-              visualization.
-            </p>
-            <p>
-              The goal is not only to present a MIT PRIMES Math Junior project, but to make
-              research-level ideas such as radio occultation, inverse problems, stationary
-              phase, and local data analysis more accessible to students who have mostly
-              seen math through classroom exercises or competitions.
-            </p>
-          </div>
-
-          <div className="start-here-section portal-spaced">
-            <div className="start-here-section-heading">
-              <p className="eyebrow">Learning Goals</p>
-              <h3>What you will learn</h3>
-            </div>
-            <div className="start-here-learn-grid">
-              {startHereLearnCards.map((card) => (
-                <article className="start-here-learn-card" key={card.title}>
-                  <h4>{card.title}</h4>
-                  <p>{card.text}</p>
-                </article>
-              ))}
-            </div>
-          </div>
-
-          <p className="start-here-note portal-spaced">
-            <strong>Before you begin:</strong> You do not need to already know advanced research
-            mathematics. The site is designed to help students move from intuition to modeling
-            step by step.
-          </p>
-
-          <div className="start-here-section portal-spaced">
-            <div className="start-here-section-heading">
-              <p className="eyebrow">Suggested Path</p>
-              <h3>Work through the learning module</h3>
-              <p className="start-here-section-lede">
-                Follow these steps in order to move from mission context to hands-on exploration
-                and reflection.
-              </p>
-            </div>
-            <ol className="start-here-path-list">
-              {startHerePathSteps.map((item) => (
-                <li key={item.step} className="start-here-path-step">
-                  <span className="start-here-path-number" aria-hidden="true">
-                    {item.step}
-                  </span>
-                  <div className="start-here-path-copy">
-                    <h4>{item.title}</h4>
-                    <p>{item.description}</p>
-                    {item.panelId && (
-                      <Link
-                        className="start-here-path-link"
-                        to={PANEL_ROUTES[item.panelId]}
-                      >
-                        Open this step
-                      </Link>
-                    )}
-                  </div>
-                </li>
-              ))}
-            </ol>
-          </div>
-
-          <div className="start-here-cta portal-spaced">
-            <div className="start-here-section-heading">
-              <p className="eyebrow">Next Steps</p>
-              <h3>After this page</h3>
-              <p className="start-here-section-lede">
-                Jump directly to three core parts of the learning module.
-              </p>
-            </div>
-            <div className="start-here-cta-actions">
-              <Link className="button secondary" to="/background">
-                Mission Background
-              </Link>
-              <Link className="button secondary" to="/viewer">
-                Data Viewer
-              </Link>
-              <Link className="button primary" to="/worksheet">
-                Student Worksheet
-              </Link>
-            </div>
-          </div>
-        </Section>
-      </PanelShell>
-    )
-  }
-
   function renderOverview() {
     return (
       <PanelShell>
-        <Section id="overview" eyebrow="01 / Overview" title="Project Overview" tone="research">
+        <Section id="overview" eyebrow="01 / Results" title="Current Results & Diagnostics" tone="research">
           <div className="two-column">
             <p>
-              This portal presents an MIT PRIMES Math Junior project about how radio
-              occultation measurements can support careful study of Saturn’s rings. The
-              focus is mathematical structure, visualization, and local diagnostic tools.
+              This MIT PRIMES Math Junior project investigates how radio-occultation measurements
+              can support reconstruction of Saturn’s radial ring structure. Current results focus
+              on mathematical structure, visualization, and local diagnostic tools.
             </p>
             <p>
               The current site is a research-support interface. It uses public or
@@ -4137,7 +3636,7 @@ function App() {
                   Load Cassini RSS occultation samples (Rev007E, Rev010E, Rev054CE, Rev089CE,
                   Rev133E), inspect local radial windows of normal optical depth, review
                   statistics, and export the selected window. This tool supports inspection and
-                  learning—it does not claim a finished reconstruction.
+                  analysis—it does not claim a finished reconstruction.
                 </p>
               </div>
               <p className="viewer-edu-note">{VIEWER_EDUCATIONAL_NOTE}</p>
@@ -4182,11 +3681,7 @@ function App() {
 
   function renderActivePanel() {
     if (activePanel === 'menu') return renderMenu()
-    if (activePanel === 'start-here') return renderStartHere()
-    if (activePanel === 'how-to-start-research') return renderHowToStartResearch()
     if (activePanel === 'data-hub') return renderDataHub()
-    if (activePanel === 'worksheet') return renderStudentWorksheet()
-    if (activePanel === 'impact') return renderImpactFeedback()
     if (activePanel === 'overview') return renderOverview()
     if (activePanel === 'background') return renderBackground()
     if (activePanel === 'math') return renderMath()
@@ -4216,7 +3711,7 @@ function App() {
         <meta name="twitter:title" content={seo.title} />
         <meta name="twitter:description" content={seo.description} />
         <meta name="twitter:image" content={SOCIAL_IMAGE_URL} />
-        <script type="application/ld+json">{JSON.stringify(learningResourceStructuredData)}</script>
+        <script type="application/ld+json">{JSON.stringify(researchProjectStructuredData)}</script>
       </Helmet>
       <NavBar />
       <main>{renderActivePanel()}</main>

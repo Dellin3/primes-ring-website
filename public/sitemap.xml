@@ -4,10 +4,7 @@
     <loc>https://primes-ring-website-p9yv.vercel.app/</loc>
   </url>
   <url>
-    <loc>https://primes-ring-website-p9yv.vercel.app/start-here</loc>
-  </url>
-  <url>
-    <loc>https://primes-ring-website-p9yv.vercel.app/research-guide</loc>
+    <loc>https://primes-ring-website-p9yv.vercel.app/background</loc>
   </url>
   <url>
     <loc>https://primes-ring-website-p9yv.vercel.app/data-hub</loc>
@@ -19,9 +16,18 @@
     <loc>https://primes-ring-website-p9yv.vercel.app/viewer</loc>
   </url>
   <url>
-    <loc>https://primes-ring-website-p9yv.vercel.app/worksheet</loc>
+    <loc>https://primes-ring-website-p9yv.vercel.app/overview</loc>
   </url>
   <url>
-    <loc>https://primes-ring-website-p9yv.vercel.app/impact</loc>
+    <loc>https://primes-ring-website-p9yv.vercel.app/progress</loc>
+  </url>
+  <url>
+    <loc>https://primes-ring-website-p9yv.vercel.app/team</loc>
+  </url>
+  <url>
+    <loc>https://primes-ring-website-p9yv.vercel.app/algorithms</loc>
+  </url>
+  <url>
+    <loc>https://primes-ring-website-p9yv.vercel.app/gallery</loc>
   </url>
 </urlset>
