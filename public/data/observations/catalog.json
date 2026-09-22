@@ -1,0 +1,542 @@
+{
+  "schema_version": 1,
+  "catalog_type": "conversion-verified complete Cassini RSS DLP profile products",
+  "source_statement": "Every active entry passed PDS3 label parsing, full local conversion verification, binary chunk hashing, deterministic source comparisons, and web-data integrity verification.",
+  "validation_status": "pass",
+  "observation_count": 6,
+  "featured_dataset_id": "rss_2010_170_x43_e_dlp_500m",
+  "catalog_radial_domain_km": {
+    "minimum": 71737.75,
+    "maximum": 145212.5
+  },
+  "observations": [
+    {
+      "slug": "rev007e-x43-dlp-500m",
+      "dataset_id": "rss_2005_123_x43_e_dlp_500m",
+      "display_name": "Rev 007 Egress \u00b7 X-band \u00b7 DSN 43",
+      "ring_observation_id": "RSS_2005_123_X43_E",
+      "product_id": "RSS_2005_123_X43_E_DLP_500M.TAB",
+      "product_type": "RING_PROFILE",
+      "revolution_number": 7,
+      "band": "X",
+      "dsn_station_number": 43,
+      "ring_occultation_direction": "BOTH",
+      "ring_profile_direction": "EGRESS",
+      "record_count": 290377,
+      "record_bytes": 180,
+      "radial_range": {
+        "minimum": 72422.5,
+        "maximum": 145016.5,
+        "unit": "KILOMETER",
+        "sampling_interval": 0.25
+      },
+      "principal_variables": [
+        {
+          "id": "optical_depth",
+          "label": "Normal Optical Depth",
+          "source_column": "NORMAL OPTICAL DEPTH",
+          "unit": "N/A",
+          "binary_column_index": 1,
+          "storage": "Float64",
+          "description": "The normal optical depth obtained from its measured oblique value scaled by the sine of the absolute value of ring opening angle (OBSERVED RING ELEVATION). The measured diffraction-limited oblique optical depth is the negative natural logarithm of the NORMALIZED SIGNAL POWER above.",
+          "verified_value_range": {
+            "minimum": -0.1660106,
+            "maximum": 7.591251
+          }
+        },
+        {
+          "id": "signal_power",
+          "label": "Normalized Signal Power",
+          "source_column": "NORMALIZED SIGNAL POWER",
+          "unit": "N/A",
+          "binary_column_index": 2,
+          "storage": "Float64",
+          "description": "Power (amplitude square) of the measured ring-attenuated diffraction-limited radio signal, normalized by its value in the absence of the rings (normalized to unity in free-space). The value may be used to compute the measured diffraction-limited oblique optical depth as the negative natural logarithm of the NORMALIZED SIGNAL POWER.",
+          "verified_value_range": {
+            "minimum": 5.695406e-09,
+            "maximum": 1.514605
+          }
+        },
+        {
+          "id": "phase_shift",
+          "label": "Phase Shift",
+          "source_column": "PHASE SHIFT",
+          "unit": "DEGREE",
+          "binary_column_index": 3,
+          "storage": "Float64",
+          "description": "The difference between the phase of the coherent sinusoid passing directly through the rings (the direct signal) and its value had the rings been absent. The phase shift is computed from the measured or reconstructed complex ring transmittance; see Eq. (22) of MAROUFETAL1986. The phase reference of the original measurements is the Cassini UltraStable Oscillator, or USO",
+          "verified_value_range": {
+            "minimum": -179.999289,
+            "maximum": 179.999965
+          },
+          "display_semantics": {
+            "representation": "stored source phase samples",
+            "overview_rendering": "unconnected source-sample points",
+            "exact_rendering": "unconnected exact converted sample points",
+            "continuity": "not inferred from the preserved metadata",
+            "transformation": "none",
+            "unwrapped": false
+          }
+        }
+      ],
+      "base_path": "/data/observations/rss_2005_123_x43_e_dlp_500m",
+      "metadata_url": "/data/observations/rss_2005_123_x43_e_dlp_500m/metadata.json",
+      "overview_url": "/data/observations/rss_2005_123_x43_e_dlp_500m/overview.json",
+      "index_url": "/data/observations/rss_2005_123_x43_e_dlp_500m/index.json",
+      "overview": {
+        "overview_type": "display-only source-sample reduction",
+        "point_count": 1131,
+        "byte_length": 107902
+      },
+      "web_data": {
+        "validation_status": "pass",
+        "chunk_size_records": 8192,
+        "chunk_count": 36,
+        "exact_byte_length": 9292064,
+        "total_byte_length": 9432181,
+        "deterministic_record_comparisons": 52,
+        "chunk_hashes_verified": 36
+      }
+    },
+    {
+      "slug": "rev028i-x43-dlp-500m",
+      "dataset_id": "rss_2006_258_x43_i_dlp_500m",
+      "display_name": "Rev 028 Ingress \u00b7 X-band \u00b7 DSN 43",
+      "ring_observation_id": "RSS_2006_258_X43_I",
+      "product_id": "RSS_2006_258_X43_I_DLP_500M.TAB",
+      "product_type": "RING_PROFILE",
+      "revolution_number": 28,
+      "band": "X",
+      "dsn_station_number": 43,
+      "ring_occultation_direction": "INGRESS",
+      "ring_profile_direction": "INGRESS",
+      "record_count": 104644,
+      "record_bytes": 180,
+      "radial_range": {
+        "minimum": 114970.25,
+        "maximum": 141131.0,
+        "unit": "KILOMETER",
+        "sampling_interval": 0.25
+      },
+      "principal_variables": [
+        {
+          "id": "optical_depth",
+          "label": "Normal Optical Depth",
+          "source_column": "NORMAL OPTICAL DEPTH",
+          "unit": "N/A",
+          "binary_column_index": 1,
+          "storage": "Float64",
+          "description": "The normal optical depth obtained from its measured oblique value scaled by the sine of the absolute value of ring opening angle (OBSERVED RING ELEVATION). The measured diffraction-limited oblique optical depth is the negative natural logarithm of the NORMALIZED SIGNAL POWER above.",
+          "verified_value_range": {
+            "minimum": -0.1430109,
+            "maximum": 3.915244
+          }
+        },
+        {
+          "id": "signal_power",
+          "label": "Normalized Signal Power",
+          "source_column": "NORMALIZED SIGNAL POWER",
+          "unit": "N/A",
+          "binary_column_index": 2,
+          "storage": "Float64",
+          "description": "Power (amplitude square) of the measured ring-attenuated diffraction-limited radio signal, normalized by its value in the absence of the rings (normalized to unity in free-space). The value may be used to compute the measured diffraction-limited oblique optical depth as the negative natural logarithm of the NORMALIZED SIGNAL POWER.",
+          "verified_value_range": {
+            "minimum": 1.371591e-07,
+            "maximum": 1.780676
+          }
+        },
+        {
+          "id": "phase_shift",
+          "label": "Phase Shift",
+          "source_column": "PHASE SHIFT",
+          "unit": "DEGREE",
+          "binary_column_index": 3,
+          "storage": "Float64",
+          "description": "The difference between the phase of the coherent sinusoid passing directly through the rings (the direct signal) and its value had the rings been absent. The phase shift is computed from the measured or reconstructed complex ring transmittance; see Eq. (22) of MAROUFETAL1986. The phase reference of the original measurements is the Cassini UltraStable Oscillator, or USO",
+          "verified_value_range": {
+            "minimum": -179.997342,
+            "maximum": 179.997792
+          },
+          "display_semantics": {
+            "representation": "stored source phase samples",
+            "overview_rendering": "unconnected source-sample points",
+            "exact_rendering": "unconnected exact converted sample points",
+            "continuity": "not inferred from the preserved metadata",
+            "transformation": "none",
+            "unwrapped": false
+          }
+        }
+      ],
+      "base_path": "/data/observations/rss_2006_258_x43_i_dlp_500m",
+      "metadata_url": "/data/observations/rss_2006_258_x43_i_dlp_500m/metadata.json",
+      "overview_url": "/data/observations/rss_2006_258_x43_i_dlp_500m/overview.json",
+      "index_url": "/data/observations/rss_2006_258_x43_i_dlp_500m/index.json",
+      "overview": {
+        "overview_type": "display-only source-sample reduction",
+        "point_count": 412,
+        "byte_length": 39763
+      },
+      "web_data": {
+        "validation_status": "pass",
+        "chunk_size_records": 8192,
+        "chunk_count": 13,
+        "exact_byte_length": 3348608,
+        "total_byte_length": 3412409,
+        "deterministic_record_comparisons": 52,
+        "chunk_hashes_verified": 13
+      }
+    },
+    {
+      "slug": "rev044e-x63-dlp-500m",
+      "dataset_id": "rss_2007_130_x63_e_dlp_500m",
+      "display_name": "Rev 044 Egress \u00b7 X-band \u00b7 DSN 63",
+      "ring_observation_id": "RSS_2007_130_X63_E",
+      "product_id": "RSS_2007_130_X63_E_DLP_500M.TAB",
+      "product_type": "RING_PROFILE",
+      "revolution_number": 44,
+      "band": "X",
+      "dsn_station_number": 63,
+      "ring_occultation_direction": "EGRESS",
+      "ring_profile_direction": "EGRESS",
+      "record_count": 292408,
+      "record_bytes": 180,
+      "radial_range": {
+        "minimum": 71978.75,
+        "maximum": 145080.5,
+        "unit": "KILOMETER",
+        "sampling_interval": 0.25
+      },
+      "principal_variables": [
+        {
+          "id": "optical_depth",
+          "label": "Normal Optical Depth",
+          "source_column": "NORMAL OPTICAL DEPTH",
+          "unit": "N/A",
+          "binary_column_index": 1,
+          "storage": "Float64",
+          "description": "The normal optical depth obtained from its measured oblique value scaled by the sine of the absolute value of ring opening angle (OBSERVED RING ELEVATION). The measured diffraction-limited oblique optical depth is the negative natural logarithm of the NORMALIZED SIGNAL POWER above.",
+          "verified_value_range": {
+            "minimum": -0.1459814,
+            "maximum": 5.532684
+          }
+        },
+        {
+          "id": "signal_power",
+          "label": "Normalized Signal Power",
+          "source_column": "NORMALIZED SIGNAL POWER",
+          "unit": "N/A",
+          "binary_column_index": 2,
+          "storage": "Float64",
+          "description": "Power (amplitude square) of the measured ring-attenuated diffraction-limited radio signal, normalized by its value in the absence of the rings (normalized to unity in free-space). The value may be used to compute the measured diffraction-limited oblique optical depth as the negative natural logarithm of the NORMALIZED SIGNAL POWER.",
+          "verified_value_range": {
+            "minimum": 7.084485e-10,
+            "maximum": 1.743492
+          }
+        },
+        {
+          "id": "phase_shift",
+          "label": "Phase Shift",
+          "source_column": "PHASE SHIFT",
+          "unit": "DEGREE",
+          "binary_column_index": 3,
+          "storage": "Float64",
+          "description": "The difference between the phase of the coherent sinusoid passing directly through the rings (the direct signal) and its value had the rings been absent. The phase shift is computed from the measured or reconstructed complex ring transmittance; see Eq. (22) of MAROUFETAL1986. The phase reference of the original measurements is the Cassini UltraStable Oscillator, or USO",
+          "verified_value_range": {
+            "minimum": -179.997968,
+            "maximum": 179.997428
+          },
+          "display_semantics": {
+            "representation": "stored source phase samples",
+            "overview_rendering": "unconnected source-sample points",
+            "exact_rendering": "unconnected exact converted sample points",
+            "continuity": "not inferred from the preserved metadata",
+            "transformation": "none",
+            "unwrapped": false
+          }
+        }
+      ],
+      "base_path": "/data/observations/rss_2007_130_x63_e_dlp_500m",
+      "metadata_url": "/data/observations/rss_2007_130_x63_e_dlp_500m/metadata.json",
+      "overview_url": "/data/observations/rss_2007_130_x63_e_dlp_500m/overview.json",
+      "index_url": "/data/observations/rss_2007_130_x63_e_dlp_500m/index.json",
+      "overview": {
+        "overview_type": "display-only source-sample reduction",
+        "point_count": 1140,
+        "byte_length": 108226
+      },
+      "web_data": {
+        "validation_status": "pass",
+        "chunk_size_records": 8192,
+        "chunk_count": 36,
+        "exact_byte_length": 9357056,
+        "total_byte_length": 9497502,
+        "deterministic_record_comparisons": 52,
+        "chunk_hashes_verified": 36
+      }
+    },
+    {
+      "slug": "rev064e-x43-dlp-500m",
+      "dataset_id": "rss_2008_102_x43_e_dlp_500m",
+      "display_name": "Rev 064 Egress \u00b7 X-band \u00b7 DSN 43",
+      "ring_observation_id": "RSS_2008_102_X43_E",
+      "product_id": "RSS_2008_102_X43_E_DLP_500M.TAB",
+      "product_type": "RING_PROFILE",
+      "revolution_number": 64,
+      "band": "X",
+      "dsn_station_number": 43,
+      "ring_occultation_direction": "BOTH",
+      "ring_profile_direction": "EGRESS",
+      "record_count": 293124,
+      "record_bytes": 180,
+      "radial_range": {
+        "minimum": 71931.75,
+        "maximum": 145212.5,
+        "unit": "KILOMETER",
+        "sampling_interval": 0.25
+      },
+      "principal_variables": [
+        {
+          "id": "optical_depth",
+          "label": "Normal Optical Depth",
+          "source_column": "NORMAL OPTICAL DEPTH",
+          "unit": "N/A",
+          "binary_column_index": 1,
+          "storage": "Float64",
+          "description": "The normal optical depth obtained from its measured oblique value scaled by the sine of the absolute value of ring opening angle (OBSERVED RING ELEVATION). The measured diffraction-limited oblique optical depth is the negative natural logarithm of the NORMALIZED SIGNAL POWER above.",
+          "verified_value_range": {
+            "minimum": -0.09572345,
+            "maximum": 3.753578
+          }
+        },
+        {
+          "id": "signal_power",
+          "label": "Normalized Signal Power",
+          "source_column": "NORMALIZED SIGNAL POWER",
+          "unit": "N/A",
+          "binary_column_index": 2,
+          "storage": "Float64",
+          "description": "Power (amplitude square) of the measured ring-attenuated diffraction-limited radio signal, normalized by its value in the absence of the rings (normalized to unity in free-space). The value may be used to compute the measured diffraction-limited oblique optical depth as the negative natural logarithm of the NORMALIZED SIGNAL POWER.",
+          "verified_value_range": {
+            "minimum": 2.575329e-10,
+            "maximum": 1.756084
+          }
+        },
+        {
+          "id": "phase_shift",
+          "label": "Phase Shift",
+          "source_column": "PHASE SHIFT",
+          "unit": "DEGREE",
+          "binary_column_index": 3,
+          "storage": "Float64",
+          "description": "The difference between the phase of the coherent sinusoid passing directly through the rings (the direct signal) and its value had the rings been absent. The phase shift is computed from the measured or reconstructed complex ring transmittance; see Eq. (22) of MAROUFETAL1986. The phase reference of the original measurements is the Cassini UltraStable Oscillator, or USO",
+          "verified_value_range": {
+            "minimum": -179.997235,
+            "maximum": 179.998427
+          },
+          "display_semantics": {
+            "representation": "stored source phase samples",
+            "overview_rendering": "unconnected source-sample points",
+            "exact_rendering": "unconnected exact converted sample points",
+            "continuity": "not inferred from the preserved metadata",
+            "transformation": "none",
+            "unwrapped": false
+          }
+        }
+      ],
+      "base_path": "/data/observations/rss_2008_102_x43_e_dlp_500m",
+      "metadata_url": "/data/observations/rss_2008_102_x43_e_dlp_500m/metadata.json",
+      "overview_url": "/data/observations/rss_2008_102_x43_e_dlp_500m/overview.json",
+      "index_url": "/data/observations/rss_2008_102_x43_e_dlp_500m/index.json",
+      "overview": {
+        "overview_type": "display-only source-sample reduction",
+        "point_count": 1143,
+        "byte_length": 109591
+      },
+      "web_data": {
+        "validation_status": "pass",
+        "chunk_size_records": 8192,
+        "chunk_count": 36,
+        "exact_byte_length": 9379968,
+        "total_byte_length": 9521778,
+        "deterministic_record_comparisons": 52,
+        "chunk_hashes_verified": 36
+      }
+    },
+    {
+      "slug": "rev123e-x63-dlp-500m",
+      "dataset_id": "rss_2009_360_x63_e_dlp_500m",
+      "display_name": "Rev 123 Egress \u00b7 X-band \u00b7 DSN 63",
+      "ring_observation_id": "RSS_2009_360_X63_E",
+      "product_id": "RSS_2009_360_X63_E_DLP_500M.TAB",
+      "product_type": "RING_PROFILE",
+      "revolution_number": 123,
+      "band": "X",
+      "dsn_station_number": 63,
+      "ring_occultation_direction": "BOTH",
+      "ring_profile_direction": "EGRESS",
+      "record_count": 292819,
+      "record_bytes": 180,
+      "radial_range": {
+        "minimum": 71841.5,
+        "maximum": 145046.0,
+        "unit": "KILOMETER",
+        "sampling_interval": 0.25
+      },
+      "principal_variables": [
+        {
+          "id": "optical_depth",
+          "label": "Normal Optical Depth",
+          "source_column": "NORMAL OPTICAL DEPTH",
+          "unit": "N/A",
+          "binary_column_index": 1,
+          "storage": "Float64",
+          "description": "The normal optical depth obtained from its measured oblique value scaled by the sine of the absolute value of ring opening angle (OBSERVED RING ELEVATION). The measured diffraction-limited oblique optical depth is the negative natural logarithm of the NORMALIZED SIGNAL POWER above.",
+          "verified_value_range": {
+            "minimum": -0.0452933,
+            "maximum": 1.609296
+          }
+        },
+        {
+          "id": "signal_power",
+          "label": "Normalized Signal Power",
+          "source_column": "NORMALIZED SIGNAL POWER",
+          "unit": "N/A",
+          "binary_column_index": 2,
+          "storage": "Float64",
+          "description": "Power (amplitude square) of the measured ring-attenuated diffraction-limited radio signal, normalized by its value in the absence of the rings (normalized to unity in free-space). The value may be used to compute the measured diffraction-limited oblique optical depth as the negative natural logarithm of the NORMALIZED SIGNAL POWER.",
+          "verified_value_range": {
+            "minimum": 5.01464e-09,
+            "maximum": 1.712324
+          }
+        },
+        {
+          "id": "phase_shift",
+          "label": "Phase Shift",
+          "source_column": "PHASE SHIFT",
+          "unit": "DEGREE",
+          "binary_column_index": 3,
+          "storage": "Float64",
+          "description": "The difference between the phase of the coherent sinusoid passing directly through the rings (the direct signal) and its value had the rings been absent. The phase shift is computed from the measured or reconstructed complex ring transmittance; see Eq. (22) of MAROUFETAL1986. The phase reference of the original measurements is the Cassini UltraStable Oscillator, or USO",
+          "verified_value_range": {
+            "minimum": -179.999456,
+            "maximum": 179.998511
+          },
+          "display_semantics": {
+            "representation": "stored source phase samples",
+            "overview_rendering": "unconnected source-sample points",
+            "exact_rendering": "unconnected exact converted sample points",
+            "continuity": "not inferred from the preserved metadata",
+            "transformation": "none",
+            "unwrapped": false
+          }
+        }
+      ],
+      "base_path": "/data/observations/rss_2009_360_x63_e_dlp_500m",
+      "metadata_url": "/data/observations/rss_2009_360_x63_e_dlp_500m/metadata.json",
+      "overview_url": "/data/observations/rss_2009_360_x63_e_dlp_500m/overview.json",
+      "index_url": "/data/observations/rss_2009_360_x63_e_dlp_500m/index.json",
+      "overview": {
+        "overview_type": "display-only source-sample reduction",
+        "point_count": 1142,
+        "byte_length": 109546
+      },
+      "web_data": {
+        "validation_status": "pass",
+        "chunk_size_records": 8192,
+        "chunk_count": 36,
+        "exact_byte_length": 9370208,
+        "total_byte_length": 9511970,
+        "deterministic_record_comparisons": 52,
+        "chunk_hashes_verified": 36
+      }
+    },
+    {
+      "slug": "rev133e-x43-dlp-500m",
+      "dataset_id": "rss_2010_170_x43_e_dlp_500m",
+      "display_name": "Rev 133 Egress \u00b7 X-band \u00b7 DSN 43",
+      "ring_observation_id": "RSS_2010_170_X43_E",
+      "product_id": "RSS_2010_170_X43_E_DLP_500M.TAB",
+      "product_type": "RING_PROFILE",
+      "revolution_number": 133,
+      "band": "X",
+      "dsn_station_number": 43,
+      "ring_occultation_direction": "BOTH",
+      "ring_profile_direction": "EGRESS",
+      "record_count": 293530,
+      "record_bytes": 180,
+      "radial_range": {
+        "minimum": 71737.75,
+        "maximum": 145120.0,
+        "unit": "KILOMETER",
+        "sampling_interval": 0.25
+      },
+      "principal_variables": [
+        {
+          "id": "optical_depth",
+          "label": "Normal Optical Depth",
+          "source_column": "NORMAL OPTICAL DEPTH",
+          "unit": "N/A",
+          "binary_column_index": 1,
+          "storage": "Float64",
+          "description": "The normal optical depth obtained from its measured oblique value scaled by the sine of the absolute value of ring opening angle (OBSERVED RING ELEVATION). The measured diffraction-limited oblique optical depth is the negative natural logarithm of the NORMALIZED SIGNAL POWER above.",
+          "verified_value_range": {
+            "minimum": -0.01629572,
+            "maximum": 0.661995
+          }
+        },
+        {
+          "id": "signal_power",
+          "label": "Normalized Signal Power",
+          "source_column": "NORMALIZED SIGNAL POWER",
+          "unit": "N/A",
+          "binary_column_index": 2,
+          "storage": "Float64",
+          "description": "Power (amplitude square) of the measured ring-attenuated diffraction-limited radio signal, normalized by its value in the absence of the rings (normalized to unity in free-space). The value may be used to compute the measured diffraction-limited oblique optical depth as the negative natural logarithm of the NORMALIZED SIGNAL POWER.",
+          "verified_value_range": {
+            "minimum": 1.844233e-09,
+            "maximum": 1.64033
+          }
+        },
+        {
+          "id": "phase_shift",
+          "label": "Phase Shift",
+          "source_column": "PHASE SHIFT",
+          "unit": "DEGREE",
+          "binary_column_index": 3,
+          "storage": "Float64",
+          "description": "The difference between the phase of the coherent sinusoid passing directly through the rings (the direct signal) and its value had the rings been absent. The phase shift is computed from the measured or reconstructed complex ring transmittance; see Eq. (22) of MAROUFETAL1986. The phase reference of the original measurements is the Cassini UltraStable Oscillator, or USO",
+          "verified_value_range": {
+            "minimum": -179.99963,
+            "maximum": 179.99943
+          },
+          "display_semantics": {
+            "representation": "stored source phase samples",
+            "overview_rendering": "unconnected source-sample points",
+            "exact_rendering": "unconnected exact converted sample points",
+            "continuity": "not inferred from the preserved metadata",
+            "transformation": "none",
+            "unwrapped": false
+          }
+        }
+      ],
+      "base_path": "/data/observations/rss_2010_170_x43_e_dlp_500m",
+      "metadata_url": "/data/observations/rss_2010_170_x43_e_dlp_500m/metadata.json",
+      "overview_url": "/data/observations/rss_2010_170_x43_e_dlp_500m/overview.json",
+      "index_url": "/data/observations/rss_2010_170_x43_e_dlp_500m/index.json",
+      "overview": {
+        "overview_type": "display-only source-sample reduction",
+        "point_count": 1146,
+        "byte_length": 110919
+      },
+      "web_data": {
+        "validation_status": "pass",
+        "chunk_size_records": 8192,
+        "chunk_count": 36,
+        "exact_byte_length": 9392960,
+        "total_byte_length": 9536096,
+        "deterministic_record_comparisons": 52,
+        "chunk_hashes_verified": 36
+      }
+    }
+  ]
+}

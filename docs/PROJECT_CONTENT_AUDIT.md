@@ -5,6 +5,11 @@
 **Deployed site named in the repository:** `https://primes-ring-website-p9yv.vercel.app`
 **Audit mode:** read-only inspection of the pre-audit repository; this document is the only file added.
 
+> Historical snapshot: this report describes the pre-repair repository as it
+> existed on the audit date. The five small CSVs named below are now classified
+> as legacy research-window subsets and archived outside public production
+> assets; their historical paths are not current public URLs.
+
 ## Audit standards and scope
 
 This audit distinguishes what the repository **contains** from what the website **describes**. A statement in website copy is evidence that the repository makes that statement; it is not, by itself, evidence that the described numerical research was implemented or validated.

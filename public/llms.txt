@@ -1,15 +1,15 @@
-# Saturn Rings Reconstruction Lab
+# MIT PRIMES 2026 Saturn Rings Project
 
-A MIT PRIMES research project portfolio exploring Saturn ring reconstruction through public Cassini RSS radio-occultation data, optical-depth visualization, inverse problems, stationary phase, branch bookkeeping, and numerical diagnostics.
+New Methods toward High-Resolution Reconstruction of Saturn’s Rings is a team project by Dell Li, Maiya Qiu, and Yutong Zhao, mentored by Dr. Ryan Maguire. The public manuscript is not yet available. No publication, submission, or revision status is confirmed here. The public repository contains website and data-viewer code; scientific reconstruction code and research results are not yet available.
 
-Main pages:
+Canonical pages:
 - Homepage: https://primes-ring-website-p9yv.vercel.app/
-- Mission Background: https://primes-ring-website-p9yv.vercel.app/background
-- Data Hub: https://primes-ring-website-p9yv.vercel.app/data-hub
-- Data Viewer: https://primes-ring-website-p9yv.vercel.app/viewer
-- Mathematics: https://primes-ring-website-p9yv.vercel.app/math
-- Results and Diagnostics: https://primes-ring-website-p9yv.vercel.app/overview
-- Progress: https://primes-ring-website-p9yv.vercel.app/progress
+- Research: https://primes-ring-website-p9yv.vercel.app/research
+- Signal and Phase module: https://primes-ring-website-p9yv.vercel.app/research/signal-and-phase
+- Stationary Roots and Continuation module: https://primes-ring-website-p9yv.vercel.app/research/stationary-roots-and-continuation
+- Reliability and Reconstruction module: https://primes-ring-website-p9yv.vercel.app/research/reliability-and-reconstruction
+- Cassini Data Observatory: https://primes-ring-website-p9yv.vercel.app/data
+- Paper and Code: https://primes-ring-website-p9yv.vercel.app/resources
 
 Data sources:
-Public NASA Planetary Data System Cassini RSS ring-occultation products.
+The active Data Observatory catalog contains six conversion-verified complete Cassini RSS PDS3 diffraction-limited profile products. Each observation initially loads a display-only source-sample overview and fetches hashed Float64 exact converted-sample chunks only for selected radial windows. Legacy research-window subsets are archived outside public production assets while parent-observation mapping remains incomplete.

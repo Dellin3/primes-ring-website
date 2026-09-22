@@ -1,0 +1,13 @@
+const storedValue = (value) => Number.isFinite(value) ? String(value) : 'Missing / unavailable'
+export default function ExactSampleInspector({ sample, comparison, variable, exactSampleCount, status, observationId, onOpenExample, onFocusChart }) {
+  const unit = variable.unit === 'N/A' ? 'dimensionless' : variable.unit.toLowerCase()
+  return <div className="exact-sample-inspector"><div className="exact-sample-intro"><h3>Inspect individual samples</h3>
+    {!sample && status === 'overview' && <><p>Open the example region, or narrow the highlighted range below.</p><button type="button" onClick={onOpenExample}>Open example region</button></>}
+    {!sample && status === 'loading_exact' && <p role="status">Loading samples…</p>}
+    {!sample && status === 'error' && <p>Exact sample inspection is unavailable. Retry exact data beside the chart.</p>}
+    {!sample && status === 'exact' && <><p>{exactSampleCount ? 'Select a point to inspect its values.' : 'No samples in this window. Expand the range or open the example region.'}</p>{exactSampleCount > 0 && <button type="button" onClick={onFocusChart}>Focus chart, then use arrow keys</button>}</>}
+    {sample && <p>Click a second point to compare. ← / → moves between source records; Home / End selects a boundary; Escape clears selection.</p>}
+  </div>{sample && <><dl aria-live="polite"><div><dt>Ring radius</dt><dd>{storedValue(sample.ring_radius_km)} km</dd></div><div><dt>{variable.label}</dt><dd>{storedValue(sample[variable.id])} {unit}</dd></div><div><dt>Sample index (0-based source record)</dt><dd data-sample-index={sample.sample_index}>{sample.sample_index.toLocaleString('en-US')}</dd></div><div><dt>Exact rows in inclusive window</dt><dd>{exactSampleCount.toLocaleString('en-US')}</dd></div><div><dt>Active observation</dt><dd>{observationId}</dd></div><div><dt>Quality information</dt><dd>{Number.isFinite(sample[variable.id]) ? 'Per-sample quality flags are not included in this web derivative.' : 'The selected field is missing; no value has been substituted.'}</dd></div></dl>
+    {comparison && <div className="sample-comparison"><h4>Compare two positions</h4><p>Previous: source index {comparison.sample_index}, {storedValue(comparison.ring_radius_km)} km, {storedValue(comparison[variable.id])} {unit}.</p><p>Current minus previous: {Number.isFinite(sample[variable.id]) && Number.isFinite(comparison[variable.id]) ? `${storedValue(sample[variable.id] - comparison[variable.id])} ${unit}` : 'unavailable because a value is missing'}; radius difference {storedValue(sample.ring_radius_km - comparison.ring_radius_km)} km.</p>{variable.id === 'phase_shift' && <p>Raw stored phase difference only; periodicity and continuity are not inferred.</p>}</div>}</>}
+  </div>
+}

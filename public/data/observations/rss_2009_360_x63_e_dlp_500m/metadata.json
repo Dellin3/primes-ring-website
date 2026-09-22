@@ -1,0 +1,364 @@
+{
+  "schema_version": 1,
+  "web_product_version": "1.1.0",
+  "dataset_id": "rss_2009_360_x63_e_dlp_500m",
+  "display_name": "Cassini RSS Rev 123 Egress, X-band, DSN 63, DLP 500 m",
+  "source_statement": "Browser-specific derivative of a conversion-verified Cassini RSS PDS3 diffraction-limited profile. It contains four selected Float64 fields and is not the original PDS ASCII table.",
+  "pds_identity": {
+    "pds_version_id": "PDS3",
+    "data_set_id": "CO-SR-RSS-4/5-OCC-V2.0",
+    "ring_observation_id": "RSS_2009_360_X63_E",
+    "product_id": "RSS_2009_360_X63_E_DLP_500M.TAB",
+    "product_type": "RING_PROFILE",
+    "product_creation_time": "2018-280T15:32:54",
+    "producer_id": "CASSINI RST",
+    "source_product_id": "S56SROE2009360_0145NNNX63RD.2A1"
+  },
+  "observation": {
+    "revolution_number": 123,
+    "band": "X",
+    "dsn_station_number": 63,
+    "ring_occultation_direction": "BOTH",
+    "ring_profile_direction": "EGRESS",
+    "observation_type": "OCCULTATION PROFILE",
+    "target_name": "S RINGS",
+    "record_count": 292819,
+    "record_bytes": 180,
+    "documented_time_fields": {
+      "earth_received_start_time": "2009-360T02:35:37.871",
+      "earth_received_stop_time": "2009-360T04:58:04.467",
+      "ring_event_start_time": "2009-360T01:17:17.097",
+      "ring_event_stop_time": "2009-360T03:39:44.461",
+      "spacecraft_event_start_time": "2009-360T01:17:16.312",
+      "spacecraft_event_stop_time": "2009-360T03:39:44.172",
+      "spacecraft_clock_start_count": "UNK",
+      "spacecraft_clock_stop_count": "UNK"
+    },
+    "radial_range": {
+      "minimum": 71841.5,
+      "maximum": 145046.0,
+      "unit": "KILOMETER",
+      "sampling_interval": 0.25
+    }
+  },
+  "instrument": {
+    "instrument_host_name": "CASSINI ORBITER",
+    "instrument_host_id": "CO",
+    "instrument_name": "RADIO SCIENCE SUBSYSTEM",
+    "instrument_id": "RSS",
+    "mission_phase_name": "TOUR",
+    "target_name": "S RINGS",
+    "observation_type": "OCCULTATION PROFILE",
+    "occultation_type": "RADIO",
+    "feature_name": "RING SYSTEM",
+    "planetary_occultation_flag": "Y"
+  },
+  "principal_variables": [
+    {
+      "id": "optical_depth",
+      "label": "Normal Optical Depth",
+      "source_column": "NORMAL OPTICAL DEPTH",
+      "unit": "N/A",
+      "binary_column_index": 1,
+      "storage": "Float64",
+      "description": "The normal optical depth obtained from its measured oblique value scaled by the sine of the absolute value of ring opening angle (OBSERVED RING ELEVATION). The measured diffraction-limited oblique optical depth is the negative natural logarithm of the NORMALIZED SIGNAL POWER above.",
+      "verified_value_range": {
+        "minimum": -0.0452933,
+        "maximum": 1.609296
+      }
+    },
+    {
+      "id": "signal_power",
+      "label": "Normalized Signal Power",
+      "source_column": "NORMALIZED SIGNAL POWER",
+      "unit": "N/A",
+      "binary_column_index": 2,
+      "storage": "Float64",
+      "description": "Power (amplitude square) of the measured ring-attenuated diffraction-limited radio signal, normalized by its value in the absence of the rings (normalized to unity in free-space). The value may be used to compute the measured diffraction-limited oblique optical depth as the negative natural logarithm of the NORMALIZED SIGNAL POWER.",
+      "verified_value_range": {
+        "minimum": 5.01464e-09,
+        "maximum": 1.712324
+      }
+    },
+    {
+      "id": "phase_shift",
+      "label": "Phase Shift",
+      "source_column": "PHASE SHIFT",
+      "unit": "DEGREE",
+      "binary_column_index": 3,
+      "storage": "Float64",
+      "description": "The difference between the phase of the coherent sinusoid passing directly through the rings (the direct signal) and its value had the rings been absent. The phase shift is computed from the measured or reconstructed complex ring transmittance; see Eq. (22) of MAROUFETAL1986. The phase reference of the original measurements is the Cassini UltraStable Oscillator, or USO",
+      "verified_value_range": {
+        "minimum": -179.999456,
+        "maximum": 179.998511
+      },
+      "display_semantics": {
+        "representation": "stored source phase samples",
+        "overview_rendering": "unconnected source-sample points",
+        "exact_rendering": "unconnected exact converted sample points",
+        "continuity": "not inferred from the preserved metadata",
+        "transformation": "none",
+        "unwrapped": false
+      }
+    }
+  ],
+  "binary_columns": [
+    {
+      "id": "ring_radius_km",
+      "label": "Ring Radius",
+      "source_column": "RING RADIUS",
+      "unit": "KILOMETER",
+      "binary_column_index": 0,
+      "storage": "Float64",
+      "description": "Radial distance from the center of Saturn to the ring-plane intercept point at the RING EVENT TIME."
+    },
+    {
+      "id": "optical_depth",
+      "label": "Normal Optical Depth",
+      "source_column": "NORMAL OPTICAL DEPTH",
+      "unit": "N/A",
+      "binary_column_index": 1,
+      "storage": "Float64",
+      "description": "The normal optical depth obtained from its measured oblique value scaled by the sine of the absolute value of ring opening angle (OBSERVED RING ELEVATION). The measured diffraction-limited oblique optical depth is the negative natural logarithm of the NORMALIZED SIGNAL POWER above."
+    },
+    {
+      "id": "signal_power",
+      "label": "Normalized Signal Power",
+      "source_column": "NORMALIZED SIGNAL POWER",
+      "unit": "N/A",
+      "binary_column_index": 2,
+      "storage": "Float64",
+      "description": "Power (amplitude square) of the measured ring-attenuated diffraction-limited radio signal, normalized by its value in the absence of the rings (normalized to unity in free-space). The value may be used to compute the measured diffraction-limited oblique optical depth as the negative natural logarithm of the NORMALIZED SIGNAL POWER."
+    },
+    {
+      "id": "phase_shift",
+      "label": "Phase Shift",
+      "source_column": "PHASE SHIFT",
+      "unit": "DEGREE",
+      "binary_column_index": 3,
+      "storage": "Float64",
+      "description": "The difference between the phase of the coherent sinusoid passing directly through the rings (the direct signal) and its value had the rings been absent. The phase shift is computed from the measured or reconstructed complex ring transmittance; see Eq. (22) of MAROUFETAL1986. The phase reference of the original measurements is the Cassini UltraStable Oscillator, or USO"
+    }
+  ],
+  "field_documentation": [
+    {
+      "source_column_name": "RING RADIUS",
+      "user_facing_name": "Ring Radius",
+      "column_number": 1,
+      "data_type": "ASCII_REAL",
+      "unit": "KILOMETER",
+      "meaning": "Radial distance from the center of Saturn to the ring-plane intercept point at the RING EVENT TIME.",
+      "provenance_status": "documented_by_pds_label"
+    },
+    {
+      "source_column_name": "RADIUS CORRECTION DUE TO IMPROVED POLE",
+      "user_facing_name": "RADIUS CORRECTION DUE TO IMPROVED POLE",
+      "column_number": 2,
+      "data_type": "ASCII_REAL",
+      "unit": "KILOMETER",
+      "meaning": "Additive ring radius correction computed based on an improved estimate of Saturn's pole (Fit#7 of FRENCHETAL2017). A revised occultation geometry is computed after replacing the Planetary Constants Kernel (PCK) file cited in RSS_2005_123_X43_E_GEO.LBL with the PCK file cpck22Jan2015.tpc, and replacing the pole definition within this PCK file by Fit#7 pole estimate of FRENCHETAL2017: BODY6_CONSTANTS_JED_EPOCH = ( 2454467.00075440 ) BODY699_POLE_RA = ( 40.579425, -0.03062, 0. ) BODY699_POLE_DEC = ( 83.537202, -0.00461, 0. ) The radius correction is the ring radius implied by the revised geometry minus its value in column 1 above (RING RADIUS). The correction is to be added to RING RADIUS to improve the estimated radial location of ring features. Optical depth profile reconstructed using occultation geometry based on the modified PCK file above differs negligibly from the reconstructed profile in this file after the radius correction is applied.",
+      "provenance_status": "documented_by_pds_label"
+    },
+    {
+      "source_column_name": "RADIUS CORRECTION DUE TO TIMING OFFSET",
+      "user_facing_name": "RADIUS CORRECTION DUE TO TIMING OFFSET",
+      "column_number": 3,
+      "data_type": "ASCII_REAL",
+      "unit": "KILOMETER",
+      "meaning": "Additive ring radius correction computed based on possible along-track spacecraft trajectory timing offset (ALONG TRACK TIMING OFFSET), assumed to be constant during the occultation period. The correction is computed based on the measured radii of a set of fiducial assumed circular features observed in the reconstructed optical depth profile. The measurements extend over ring occultations completed between May 2005 and September 2010 (all referenced to the Cassini USO) and include radius correction due to the improved pole estimate (column 2 above). Least-square techniques are used to estimate the features radii and the assumed constant along-track timing offset. The radius correction is to be added to RING RADIUS (column 1) to improve the estimated radial location of ring features. Independent estimates of trajectory timing offsets based on Cassini UVIS and VIMS occultations, in addition to a subset of RSS occultations, are reported in FRENCHETAL2017.",
+      "provenance_status": "documented_by_pds_label"
+    },
+    {
+      "source_column_name": "RING LONGITUDE",
+      "user_facing_name": "RING LONGITUDE",
+      "column_number": 4,
+      "data_type": "ASCII_REAL",
+      "unit": "DEGREE",
+      "meaning": "Inertial (J2000) longitude in the ring plane of the ring-plane intercept point at the RING EVENT TIME.",
+      "provenance_status": "documented_by_pds_label"
+    },
+    {
+      "source_column_name": "OBSERVED RING AZIMUTH",
+      "user_facing_name": "OBSERVED RING AZIMUTH",
+      "column_number": 5,
+      "data_type": "ASCII_REAL",
+      "unit": "DEGREE",
+      "meaning": "Measured at the ring-plane intercept point, starting from the direction of a photon heading to the observer (Earth receiving station), and ending at the direction of a local radial vector. This angle is projected into the ring plane and measured in the prograde direction. As seen from the observer, it equals 90 degrees along the right ansa and 270 degrees along the left ansa. Values range from 0 to 360 degrees. This convention for observed ring azimuth differs from that adopted in MAROUFETAL1986 by 180 degrees.",
+      "provenance_status": "documented_by_pds_label"
+    },
+    {
+      "source_column_name": "NORMALIZED SIGNAL POWER",
+      "user_facing_name": "Normalized Signal Power",
+      "column_number": 6,
+      "data_type": "ASCII_REAL",
+      "unit": "N/A",
+      "meaning": "Power (amplitude square) of the measured ring-attenuated diffraction-limited radio signal, normalized by its value in the absence of the rings (normalized to unity in free-space). The value may be used to compute the measured diffraction-limited oblique optical depth as the negative natural logarithm of the NORMALIZED SIGNAL POWER.",
+      "provenance_status": "documented_by_pds_label"
+    },
+    {
+      "source_column_name": "NORMAL OPTICAL DEPTH",
+      "user_facing_name": "Normal Optical Depth",
+      "column_number": 7,
+      "data_type": "ASCII_REAL",
+      "unit": "N/A",
+      "meaning": "The normal optical depth obtained from its measured oblique value scaled by the sine of the absolute value of ring opening angle (OBSERVED RING ELEVATION). The measured diffraction-limited oblique optical depth is the negative natural logarithm of the NORMALIZED SIGNAL POWER above.",
+      "provenance_status": "documented_by_pds_label"
+    },
+    {
+      "source_column_name": "PHASE SHIFT",
+      "user_facing_name": "Phase Shift",
+      "column_number": 8,
+      "data_type": "ASCII_REAL",
+      "unit": "DEGREE",
+      "meaning": "The difference between the phase of the coherent sinusoid passing directly through the rings (the direct signal) and its value had the rings been absent. The phase shift is computed from the measured or reconstructed complex ring transmittance; see Eq. (22) of MAROUFETAL1986. The phase reference of the original measurements is the Cassini UltraStable Oscillator, or USO",
+      "provenance_status": "documented_by_pds_label"
+    },
+    {
+      "source_column_name": "NORMAL OPTICAL DEPTH THRESHOLD",
+      "user_facing_name": "NORMAL OPTICAL DEPTH THRESHOLD",
+      "column_number": 9,
+      "data_type": "ASCII_REAL",
+      "unit": "N/A",
+      "meaning": "The value of the normal optical depth for which the magnitude of the measured complex ring transmittance is equal in numerical value to the 70% confidence interval of the noisy measurement (signal-to-noise ratio, or SNR, of about unity). See Eq. (26) of MAROUFETAL1986. The threshold value and corresponding LOWEST_DETECTABLE_OPACITY and HIGHEST_DETECTABLE_OPACITY are based on the measurement SNR as defined in MAROUFETAL1986, Eq. (27), and include only the contribution of thermal noise. Further limitations on the lowest detectable optical depth may be imposed by ground antenna pointing errors. The imposed limitations may be assessed from examination of the optical depth fluctuations observed during the free-space baseline period over the radial scales of interest.",
+      "provenance_status": "documented_by_pds_label"
+    },
+    {
+      "source_column_name": "OBSERVED EVENT TIME",
+      "user_facing_name": "OBSERVED EVENT TIME",
+      "column_number": 10,
+      "data_type": "ASCII_REAL",
+      "unit": "SECOND",
+      "meaning": "The instant at which photons were received at the DSN receiving station, given in elapsed seconds after the moment specified by REFERENCE_TIME. Also referred to as Earth receiving time or ERT.",
+      "provenance_status": "documented_by_pds_label",
+      "reference_time": "2009-360T00:00:00.000"
+    },
+    {
+      "source_column_name": "RING EVENT TIME",
+      "user_facing_name": "RING EVENT TIME",
+      "column_number": 11,
+      "data_type": "ASCII_REAL",
+      "unit": "SECOND",
+      "meaning": "The time at which photons left the ring plane. This time is earlier than the associated OBSERVED EVENT TIME by an amount equal to the light travel time. RING EVENT TIME is given in elapsed seconds after the moment specified by REFERENCE_TIME.",
+      "provenance_status": "documented_by_pds_label",
+      "reference_time": "2009-360T00:00:00.000"
+    },
+    {
+      "source_column_name": "SPACECRAFT EVENT TIME",
+      "user_facing_name": "SPACECRAFT EVENT TIME",
+      "column_number": 12,
+      "data_type": "ASCII_REAL",
+      "unit": "SECOND",
+      "meaning": "The time at which photons left the spacecraft, given in elapsed seconds after the moment specified by REFERENCE_TIME. Also referred to as SCET.",
+      "provenance_status": "documented_by_pds_label",
+      "reference_time": "2009-360T00:00:00.000"
+    },
+    {
+      "source_column_name": "OBSERVED RING ELEVATION",
+      "user_facing_name": "OBSERVED RING ELEVATION",
+      "column_number": 13,
+      "data_type": "ASCII_REAL",
+      "unit": "DEGREE",
+      "meaning": "The angle measured at the ring intercept point, starting from the ring plane and ending in the direction of the photon heading toward the observer. This angle is positive on the north side of Saturn's rings and negative on the south side. Its value is nearly constant over the duration of a ring occultation experiment and is nearly equal to the ring opening angle (Earth elevation angle above the ring plane).",
+      "provenance_status": "documented_by_pds_label"
+    }
+  ],
+  "data_product": {
+    "overview": "overview.json",
+    "index": "index.json",
+    "exact_directory": "exact/",
+    "recommended_exact_window_records": 32768
+  },
+  "conversion_validation": {
+    "status": "pass",
+    "expected_file_records": 292819,
+    "parsed_tab_records": 292819,
+    "generated_csv_records": 292819,
+    "first_record_matches": true,
+    "final_record_matches": true,
+    "field_count_matches": true,
+    "missing_value_count": 0
+  },
+  "web_data_validation": {
+    "status": "build_invariants_pass",
+    "verification_script": "scripts/verify_web_observation.py",
+    "exact_record_count": 292819,
+    "exact_chunk_count": 36,
+    "exact_byte_length": 9370208,
+    "overview_point_count": 1142
+  },
+  "provenance_chain": [
+    {
+      "id": "nasa_pds",
+      "label": "NASA PDS",
+      "details": {
+        "pds_version_id": "PDS3",
+        "data_set_id": "CO-SR-RSS-4/5-OCC-V2.0"
+      }
+    },
+    {
+      "id": "cassini_rss",
+      "label": "Cassini RSS",
+      "details": {
+        "instrument_host_name": "CASSINI ORBITER",
+        "instrument_name": "RADIO SCIENCE SUBSYSTEM",
+        "instrument_id": "RSS"
+      }
+    },
+    {
+      "id": "dlp_product",
+      "label": "DLP Product",
+      "details": {
+        "ring_observation_id": "RSS_2009_360_X63_E",
+        "product_id": "RSS_2009_360_X63_E_DLP_500M.TAB",
+        "product_type": "RING_PROFILE",
+        "source_product_id": "S56SROE2009360_0145NNNX63RD.2A1"
+      }
+    },
+    {
+      "id": "pds3_label_tab",
+      "label": "PDS3 Label + TAB",
+      "details": {
+        "record_type": "FIXED_LENGTH",
+        "record_bytes": 180,
+        "file_records": 292819,
+        "documented_columns": 13
+      }
+    },
+    {
+      "id": "verified_conversion",
+      "label": "Verified Local Conversion",
+      "details": {
+        "status": "pass",
+        "parsed_tab_records": 292819,
+        "generated_csv_records": 292819,
+        "first_record_matches": true,
+        "final_record_matches": true,
+        "field_count_matches": true
+      }
+    },
+    {
+      "id": "web_product",
+      "label": "Web Scientific Data Product",
+      "details": {
+        "integrity_status": "build_invariants_pass",
+        "verification_script": "scripts/verify_web_observation.py",
+        "storage": "Float64 little-endian, row-major interleaved",
+        "published_columns": 4,
+        "chunk_size_records": 8192,
+        "chunk_count": 36,
+        "exact_byte_length": 9370208,
+        "overview_bucket_size": 1024,
+        "overview_point_count": 1142
+      }
+    },
+    {
+      "id": "visualization",
+      "label": "Current Visualization",
+      "details": {
+        "profile_renderer": "HTML Canvas",
+        "overview_role": "display only",
+        "exact_sample_role": "on-demand converted-sample inspection"
+      }
+    }
+  ]
+}

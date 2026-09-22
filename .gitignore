@@ -25,3 +25,7 @@ dist-ssr
 
 # Private PRIMES research source materials
 _research_private/
+
+# Python-generated caches and bytecode
+__pycache__/
+*.py[cod]

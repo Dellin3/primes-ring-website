@@ -1,0 +1,31 @@
+/* Keep the profile primary; reserve borders for interactive boundaries. */
+.workbench-observation-select select { color-scheme: dark; background: #102a3e; color: #edf3f6; border-color: #7793a8; font-family: var(--font-sans); }
+.workbench-header .observation-source-meta { display: flex; flex-wrap: wrap; gap: 3px 18px; font: 14px/1.6 var(--font-sans); color: #bdcdd8; }
+.observation-source-meta > span:first-child { font-family: var(--font-mono); }
+.radius-value { display: inline-block; }
+.data-route-shell .guided-workbench .observation-instrument { background: #0c2234; box-shadow: none; border: 0; }
+.data-route-shell .guided-workbench .observation-instrument::before { content: none; }
+.data-route-shell .guided-workbench .workbench-context { border: 0; border-left: 1px solid #466075; background: #0c2234; }
+.data-route-shell .guided-workbench .guide-strip { border-top: 0; }
+.data-route-shell .guided-workbench .scientific-profile { box-shadow: none; }
+.data-route-shell .guided-workbench .axis-explainer, .data-route-shell .guided-workbench .download-explanation { font-size: 14px; color: #bdcdd8; }
+.data-route-shell .guided-workbench .phase-display-note { margin: 0 0 12px; padding: 0; border: 0; background: none; font: 14px/1.55 var(--font-sans); color: #d5dfE6; }
+.data-route-shell .guided-workbench .phase-display-note strong { color: #eddbb5; }
+.data-route-shell .guided-workbench .exact-range-form input, .data-route-shell .guided-workbench .exploration-notes input, .data-route-shell .guided-workbench .exploration-notes textarea { border-color: #7793a8; }
+.data-route-shell .guided-workbench input::placeholder, .data-route-shell .guided-workbench textarea::placeholder { color: #acbdca; opacity: 1; }
+.data-route-shell .guided-workbench button:not(.button) { border-color: #7793a8; }
+.data-route-shell .guided-workbench button:disabled { opacity: 1; color: #abbcca; background: #183044; border-color: #758899; }
+.data-route-shell .guided-workbench .context-tabs button { border: 0; border-bottom: 1px solid #7793a8; }
+.data-route-shell .guided-workbench .exact-sample-inspector dt { color: #bfced9; font: 14px/1.5 var(--font-sans); }
+.data-route-shell .guided-workbench .exact-sample-inspector dd { font-family: var(--font-mono); overflow-wrap: anywhere; }
+.data-route-shell .guided-workbench #context-panel .save-status { color: #f0dfba; min-height: 22px; }
+.data-route-shell .guided-workbench .workbench-notice p { margin: 0 0 10px; }
+.data-route-shell .guided-workbench .download-status { color: #f0dfba; margin: 8px 0; font: 14px/1.55 var(--font-sans); }
+.data-route-shell .guided-workbench .small-actions button { background: transparent; }
+.data-route-shell .guided-workbench .storage-scope { color: #bdcdd8; }
+.data-route-shell .guided-workbench .exploration-notes textarea { scroll-margin-top: 100px; }
+@media (max-width: 800px) {
+  .data-route-shell .guided-workbench .workbench-context { border-left: 0; border-top: 1px solid #466075; }
+  .workbench-header .observation-source-meta { font-size: 13px; }
+  .workbench-observation-select select { width: 100%; }
+}

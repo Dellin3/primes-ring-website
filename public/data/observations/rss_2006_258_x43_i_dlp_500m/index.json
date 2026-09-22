@@ -1,0 +1,185 @@
+{
+  "schema_version": 1,
+  "dataset_id": "rss_2006_258_x43_i_dlp_500m",
+  "storage": {
+    "data_type": "Float64",
+    "byte_order": "little-endian",
+    "layout": "row-major interleaved",
+    "bytes_per_value": 8,
+    "bytes_per_record": 32,
+    "columns": [
+      {
+        "id": "ring_radius_km",
+        "label": "Ring Radius",
+        "source_column": "RING RADIUS",
+        "unit": "KILOMETER"
+      },
+      {
+        "id": "optical_depth",
+        "label": "Normal Optical Depth",
+        "source_column": "NORMAL OPTICAL DEPTH",
+        "unit": "N/A"
+      },
+      {
+        "id": "signal_power",
+        "label": "Normalized Signal Power",
+        "source_column": "NORMALIZED SIGNAL POWER",
+        "unit": "N/A"
+      },
+      {
+        "id": "phase_shift",
+        "label": "Phase Shift",
+        "source_column": "PHASE SHIFT",
+        "unit": "DEGREE"
+      }
+    ]
+  },
+  "chunk_size_records": 8192,
+  "total_records": 104644,
+  "chunk_count": 13,
+  "chunks": [
+    {
+      "chunk": 0,
+      "first_sample_index": 0,
+      "last_sample_index": 8191,
+      "radius_minimum_km": 114970.25,
+      "radius_maximum_km": 117018.0,
+      "row_count": 8192,
+      "file_name": "exact/chunk_000.bin",
+      "byte_length": 262144,
+      "sha256": "3408510e7b7d015e32fba27f8a820b1fe423902d58f0065c6cd7b5c7d7362d79"
+    },
+    {
+      "chunk": 1,
+      "first_sample_index": 8192,
+      "last_sample_index": 16383,
+      "radius_minimum_km": 117018.25,
+      "radius_maximum_km": 119066.0,
+      "row_count": 8192,
+      "file_name": "exact/chunk_001.bin",
+      "byte_length": 262144,
+      "sha256": "41cf3fc359453ef61970e5946f46892cfd71b1378d6372a604ae821c36c07ef7"
+    },
+    {
+      "chunk": 2,
+      "first_sample_index": 16384,
+      "last_sample_index": 24575,
+      "radius_minimum_km": 119066.25,
+      "radius_maximum_km": 121114.0,
+      "row_count": 8192,
+      "file_name": "exact/chunk_002.bin",
+      "byte_length": 262144,
+      "sha256": "68d5f9c9ccfbb62b86c3d1661e3364d8b127709f805995ebe02af3b360f7d741"
+    },
+    {
+      "chunk": 3,
+      "first_sample_index": 24576,
+      "last_sample_index": 32767,
+      "radius_minimum_km": 121114.25,
+      "radius_maximum_km": 123162.0,
+      "row_count": 8192,
+      "file_name": "exact/chunk_003.bin",
+      "byte_length": 262144,
+      "sha256": "9b5e4685bf0cd58e61f49cf8a07c52266d4e85c1d17941900ac77ceba64ec5d9"
+    },
+    {
+      "chunk": 4,
+      "first_sample_index": 32768,
+      "last_sample_index": 40959,
+      "radius_minimum_km": 123162.25,
+      "radius_maximum_km": 125210.0,
+      "row_count": 8192,
+      "file_name": "exact/chunk_004.bin",
+      "byte_length": 262144,
+      "sha256": "dfa1519d2f3f0500afa4f8e24c9a10855bd372980cd0fa79e4e9774d98215e04"
+    },
+    {
+      "chunk": 5,
+      "first_sample_index": 40960,
+      "last_sample_index": 49151,
+      "radius_minimum_km": 125210.25,
+      "radius_maximum_km": 127258.0,
+      "row_count": 8192,
+      "file_name": "exact/chunk_005.bin",
+      "byte_length": 262144,
+      "sha256": "5f0e15e43abd08d8f7163562674dca41dd334e757cf75535b5ed8025bb87796e"
+    },
+    {
+      "chunk": 6,
+      "first_sample_index": 49152,
+      "last_sample_index": 57343,
+      "radius_minimum_km": 127258.25,
+      "radius_maximum_km": 129306.0,
+      "row_count": 8192,
+      "file_name": "exact/chunk_006.bin",
+      "byte_length": 262144,
+      "sha256": "cda66b1b0f0496bcce7c7d472900164e6a102b51406d2563f9508c8bd0da3164"
+    },
+    {
+      "chunk": 7,
+      "first_sample_index": 57344,
+      "last_sample_index": 65535,
+      "radius_minimum_km": 129306.25,
+      "radius_maximum_km": 131354.0,
+      "row_count": 8192,
+      "file_name": "exact/chunk_007.bin",
+      "byte_length": 262144,
+      "sha256": "93ece6f512f1e62a81c03e51dd55462a92e88d291b3fb127e1800fdfce6dc9ba"
+    },
+    {
+      "chunk": 8,
+      "first_sample_index": 65536,
+      "last_sample_index": 73727,
+      "radius_minimum_km": 131354.25,
+      "radius_maximum_km": 133402.0,
+      "row_count": 8192,
+      "file_name": "exact/chunk_008.bin",
+      "byte_length": 262144,
+      "sha256": "7a940a1b4e7d9536895e8923f29df514190d525cd2b71c5ec71bc1ea36e615e3"
+    },
+    {
+      "chunk": 9,
+      "first_sample_index": 73728,
+      "last_sample_index": 81919,
+      "radius_minimum_km": 133402.25,
+      "radius_maximum_km": 135450.0,
+      "row_count": 8192,
+      "file_name": "exact/chunk_009.bin",
+      "byte_length": 262144,
+      "sha256": "803cf1182f768b1181d43a54760f8b329f6bde6e69abeef368978b531021dbf5"
+    },
+    {
+      "chunk": 10,
+      "first_sample_index": 81920,
+      "last_sample_index": 90111,
+      "radius_minimum_km": 135450.25,
+      "radius_maximum_km": 137498.0,
+      "row_count": 8192,
+      "file_name": "exact/chunk_010.bin",
+      "byte_length": 262144,
+      "sha256": "3ec610e46e884f04d30fe7760166da5458d7fadfe09286a19f16d79803603067"
+    },
+    {
+      "chunk": 11,
+      "first_sample_index": 90112,
+      "last_sample_index": 98303,
+      "radius_minimum_km": 137498.25,
+      "radius_maximum_km": 139546.0,
+      "row_count": 8192,
+      "file_name": "exact/chunk_011.bin",
+      "byte_length": 262144,
+      "sha256": "5e2b4f3cd539a6655787e37bc931c673e956f902be509f5b32a684fa2fea609f"
+    },
+    {
+      "chunk": 12,
+      "first_sample_index": 98304,
+      "last_sample_index": 104643,
+      "radius_minimum_km": 139546.25,
+      "radius_maximum_km": 141131.0,
+      "row_count": 6340,
+      "file_name": "exact/chunk_012.bin",
+      "byte_length": 202880,
+      "sha256": "87f560b12aee7c83ac8fcc4d9e2f180cd2452a811a26679cf72fb41cca9094fa"
+    }
+  ]
+}

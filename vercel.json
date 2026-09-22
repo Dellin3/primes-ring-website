@@ -1,14 +1,22 @@
 {
+  "redirects": [
+    { "source": "/viewer", "destination": "/data", "permanent": true },
+    { "source": "/data-hub", "destination": "/data", "permanent": true },
+    { "source": "/math", "destination": "/research", "permanent": true },
+    { "source": "/algorithms", "destination": "/research", "permanent": true },
+    { "source": "/algorithms/:slug", "destination": "/research", "permanent": true },
+    { "source": "/overview", "destination": "/research", "permanent": true },
+    { "source": "/progress", "destination": "/research", "permanent": true },
+    { "source": "/team", "destination": "/research", "permanent": true },
+    { "source": "/background", "destination": "/resources", "permanent": true },
+    { "source": "/gallery", "destination": "/resources", "permanent": true }
+  ],
   "rewrites": [
-    { "source": "/data-hub", "destination": "/index.html" },
-    { "source": "/math", "destination": "/index.html" },
-    { "source": "/viewer", "destination": "/index.html" },
-    { "source": "/overview", "destination": "/index.html" },
-    { "source": "/background", "destination": "/index.html" },
-    { "source": "/team", "destination": "/index.html" },
-    { "source": "/algorithms", "destination": "/index.html" },
-    { "source": "/algorithms/:slug", "destination": "/index.html" },
-    { "source": "/gallery", "destination": "/index.html" },
-    { "source": "/progress", "destination": "/index.html" }
+    { "source": "/research", "destination": "/index.html" },
+    { "source": "/research/:moduleSlug", "destination": "/index.html" },
+    { "source": "/data", "destination": "/index.html" },
+    { "source": "/data/:datasetSlug", "destination": "/index.html" },
+    { "source": "/explorations", "destination": "/index.html" },
+    { "source": "/resources", "destination": "/index.html" }
   ]
 }
