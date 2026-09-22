@@ -1,65 +1,51 @@
-# Mathematics of Saturn Ring Occultations
+# Saturn — A Cassini Explorer
 
-This is a PRIMES Math Junior research portal for organizing mission context, mathematical framework, team research modules, visual references, and local Cassini ring-data inspection tools.
+A focused MIT PRIMES 2026 research website with three core areas:
 
-The site is built as a React/Vite front-end. It does not use a backend and should not include unpublished PRIMES data without permission.
+- **Explore data:** six Cassini RSS observations, three signal variables, exact radial windows, two-point comparison, and CSV export.
+- **My notebook:** autosaved drafts, named observations, restore, rename, delete, and export. Notes stay in the current browser; there is no account or cloud synchronization.
+- **Project research:** the whole team’s methods, reported manuscript results, interactive benchmark inspection, and actual archive coverage.
 
-## Portal Sections
+**Project research** connects Padé / least-squares initialization, continuation, refinement, and branch bookkeeping to three reported result sets: local angular-integral accuracy, generic-fold verification, and synthetic branch identity. A compact teaching model and archive disclosure add detail without extra top-level routes. **Sources & credits** keeps provenance and attribution together. Previous public routes redirect to the relevant retained destination.
 
-- Project Overview
-- Mission Background
-- Mathematical Framework
-- Team Members
-- Algorithm Modules
-- Visual Gallery
-- Real Data Viewer
-- Progress & Next Steps
+## Run locally
 
-## Current Features
-
-- React + Vite research website with three research chapters
-- Six Cassini DLP observations with progressively loaded exact sample windows
-- Optical depth, normalized signal power, and phase inspection
-- Local drafts and saved explorations, including overview views and notes
-- Exact selected-window CSV, portable Markdown notes, and view-only share links
-- Static and optional animated conceptual geometry, plus original learning diagrams
-
-## Run Locally
-
-```bash
-npm install
+```sh
+npm ci
 npm run dev
 ```
 
-## Build
+## Verify
 
-```bash
+```sh
+npm run lint
+npm test
 npm run build
 ```
 
-## Data Commands
+The automated checks cover all six observation products (1,566,902 converted rows, 193 SHA-256 chunk hashes), display coordinates, exact export precision, notebook persistence, and saved-record/draft restoration. Automated checks do not substitute for a live browser review.
 
-Data regeneration and verification are deliberately separate:
+## Data and interpretation
 
-```bash
-npm run data:build:catalog   # regenerates public web-observation artifacts
-npm run data:verify:catalog  # read-only integrity verification
-```
+`public/data/observations` contains the converted public NASA PDS Cassini RSS diffraction-limited profiles. Wide views use a reduced overview. Small windows load the original converted Float64 rows and verify their hashes before exact inspection and export. The calibrated profiles retain diffraction effects; they are not new high-resolution reconstruction results. Missing and negative measurements remain unchanged. Stored phase values are plotted without connecting or unwrapping them.
 
-The verification command checks catalog identities, overview selection, exact
-chunk hashes, converted sample comparisons, and public-path safety without
-rewriting public assets.
+Research methods and results are transcribed from the team's supplied working manuscript, sections 3–6. The website does not run the scientific reconstruction solver. Table 3's eight local angular-integral offsets give maximum symmetric discrepancy **59.5629% → 2.2872%**; the conclusion's **0.0242%** maximum conflicts with the table, body, and Figure 18. The 37.5% reduction is in integrand sampling work against all-quadrature, not measured runtime. Source details and limits are recorded in `docs/TEAM_RESEARCH_EVIDENCE.md`.
 
-## Data and Image Notes
+The full manuscript and scientific solver are not hosted here. The archive record count is not a method benchmark or a claim about how much data the team used in its experiments. The reported scalar-phase tests do not establish a complete high-resolution ring reconstruction. The Saturn background is artistic imagery, not an observational reconstruction.
 
-- Public images are used for educational research context.
-- Image credits should remain visible in the website.
-- The Data Observatory uses conversion-verified complete DLP profile products;
-  legacy research-window subsets are archived outside public production assets.
-- Unpublished PRIMES data should not be added without permission.
+## Interface structure
 
-## Current Status
+- `src/orbit/OrbitShell.jsx`: shared space background, navigation, and source dialog.
+- `src/orbit/Home.jsx`: focused entry and an actual observation overview.
+- `src/orbit/Explorer.jsx`: data workspace.
+- `src/orbit/Notebook.jsx`: observation notebook and access to all observations.
+- `src/orbit/Research.jsx`: whole-project research and data coverage.
+- `src/orbit/ResearchMethod.jsx`: three-stage method explanation and branch teaching model.
+- `src/orbit/ResearchEvidence.jsx`: reported result views and Table 3 chart.
+- `src/content/paperEvidence.js`: source-attributed numerical evidence, not simulated outputs.
+- `src/lib/explorerSession.js`: restoration and URL identity rules.
+- `src/lib/explorations.js`: existing versioned browser storage, preserved across the redesign.
 
-The local second refinement is implemented and tested. See the [numbered implementation and browser acceptance report](docs/REFINEMENT_ACCEPTANCE_2026-09-09.md) for screenshots, data checks, zoom coverage, and the Safari testing limitation.
+## Deployment
 
-Public manuscript, scientific reconstruction implementation, research figures, and result fields remain empty until approved author materials are supplied. The [materials audit](docs/MATERIALS_2026-09-09.md) distinguishes these from the available website code, source data, and teaching resources.
+The existing GitHub-to-Vercel integration builds branch previews. This redesign lives on `codex/saturn-observatory`; review it before merging into the production branch. Vercel may require the project owner's sign-in to view previews. No production settings or account permissions are changed by this branch.

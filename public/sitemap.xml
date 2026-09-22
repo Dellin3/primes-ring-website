@@ -1,42 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://primes-ring-website-p9yv.vercel.app/</loc>
-  </url>
-  <url>
-    <loc>https://primes-ring-website-p9yv.vercel.app/research</loc>
-  </url>
-  <url>
-    <loc>https://primes-ring-website-p9yv.vercel.app/research/signal-and-phase</loc>
-  </url>
-  <url>
-    <loc>https://primes-ring-website-p9yv.vercel.app/research/stationary-roots-and-continuation</loc>
-  </url>
-  <url>
-    <loc>https://primes-ring-website-p9yv.vercel.app/research/reliability-and-reconstruction</loc>
-  </url>
-  <url>
-    <loc>https://primes-ring-website-p9yv.vercel.app/data</loc>
-  </url>
-  <url>
-    <loc>https://primes-ring-website-p9yv.vercel.app/data/rev007e-x43-dlp-500m</loc>
-  </url>
-  <url>
-    <loc>https://primes-ring-website-p9yv.vercel.app/data/rev028i-x43-dlp-500m</loc>
-  </url>
-  <url>
-    <loc>https://primes-ring-website-p9yv.vercel.app/data/rev044e-x63-dlp-500m</loc>
-  </url>
-  <url>
-    <loc>https://primes-ring-website-p9yv.vercel.app/data/rev064e-x43-dlp-500m</loc>
-  </url>
-  <url>
-    <loc>https://primes-ring-website-p9yv.vercel.app/data/rev123e-x63-dlp-500m</loc>
-  </url>
-  <url>
-    <loc>https://primes-ring-website-p9yv.vercel.app/data/rev133e-x43-dlp-500m</loc>
-  </url>
-  <url>
-    <loc>https://primes-ring-website-p9yv.vercel.app/resources</loc>
-  </url>
+<url><loc>https://primes-ring-website-p9yv.vercel.app/</loc></url>
+<url><loc>https://primes-ring-website-p9yv.vercel.app/data</loc></url>
+<url><loc>https://primes-ring-website-p9yv.vercel.app/explorations</loc></url>
+<url><loc>https://primes-ring-website-p9yv.vercel.app/research</loc></url>
 </urlset>

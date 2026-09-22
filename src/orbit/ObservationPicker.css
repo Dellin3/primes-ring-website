@@ -1,0 +1,25 @@
+.orbit-observation-picker { padding: 23px 26px 21px; border-bottom: 1px solid var(--line); background: linear-gradient(160deg, rgba(163,188,219,.035), transparent 75%); }
+.orbit-observation-picker-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 15px; }
+.orbit-observation-picker-heading h2 { flex: 0 0 auto; color: var(--gold); font: 500 12px/1.5 var(--font-body, 'DM Sans', sans-serif); letter-spacing: .025em; margin: 0; }
+.orbit-observation-picker-heading p { margin: 0; font-size: 11px; line-height: 1.6; color: var(--muted); }
+.orbit-observation-choices { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 9px; }
+.orbit-observation-choice { min-width: 0; display: flex; flex-direction: column; gap: 5px; padding: 11px 12px; border: 1px solid rgba(178,201,228,.16); border-radius: 9px; background: rgba(8,17,29,.33); text-decoration: none; color: var(--muted); box-shadow: inset 0 1px rgba(245,250,255,.025); transition: background 160ms ease, border-color 160ms ease; }
+.orbit-observation-choice-title { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.orbit-observation-choice strong { font-size: 13px; color: var(--text); font-weight: 500; white-space: nowrap; }
+.orbit-observation-choice-title > span { font-size: 12px; opacity: .65; }
+.orbit-observation-choice > span:last-child { font-size: 10px; line-height: 1.5; }
+a.orbit-observation-choice:hover { border-color: rgba(225,198,156,.5); background: rgba(93,94,98,.13); }
+.orbit-observation-choice.is-current { border-color: rgba(225,198,156,.45); background: linear-gradient(135deg, rgba(225,198,156,.115), rgba(225,198,156,.035)); color: #cbbca6; }
+.orbit-observation-choice.is-current strong, .orbit-observation-choice.is-current .orbit-observation-choice-title > span { color: var(--gold); }
+.orbit-observation-choice.is-current .orbit-observation-choice-title > span { font-size: 6px; opacity: 1; }
+.orbit-observation-picker-loading, .orbit-observation-picker-error { color: var(--muted); font-size: 12px; margin: 0; line-height: 1.7; }
+.orbit-observation-picker-error button { border: 0; background: none; padding: 0; font: inherit; color: var(--gold); text-decoration: underline; }
+.orbit-observation-picker-error a { color: var(--gold); }
+.orbit-observation-picker.is-notebook { margin-top: 34px; padding: 21px 24px 23px; border: 1px solid var(--line); border-radius: 15px; background: linear-gradient(120deg, rgba(20,30,45,.7), rgba(9,18,30,.65)); }
+.is-notebook .orbit-observation-picker-heading { display: block; }
+.is-notebook .orbit-observation-picker-heading h2 { font-size: 14px; margin-bottom: 6px; }
+.is-notebook .orbit-observation-picker-heading p { font-size: 13px; }
+@media (max-width: 900px) { .orbit-observation-picker-heading { display: block; } .orbit-observation-picker-heading h2 { margin-bottom: 5px; } }
+@media (max-width: 760px) { .orbit-observation-picker { padding: 20px; } .orbit-observation-choices { grid-template-columns: repeat(3, minmax(0,1fr)); gap: 8px; } .orbit-observation-picker.is-notebook { padding: 19px; margin-top: 27px; } }
+@media (max-width: 390px) { .orbit-observation-choices { grid-template-columns: repeat(2, minmax(0,1fr)); } }
+@media (prefers-reduced-motion: reduce) { .orbit-observation-choice { transition: none; } }

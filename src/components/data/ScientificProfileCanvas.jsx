@@ -12,7 +12,6 @@ import {
   radialDisplayInterval, shouldBreakProfile,
 } from '../../lib/profileRendering.js'
 import { measuredProfileAxes } from '../../lib/profileAxes.js'
-import '../../styles/profile-refinements.css'
 
 const MAX_DEVICE_PIXEL_RATIO = 1.5
 
@@ -55,6 +54,7 @@ export default function ScientificProfileCanvas({
   samples,
   variable,
   inspectedSample,
+  comparisonSample,
   onInspect,
   dataMode,
   scopeLabel,
@@ -125,7 +125,7 @@ export default function ScientificProfileCanvas({
     const context = canvas.getContext('2d')
     context.setTransform(dpr, 0, 0, dpr, 0, 0)
     context.clearRect(0, 0, bounds.width, bounds.height)
-    context.fillStyle = '#091b2c'
+    context.fillStyle = '#0c1725'
     context.fillRect(0, 0, bounds.width, bounds.height)
 
     if (!radiusExtent) {
@@ -210,7 +210,7 @@ export default function ScientificProfileCanvas({
     )
     context.stroke()
 
-    context.strokeStyle = '#9fd5ee'
+    context.strokeStyle = '#a8c9ed'
     context.lineWidth = compact ? 1.6 : 1.85
     context.lineJoin = 'round'
     context.lineCap = 'round'
@@ -218,7 +218,7 @@ export default function ScientificProfileCanvas({
     const usePhaseScatter = requiresContinuityNeutralPoints(variable)
 
     if (usePhaseScatter) {
-      context.fillStyle = '#9fd5ee'
+      context.fillStyle = '#a8c9ed'
       samples.forEach((sample) => {
         if (!isFiniteProfileSample(sample, variable.id)) return
         const x = xScale(sample.ring_radius_km)
@@ -252,30 +252,31 @@ export default function ScientificProfileCanvas({
       { font: axisFont, color: '#bdd0dc' },
     )
 
-    if (
-      currentInspected
-      && currentInspected.ring_radius_km >= xMinimum
-      && currentInspected.ring_radius_km <= xMaximum
-    ) {
-      const x = xScale(currentInspected.ring_radius_km)
-      context.strokeStyle = 'rgba(226, 198, 137, 0.78)'
+    const markers = comparisonSample
+      ? [{ sample: comparisonSample, color: '#e1c69c', label: 'A' }, { sample: currentInspected, color: '#a8c9ed', label: 'B' }]
+      : [{ sample: currentInspected, color: '#e1c69c', label: 'A' }]
+    markers.forEach(({ sample, color, label }) => {
+      if (!sample || sample.ring_radius_km < xMinimum || sample.ring_radius_km > xMaximum) return
+      const x = xScale(sample.ring_radius_km)
+      context.strokeStyle = color
       context.setLineDash([4, 5])
       context.beginPath()
       context.moveTo(x, margins.top)
       context.lineTo(x, bounds.height - margins.bottom)
       context.stroke()
       context.setLineDash([])
-      if (!isFiniteProfileSample(currentInspected, variable.id)) return
-      const y = yScale(currentInspected[variable.id])
-      context.fillStyle = '#e2c88f'
+      drawText(context, label, Math.max(margins.left + 7, Math.min(bounds.width - margins.right - 7, x)), margins.top - 7, { font: axisFont, color })
+      if (!isFiniteProfileSample(sample, variable.id)) return
+      const y = yScale(sample[variable.id])
+      context.fillStyle = color
       context.beginPath()
       context.arc(x, y, 4.5, 0, Math.PI * 2)
       context.fill()
-      context.strokeStyle = '#091b2c'
+      context.strokeStyle = '#0c1725'
       context.lineWidth = 2
       context.stroke()
-    }
-  }, [currentInspected, dataMode, interval, radiusExtent, samples, valueExtent, variable])
+    })
+  }, [comparisonSample, currentInspected, dataMode, interval, radiusExtent, samples, valueExtent, variable])
 
   const requestDraw = useCallback(() => {
     if (resizeFrameRef.current !== null) return

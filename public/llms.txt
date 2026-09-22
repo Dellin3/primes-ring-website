@@ -1,15 +1,23 @@
 # MIT PRIMES 2026 Saturn Rings Project
 
-New Methods toward High-Resolution Reconstruction of Saturn’s Rings is a team project by Dell Li, Maiya Qiu, and Yutong Zhao, mentored by Dr. Ryan Maguire. The public manuscript is not yet available. No publication, submission, or revision status is confirmed here. The public repository contains website and data-viewer code; scientific reconstruction code and research results are not yet available.
+New Methods toward High-Resolution Reconstruction of Saturn’s Rings is a team project by Dell Li, Maiya Qiu, and Yutong Zhao, mentored by Dr. Ryan Maguire.
 
-Canonical pages:
+Three core areas:
+- Explore data: https://primes-ring-website-p9yv.vercel.app/data
+- My notebook: https://primes-ring-website-p9yv.vercel.app/explorations
+- Project research: https://primes-ring-website-p9yv.vercel.app/research
 - Homepage: https://primes-ring-website-p9yv.vercel.app/
-- Research: https://primes-ring-website-p9yv.vercel.app/research
-- Signal and Phase module: https://primes-ring-website-p9yv.vercel.app/research/signal-and-phase
-- Stationary Roots and Continuation module: https://primes-ring-website-p9yv.vercel.app/research/stationary-roots-and-continuation
-- Reliability and Reconstruction module: https://primes-ring-website-p9yv.vercel.app/research/reliability-and-reconstruction
-- Cassini Data Observatory: https://primes-ring-website-p9yv.vercel.app/data
-- Paper and Code: https://primes-ring-website-p9yv.vercel.app/resources
 
-Data sources:
-The active Data Observatory catalog contains six conversion-verified complete Cassini RSS PDS3 diffraction-limited profile products. Each observation initially loads a display-only source-sample overview and fetches hashed Float64 exact converted-sample chunks only for selected radial windows. Legacy research-window subsets are archived outside public production assets while parent-observation mapping remains incomplete.
+The data explorer contains six Cassini RSS PDS diffraction-limited profile products: Rev 007, 028, 044, 064, 123, and 133, totaling 1,566,902 converted source rows. The plot supports optical depth, normalized signal power, and phase shift. Wide views are reduced source-sample overviews; narrow windows use hash-verified exact converted records. The 0.25 km sampling interval is not a claim about reconstructed resolution.
+
+My notebook stores visitor observations and drafts in the current browser, with export support. It is separate from the team's research and does not provide account or cloud synchronization.
+
+Project research summarizes the team's working manuscript, sections 3–6: Padé and adaptive least-squares initialization, pseudo-arclength continuation and PCHIP interpolation, Halley refinement, one-to-one branch bookkeeping, generic fold verification, and a local angular-integral reliability switch. The interactive cubic is a teaching model; the website does not run the scientific solver.
+
+In the manuscript's eight-offset scalar-model benchmark, maximum symmetric discrepancy in a local angular integral falls from 59.5629% (SPA) to 2.2872% (switched evaluation). Quadrature is selected at five offsets by a preset phase-gap threshold. Direct integrand sampling work is 37.5% lower than quadrature at all eight offsets; this is not a measured runtime speedup or an improvement in final ring-profile resolution. The 0.0242% value at the farthest offset is not the maximum. Table 3 and the surrounding analysis support 2.2872%, despite the inconsistent maximum stated in the manuscript's conclusion.
+
+Separate tests report a verified generic fold in a scalar phase model with Cassini-derived parameters and improved branch identity in five noiseless synthetic scenarios. These are not full reconstructions of the six archived profiles. Archive counts describe data available in the website, not experiment size or validation of a new reconstruction method. The full working manuscript and scientific solver are not hosted here. No publication status is asserted.
+
+Data source: https://pds-rings.seti.org/cassini/rss/
+Website source: https://github.com/Dellin3/primes-ring-website
+The Saturn background is an artistic rendering.
