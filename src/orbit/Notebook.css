@@ -57,14 +57,15 @@
 .orbit-note-rename > div { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
 .orbit-note-rename .button { min-height: 38px; padding: 8px 14px; font-size: 14px; }
 .orbit-earlier-drafts { margin-top: 19px; color: var(--muted, #a0adbf); }
-.orbit-earlier-drafts > summary { cursor: pointer; width: fit-content; font-size: 14px; padding: 8px 0; }
-.orbit-earlier-drafts > div { margin-top: 12px; border-top: 1px solid var(--line, rgba(200,216,237,.15)); }
-.orbit-earlier-drafts article { display: flex; justify-content: space-between; align-items: center; gap: 24px; padding: 22px 4px; border-bottom: 1px solid var(--line, rgba(200,216,237,.15)); }
+.orbit-earlier-drafts > h3 { font: inherit; font-size: 13px; padding: 7px 0; margin: 0; }
+.orbit-earlier-drafts > h3 > span { margin-left: 7px; font-size: 11px; color: var(--gold); }
+.orbit-earlier-drafts > div { margin-top: 8px; border-top: 1px solid var(--line, rgba(200,216,237,.15)); }
+.orbit-earlier-drafts article { display: flex; justify-content: space-between; align-items: center; gap: 24px; padding: 15px 4px; border-bottom: 1px solid var(--line, rgba(200,216,237,.15)); }
 .orbit-earlier-drafts article > div { min-width: 0; }
-.orbit-earlier-drafts h3 { font-size: 18px; font-weight: 450; color: var(--text, #f4f1e9); margin: 0 0 9px; overflow-wrap: anywhere; }
-.orbit-earlier-drafts .orbit-note-excerpt { font-size: 14px; margin-bottom: 8px; }
-.orbit-earlier-drafts article p:last-child { margin: 0; font-size: 14px; }
+.orbit-earlier-drafts h4 { font-size: 17px; font-weight: 450; color: var(--text, #f4f1e9); margin: 0 0 5px; overflow-wrap: anywhere; }
+.orbit-earlier-drafts article p:last-child { margin: 0; font-size: 12px; line-height: 1.6; }
 .orbit-earlier-drafts article > a { color: var(--gold, #e1c69c); font-size: 14px; text-decoration: none; white-space: nowrap; }
+.orbit-more-drafts > summary { width: fit-content; padding: 14px 0 5px; font-size: 12px; color: var(--muted); cursor: pointer; }
 .orbit-notebook-empty { position: relative; isolation: isolate; overflow: hidden; text-align: center; padding: 64px 28px 71px; border: 1px solid var(--line, rgba(200,216,237,.15)); border-radius: 22px; background: radial-gradient(ellipse at 50% 0, rgba(75,87,111,.16), transparent 60%), rgba(12,20,33,.65); }
 .orbit-notebook-empty-icon { width: 83px; height: 83px; display: grid; place-items: center; margin: 0 auto 30px; color: var(--gold, #e1c69c); border: 1px solid rgba(225,198,156,.22); border-radius: 24px; background: linear-gradient(145deg, rgba(225,198,156,.08), rgba(225,198,156,.015)); transform: rotate(-5deg); }
 .orbit-notebook-empty-icon > svg { transform: rotate(5deg); }

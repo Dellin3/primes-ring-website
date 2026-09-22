@@ -1,13 +1,4 @@
 https://primes-ring-website-p9yv.vercel.app/
-https://primes-ring-website-p9yv.vercel.app/research
-https://primes-ring-website-p9yv.vercel.app/research/signal-and-phase
-https://primes-ring-website-p9yv.vercel.app/research/stationary-roots-and-continuation
-https://primes-ring-website-p9yv.vercel.app/research/reliability-and-reconstruction
 https://primes-ring-website-p9yv.vercel.app/data
-https://primes-ring-website-p9yv.vercel.app/data/rev007e-x43-dlp-500m
-https://primes-ring-website-p9yv.vercel.app/data/rev028i-x43-dlp-500m
-https://primes-ring-website-p9yv.vercel.app/data/rev044e-x63-dlp-500m
-https://primes-ring-website-p9yv.vercel.app/data/rev064e-x43-dlp-500m
-https://primes-ring-website-p9yv.vercel.app/data/rev123e-x63-dlp-500m
-https://primes-ring-website-p9yv.vercel.app/data/rev133e-x43-dlp-500m
-https://primes-ring-website-p9yv.vercel.app/resources
+https://primes-ring-website-p9yv.vercel.app/explorations
+https://primes-ring-website-p9yv.vercel.app/research

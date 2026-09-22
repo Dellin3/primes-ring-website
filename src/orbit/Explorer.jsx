@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
+import { Link, useParams, useSearchParams } from 'react-router-dom'
 import ScientificProfileCanvas from '../components/data/ScientificProfileCanvas.jsx'
 import PageMeta from '../components/common/PageMeta.jsx'
 import { getExample } from '../content/explorationExamples.js'
@@ -8,6 +8,7 @@ import { displayUnit } from '../lib/profileRendering.js'
 import { buildExactWindowCsv, estimatedRecordCount, exactWindowFilename, loadExactRange, loadObservationCatalog, loadObservationSummary, overviewSamples, sourceDatasetUrl } from '../lib/webObservation.js'
 import { downloadText, observationMarkdown, readExplorations, saveDraft, saveExploration } from '../lib/explorations.js'
 import { canonicalSessionParams, restoreExplorerSession } from '../lib/explorerSession.js'
+import ObservationPicker from './ObservationPicker.jsx'
 import './Explorer.css'
 
 const number = (value, digits = 6) => Number.isFinite(value) ? new Intl.NumberFormat('en-US', { maximumFractionDigits: digits }).format(value) : 'Missing'
@@ -67,7 +68,6 @@ function PointCard({ sample, label, variable }) {
 
 function LoadedExplorer({ catalog, observation, metadata, overview }) {
   const [params, setParams] = useSearchParams()
-  const navigate = useNavigate()
   const [session] = useState(() => restoreExplorerSession(params, metadata, observation, readExplorations(), globalThis.crypto.randomUUID()))
   const restored = session.restored
   const example = getExample(metadata.dataset_id)
@@ -208,16 +208,15 @@ function LoadedExplorer({ catalog, observation, metadata, overview }) {
 
   return <section className="orbit-explorer" aria-labelledby="explorer-title">
     <header className="page-intro explorer-intro"><p className="eyebrow">THE DATA EXPLORER</p><h1 id="explorer-title">Read between the rings.</h1><p>Explore Cassini’s radio signals. Choose a region. Follow what changes.</p></header>
+    {typeof window !== 'undefined' && window.__SATURN_PREVIEW__?.mode === 'examples' && <p className="explorer-preview-caption">Preview: six example regions are included. Use Example region if another exact window is unavailable.</p>}
     {(session.notice || params.get('notice') === 'local-note-unavailable') && <p className="explorer-alert" role="alert">{session.notice || 'The requested local note is unavailable for this observation. A fresh draft is open; existing notes are preserved in your notebook.'}</p>}
     {requestedVersion && requestedVersion !== version && <p className="explorer-alert" role="alert">This view requested data version {requestedVersion}; available version is {version}. The original saved note remains unchanged until you save again.</p>}
     {(params.has('from') || params.has('to')) && !queryValid && <p className="explorer-alert" role="alert">The requested radius range is invalid. Showing {number(lower)}–{number(upper)} km; use the radius inputs to choose a valid range.</p>}
     {!metadata.principal_variables.some((item) => item.id === requestedVariable) && <p className="explorer-alert" role="alert">The requested metric is unavailable. Showing {variable.label}.</p>}
     <section className="explorer-workspace glass-panel" aria-label="Cassini observation explorer">
+      <ObservationPicker catalog={catalog} currentDatasetId={metadata.dataset_id} onChoose={() => saveDraft({ ...currentRecord, updatedAt: new Date().toISOString() })} />
       <div className="explorer-toolbar">
-        <label className="explorer-observation-select"><span className="eyebrow">OBSERVATION</span><select value={observation.slug} aria-label="Observation" onChange={(event) => {
-          saveDraft({ ...currentRecord, updatedAt: new Date().toISOString() })
-          navigate(`/data/${event.target.value}`)
-        }}>{catalog.observations.map((item) => <option key={item.dataset_id} value={item.slug}>{item.display_name}</option>)}</select></label>
+        <div className="explorer-observation-label"><span className="eyebrow">CURRENT OBSERVATION</span><p>{observation.display_name}</p></div>
         <div className="explorer-metrics" role="group" aria-label="Profile metric">{metadata.principal_variables.map((item) => <button key={item.id} type="button" aria-pressed={item.id === variable.id} onClick={() => updateView(range, item.id)}>{metricNames[item.id] || item.label}</button>)}</div>
       </div>
       <div className="explorer-body">
@@ -239,7 +238,7 @@ function LoadedExplorer({ catalog, observation, metadata, overview }) {
         </aside>
       </div>
     </section>
-    <p className="explorer-footer-caption"><span>Six observations. One extraordinary ring system.</span><span>CASSINI / RSS</span></p>
+    <p className="explorer-footer-caption"><span>{catalog.observations.length} observations. One extraordinary ring system.</span><span>CASSINI / RSS</span></p>
   </section>
 }
 

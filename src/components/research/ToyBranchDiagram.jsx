@@ -55,7 +55,7 @@ export default function ToyBranchDiagram() {
       <figcaption aria-live="polite">
         <strong>{atFold ? 'Two distinct real roots: one simple and one double.' : `${roots.length} distinct real ${roots.length === 1 ? 'root' : 'roots'}.`}</strong>
         {' '}y = {roots.map((value) => value.toFixed(6)).join(', ')}.
-        <span>Teaching model retained from the project’s earlier Toy Branch Diagram. These are solutions of the cubic above, not Cassini measurements or research outputs.</span>
+        <span>These values solve the teaching equation above. They explain branch behavior; they are not Cassini stationary angles or team research results.</span>
       </figcaption>
     </figure>
   )

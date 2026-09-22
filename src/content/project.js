@@ -13,7 +13,7 @@ export const project = {
   title: 'New Methods toward High-Resolution Reconstruction of Saturn’s Rings',
   authors: ['Dell Li', 'Maiya Qiu', 'Yutong Zhao'],
   mentor: 'Dr. Ryan Maguire',
-  paperStatus: 'Not yet available',
+  paperStatus: 'Working manuscript — methods and reported results summarized on this site',
   paperUrl: '',
   scientificCodeUrl: '',
   scientificCodeVersion: '',

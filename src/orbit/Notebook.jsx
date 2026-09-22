@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import PageMeta from '../components/common/PageMeta.jsx'
 import { deleteExploration, downloadText, explorationHref, readExplorations, renameExploration } from '../lib/explorations.js'
 import { formatNotebookRange, relativeUpdatedTime, savedViewLabel } from '../lib/notebookPresentation.js'
+import ObservationPicker from './ObservationPicker.jsx'
 import './Notebook.css'
 
 const metricLabels = {
@@ -30,6 +31,10 @@ function ViewDetails({ record }) {
 function NoteExcerpt({ notes }) {
   const trimmed = notes?.trim()
   return <p className={`orbit-note-excerpt${trimmed ? '' : ' is-empty'}`}>{trimmed ? `${trimmed.slice(0, 190)}${trimmed.length > 190 ? '…' : ''}` : 'A view to return to. Add your observations as you explore.'}</p>
+}
+
+function DraftRow({ draft }) {
+  return <article><div><h4>{draft.title || 'Untitled exploration'}</h4><p>{draft.observationName || 'Observation draft'}<span aria-hidden="true"> · </span><UpdatedTime value={draft.updatedAt} /></p></div><Link to={explorationHref(draft)} aria-label={`Resume ${draft.title || 'untitled exploration'}`}>Resume <span aria-hidden="true">↗</span></Link></article>
 }
 
 // Autosaving after a save can leave an identical draft. Only hide that copy;
@@ -120,11 +125,12 @@ export default function Notebook() {
   return <section className="orbit-notebook" aria-label="Your observation notebook">
     <PageMeta title="Notebook" description="Return to your saved Cassini observations, continue a draft, and keep your questions about Saturn’s rings in one place." path="/explorations" />
     <header className="orbit-notebook-intro page-intro"><div><p className="eyebrow">Your notebook</p><h1 ref={titleRef} tabIndex={-1}>A thought worth keeping.</h1><p>Your observations, saved in this browser.</p></div>{hasWork && <button className="button button-quiet orbit-notebook-export" type="button" onClick={exportNotebook}><svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 3v9m-3-3 3 3 3-3M4 13v4h12v-4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" /></svg>Export notebook</button>}</header>
+    <ObservationPicker notebook />
     {store.error && <p className="orbit-notebook-alert" role="alert">{store.error}</p>}
     <p className="orbit-notebook-status" role="status" aria-live="polite">{status}</p>
     {!hasWork && <section className="orbit-notebook-empty glass-panel" aria-labelledby="notebook-empty-title"><div className="orbit-notebook-empty-icon"><NotebookIcon /></div><p className="eyebrow">Room for discovery</p><h2 id="notebook-empty-title">Every observation starts<br />with a little curiosity.</h2><p>Explore the rings, notice a detail, and save the view.<br className="orbit-notebook-desktop-break" /> Your questions and notes will be waiting here.</p><Link to="/data" className="button button-primary">Explore data <span aria-hidden="true">↗</span></Link><div className="orbit-notebook-empty-orbit" aria-hidden="true" /></section>}
     {latestDraft && <section className="orbit-notebook-draft-section" aria-labelledby="notebook-draft-title"><div className="orbit-notebook-section-heading"><h2 id="notebook-draft-title">Pick up where you left off</h2><span className="orbit-note-live-label"><span />Draft</span></div><article className="orbit-latest-note glass-panel"><div className="orbit-latest-note-body"><p className="orbit-latest-note-caption mono">{latestDraft.observationName || 'An observation in progress'}</p><h3>{latestDraft.title || 'Untitled exploration'}</h3><NoteExcerpt notes={latestDraft.notes} /><ViewDetails record={latestDraft} /></div><div className="orbit-latest-note-action"><span>{savedViewLabel(latestDraft)}</span><Link className="button button-primary" to={explorationHref(latestDraft)}>Resume draft <span aria-hidden="true">↗</span></Link></div></article>
-      {drafts.length > 1 && <details className="orbit-earlier-drafts"><summary>{drafts.length - 1} earlier {drafts.length === 2 ? 'draft' : 'drafts'}</summary><div>{drafts.slice(1).map((draft) => <article key={draft.draftId || draft.datasetId}><div><h3>{draft.title || 'Untitled exploration'}</h3>{draft.notes?.trim() && <NoteExcerpt notes={draft.notes} />}<p><UpdatedTime value={draft.updatedAt} /></p></div><Link to={explorationHref(draft)}>Resume <span aria-hidden="true">↗</span></Link></article>)}</div></details>}
+      {drafts.length > 1 && <section className="orbit-earlier-drafts" aria-labelledby="earlier-drafts-title"><h3 id="earlier-drafts-title">Earlier drafts <span className="mono">{drafts.length - 1}</span></h3><div>{drafts.slice(1, 4).map((draft) => <DraftRow key={draft.draftId || draft.datasetId} draft={draft} />)}</div>{drafts.length > 4 && <details className="orbit-more-drafts"><summary>Show {drafts.length - 4} more {drafts.length === 5 ? 'draft' : 'drafts'}</summary>{drafts.slice(4).map((draft) => <DraftRow key={draft.draftId || draft.datasetId} draft={draft} />)}</details>}</section>}
     </section>}
     {records.length > 0 && <section className="orbit-notebook-saved" aria-labelledby="notebook-saved-title"><div className="orbit-notebook-section-heading"><h2 id="notebook-saved-title">Saved observations <span className="mono">{String(records.length).padStart(2, '0')}</span></h2><Link to="/data">Explore data <span aria-hidden="true">↗</span></Link></div><div className="orbit-notebook-grid">{records.map((record, index) => <SavedNote record={record} index={index} key={record.id} onRename={rename} onDelete={setDeleting} />)}</div></section>}
     <dialog ref={dialogRef} className="orbit-notebook-dialog" aria-labelledby="delete-note-title" aria-describedby="delete-note-description" onCancel={() => setDeleting(null)} onClose={() => setDeleting(null)}>{deleting && <><p className="eyebrow">Your notebook</p><h2 id="delete-note-title">Delete this observation?</h2><p id="delete-note-description">“{deleting.title || 'Untitled exploration'}” will be removed from your saved observations. This cannot be undone.</p><div><button ref={cancelRef} className="button button-secondary" type="button" onClick={() => setDeleting(null)}>Keep observation</button><button className="button orbit-delete-confirm" type="button" onClick={remove}>Delete observation</button></div></>}</dialog>
