@@ -7,6 +7,7 @@ import { getFeaturedObservation } from '../content/observations.js'
 import { displayUnit } from '../lib/profileRendering.js'
 import { buildExactWindowCsv, estimatedRecordCount, exactWindowFilename, loadExactRange, loadObservationCatalog, loadObservationSummary, overviewSamples, sourceDatasetUrl } from '../lib/webObservation.js'
 import { downloadText, observationMarkdown, readExplorations, saveDraft, saveExploration } from '../lib/explorations.js'
+import { canonicalSessionParams, restoreExplorerSession } from '../lib/explorerSession.js'
 import './Explorer.css'
 
 const number = (value, digits = 6) => Number.isFinite(value) ? new Intl.NumberFormat('en-US', { maximumFractionDigits: digits }).format(value) : 'Missing'
@@ -38,41 +39,6 @@ function RangeForm({ range, fullRange, onApply }) {
   </form>
 }
 
-function restoreSession(params, metadata, observation) {
-  const store = readExplorations()
-  const recordId = params.get('record')
-  const draftQuery = params.get('draft')
-  const hasRecord = params.has('record')
-  const hasDraft = params.has('draft')
-  const saved = recordId ? store.records.find((item) => item.id === recordId && item.datasetId === metadata.dataset_id) : null
-  const draft = hasDraft ? store.drafts[draftQuery === '1' ? metadata.dataset_id : draftQuery] : store.drafts[metadata.dataset_id]
-  const validDraft = draft?.datasetId === metadata.dataset_id && (!hasRecord || draft.originRecordId === recordId)
-  const restored = hasDraft ? validDraft ? { ...draft, id: draft.originRecordId } : null
-    : hasRecord ? saved : !params.has('version') && validDraft ? { ...draft, id: draft.originRecordId } : null
-  return {
-    restored,
-    // A saved snapshot and its live draft can contain different notes. Give
-    // record-only restores a separate working draft so neither is overwritten.
-    draftId: hasRecord && !hasDraft ? globalThis.crypto.randomUUID() : restored?.draftId || globalThis.crypto.randomUUID(),
-    title: restored?.title || `Rev ${String(observation.revolution_number).padStart(3, '0')} · ring profile`,
-    notice: hasDraft && !validDraft ? 'This draft is unavailable for this observation. A fresh draft is open; existing notes are preserved in your notebook.'
-      : hasRecord && !restored ? 'This saved note is unavailable in this browser. The linked data view is open.' : '',
-    storageError: store.error,
-  }
-}
-
-function canonicalSessionParams(params, record, requestedVersion, notice) {
-  const next = new URLSearchParams(params)
-  next.set('draft', record.draftId)
-  if (next.has('record') && next.get('record') !== record.id) next.delete('record')
-  if (!next.has('from')) next.set('from', String(record.range[0]))
-  if (!next.has('to')) next.set('to', String(record.range[1]))
-  if (!next.has('variable')) next.set('variable', record.variable)
-  if (!next.has('version')) next.set('version', requestedVersion || record.version)
-  if (notice) next.set('notice', 'local-note-unavailable')
-  return next
-}
-
 function useCsvDownload(metadata, samples, range, variableId) {
   const [asset, setAsset] = useState(null)
   const key = `${metadata.dataset_id}:${range[0]}:${range[1]}:${variableId}`
@@ -102,7 +68,7 @@ function PointCard({ sample, label, variable }) {
 function LoadedExplorer({ catalog, observation, metadata, overview }) {
   const [params, setParams] = useSearchParams()
   const navigate = useNavigate()
-  const [session] = useState(() => restoreSession(params, metadata, observation))
+  const [session] = useState(() => restoreExplorerSession(params, metadata, observation, readExplorations(), globalThis.crypto.randomUUID()))
   const restored = session.restored
   const example = getExample(metadata.dataset_id)
   const fullRange = useMemo(() => [metadata.observation.radial_range.minimum, metadata.observation.radial_range.maximum], [metadata])
