@@ -3,7 +3,7 @@ import { Buffer } from 'node:buffer'
 import process from 'node:process'
 import { createPrivateFeedbackStore, createResendNotifier } from './feedback-store.mjs'
 
-export const CONTACT_EMAIL = 'Zhuoxuan780123@gmail.com'
+export const CONTACT_EMAIL = 'zhuoxuan780123@gmail.com'
 export const MAX_BODY_BYTES = 32 * 1024
 const PRODUCTION_ORIGIN = 'https://primes-ring-website-p9yv.vercel.app'
 const CATEGORIES = new Set(['bug', 'content', 'idea', 'other'])
