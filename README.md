@@ -1,10 +1,11 @@
 # Saturn — A Cassini Explorer
 
-A focused MIT PRIMES 2026 research website with three core areas:
+A focused MIT PRIMES 2026 research website with four core areas:
 
 - **Explore data:** six Cassini RSS observations, three signal variables, exact radial windows, two-point comparison, and CSV export.
 - **My notebook:** autosaved drafts, named observations, restore, rename, delete, and export. Notes stay in the current browser; there is no account or cloud synchronization.
 - **Project research:** the whole team’s methods, reported manuscript results, interactive benchmark inspection, and actual archive coverage.
+- **Feedback:** a persistent entry opens `/feedback`, a standalone Saturn-background page with one form for name, email, problem type, and message. Failed submissions preserve the text; an email fallback appears if direct submission is unavailable.
 
 **Project research** connects Padé / least-squares initialization, continuation, refinement, and branch bookkeeping to three reported result sets: local angular-integral accuracy, generic-fold verification, and synthetic branch identity. A compact teaching model and archive disclosure add detail without extra top-level routes. **Sources & credits** keeps provenance and attribution together. Previous public routes redirect to the relevant retained destination.
 
@@ -48,4 +49,8 @@ The full manuscript and scientific solver are not hosted here. The archive recor
 
 ## Deployment
 
-The existing GitHub-to-Vercel integration builds branch previews. This redesign lives on `codex/saturn-observatory`; review it before merging into the production branch. Vercel may require the project owner's sign-in to view previews. No production settings or account permissions are changed by this branch.
+Deploy this source as the existing **Vite** project on Vercel (`npm run build`, output `dist`). Keep the root `api/` directory and `vercel.json`; uploading only `dist` does not include the feedback receiver. See [Codex deployment handoff](CODEX_HANDOFF.md) for the approved design, branch, and target project.
+
+For direct form submissions, follow **[反馈功能部署说明](docs/FEEDBACK_SETUP.md)**: connect a **private** Vercel Blob store, configure Resend, and set the server-only environment variables from `.env.example`. Feedback is stored privately before a notification is requested for `Zhuoxuan780123@gmail.com`. If the receiver is unconfigured or unreachable, the page offers an email fallback; it never reports an unsaved message as submitted.
+
+`npm run dev` previews the interface without Vercel Functions. Use `vercel dev` for a real local API check. Mocked tests do not prove live email delivery; after deployment, submit a clearly labelled test yourself and verify the private record and your inbox.

@@ -32,6 +32,8 @@ export default function OrbitShell({ children }) {
   const appRef = useRef(null)
   const params = new URLSearchParams(location.search)
   const open = params.has('about')
+  const isFeedback = location.pathname.replace(/\/+$/, '') === '/feedback'
+  const feedbackHref = `/feedback?from=${encodeURIComponent(location.pathname)}`
   function setAbout(value) {
     if (value) params.set('about', 'research'); else params.delete('about')
     navigate({ pathname: location.pathname, search: params.toString() }, { replace: true, preventScrollReset: true })
@@ -50,15 +52,16 @@ export default function OrbitShell({ children }) {
     window.addEventListener('pointermove', drift, { passive: true })
     return () => { cancelAnimationFrame(frame); window.removeEventListener('pointermove', drift) }
   }, [])
-  return <div ref={appRef} className={`orbit-app ${location.pathname === '/' ? 'is-home' : 'is-workspace'}`}>
-    <div className="space-backdrop" aria-hidden="true"><div className="saturn-image" /><div className="space-vignette" /><div className="ambient-light" /></div>
-    <a href="#main-content" className="skip-link">Skip to content</a>
+  return <div ref={appRef} className={`orbit-app ${location.pathname === '/' || isFeedback ? 'is-home' : 'is-workspace'}${isFeedback ? ' is-feedback' : ''}`}>
+    <div className="space-backdrop" aria-hidden="true"><div className="saturn-image" /><div className="space-vignette" />{!isFeedback ? <div className="ambient-light" /> : null}</div>
+    {!isFeedback ? <><a href="#main-content" className="skip-link">Skip to content</a>
     <header className="orbit-header"><div className="header-inner">
       <Link className="orbit-brand" to="/" aria-label="Saturn explorer home"><span className="brand-symbol" aria-hidden="true">s</span><span>SATURN<small>A CASSINI EXPLORER</small></span></Link>
       <nav aria-label="Main navigation"><NavLink to="/data">Explore data</NavLink><NavLink to="/explorations">My notebook</NavLink><NavLink to="/research">Project research</NavLink><button className="about-trigger" aria-label="Sources and credits" type="button" onClick={() => setAbout(true)}>i</button></nav>
-    </div></header>
-    <main className="orbit-main" id="main-content" tabIndex={-1}>{children}</main>
-    <footer className="orbit-footer"><span>MIT PRIMES 2026 <span className="footer-dot">·</span> Saturn’s rings</span><button type="button" onClick={() => setAbout(true)}>Sources & credits <span aria-hidden="true">↗</span></button><span className="footer-signoff">Built for curiosity.</span></footer>
-    <About open={open} onClose={() => setAbout(false)} />
+    </div></header></> : null}
+    <main className={isFeedback ? 'feedback-layout' : 'orbit-main'} id="main-content" tabIndex={-1}>{children}</main>
+    {!isFeedback ? <><footer className="orbit-footer"><span>MIT PRIMES 2026 <span className="footer-dot">·</span> Saturn’s rings</span><button type="button" onClick={() => setAbout(true)}>Sources & credits <span aria-hidden="true">↗</span></button><span className="footer-signoff">Built for curiosity.</span></footer>
+    <Link className="feedback-launcher" to={feedbackHref}>Feedback</Link>
+    <About open={open} onClose={() => setAbout(false)} /></> : null}
   </div>
 }

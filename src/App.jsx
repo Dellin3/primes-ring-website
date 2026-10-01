@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import OrbitShell from './orbit/OrbitShell.jsx'
 import Home from './orbit/Home.jsx'
+import Feedback from './orbit/Feedback.jsx'
 const Explorer = lazy(() => import('./orbit/Explorer.jsx'))
 const Notebook = lazy(() => import('./orbit/Notebook.jsx'))
 const Research = lazy(() => import('./orbit/Research.jsx'))
@@ -12,6 +13,7 @@ export default function App() {
     <Route path="data/:datasetSlug" element={<Explorer />} />
     <Route path="explorations" element={<Notebook />} />
     <Route path="research" element={<Research />} />
+    <Route path="feedback" element={<Feedback />} />
     {['research/*', 'math', 'algorithms/*', 'overview', 'team'].map(path => <Route key={path} path={path} element={<Navigate to="/research" replace />} />)}
     {['resources', 'background', 'gallery'].map(path => <Route key={path} path={path} element={<Navigate to="/?about=sources" replace />} />)}
     {['viewer', 'data-hub'].map(path => <Route key={path} path={path} element={<Navigate to="/data" replace />} />)}

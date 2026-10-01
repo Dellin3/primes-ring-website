@@ -53,6 +53,10 @@
   ],
   "rewrites": [
     {
+      "source": "/feedback",
+      "destination": "/index.html"
+    },
+    {
       "source": "/research",
       "destination": "/index.html"
     },
@@ -76,5 +80,10 @@
       "source": "/resources",
       "destination": "/index.html"
     }
-  ]
+  ],
+  "functions": {
+    "api/feedback.js": {
+      "maxDuration": 30
+    }
+  }
 }
