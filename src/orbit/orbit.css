@@ -25,4 +25,6 @@
 .about-research-link{display:flex;justify-content:space-between;gap:15px;color:var(--gold);font-size:.9rem;margin-top:22px}
 .toy-slice{stroke:#d1b88b;stroke-dasharray:4 4}
 .toy-branch-diagram figcaption span{display:block;margin-top:9px}
-@media(max-width:700px){.header-inner{flex-wrap:wrap;row-gap:13px}.orbit-header nav{width:100%;justify-content:space-between;gap:12px;font-size:.75rem}.orbit-header nav a{white-space:nowrap}}
+@media(max-width:900px){.header-inner{flex-wrap:wrap;row-gap:13px}.orbit-header nav{width:100%;justify-content:space-between;gap:12px}.orbit-header nav a{white-space:nowrap}}
+@media(max-width:700px){.orbit-header nav{font-size:.75rem}}
+@media(max-width:400px){.orbit-header nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 14px}.orbit-header nav a{display:flex;align-items:center;min-height:44px}}

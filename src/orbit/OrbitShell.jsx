@@ -57,11 +57,10 @@ export default function OrbitShell({ children }) {
     {!isFeedback ? <><a href="#main-content" className="skip-link">Skip to content</a>
     <header className="orbit-header"><div className="header-inner">
       <Link className="orbit-brand" to="/" aria-label="Saturn explorer home"><span className="brand-symbol" aria-hidden="true">s</span><span>SATURN<small>A CASSINI EXPLORER</small></span></Link>
-      <nav aria-label="Main navigation"><NavLink to="/data">Explore data</NavLink><NavLink to="/explorations">My notebook</NavLink><NavLink to="/research">Project research</NavLink><button className="about-trigger" aria-label="Sources and credits" type="button" onClick={() => setAbout(true)}>i</button></nav>
+      <nav aria-label="Main navigation"><NavLink to="/data">Explore data</NavLink><NavLink to="/explorations">My notebook</NavLink><NavLink to="/research">Project research</NavLink><NavLink to={feedbackHref}>Feedback</NavLink><button className="about-trigger" aria-label="Sources and credits" type="button" onClick={() => setAbout(true)}>i</button></nav>
     </div></header></> : null}
     <main className={isFeedback ? 'feedback-layout' : 'orbit-main'} id="main-content" tabIndex={-1}>{children}</main>
     {!isFeedback ? <><footer className="orbit-footer"><span>MIT PRIMES 2026 <span className="footer-dot">·</span> Saturn’s rings</span><button type="button" onClick={() => setAbout(true)}>Sources & credits <span aria-hidden="true">↗</span></button><span className="footer-signoff">Built for curiosity.</span></footer>
-    <Link className="feedback-launcher" to={feedbackHref}>Feedback</Link>
     <About open={open} onClose={() => setAbout(false)} /></> : null}
   </div>
 }
