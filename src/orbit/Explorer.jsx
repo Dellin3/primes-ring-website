@@ -9,6 +9,8 @@ import { buildExactWindowCsv, estimatedRecordCount, exactWindowFilename, loadExa
 import { downloadText, observationMarkdown, readExplorations, saveDraft, saveExploration } from '../lib/explorations.js'
 import { canonicalSessionParams, restoreExplorerSession } from '../lib/explorerSession.js'
 import ObservationPicker from './ObservationPicker.jsx'
+import { ObservationCatalog } from './ObservationDetails.jsx'
+import { publishedCatalog, observationDetailsPath } from '../content/publicObservations.js'
 import './Explorer.css'
 
 const number = (value, digits = 6) => Number.isFinite(value) ? new Intl.NumberFormat('en-US', { maximumFractionDigits: digits }).format(value) : 'Missing'
@@ -207,7 +209,6 @@ function LoadedExplorer({ catalog, observation, metadata, overview }) {
   const plotMessage = status === 'loading' ? 'Loading verified samples…' : status === 'error' ? 'Exact samples could not be verified.' : status === 'ready' && !samples.length ? 'No samples fall inside this window. Widen the range.' : ''
 
   return <section className="orbit-explorer" aria-labelledby="explorer-title">
-    <header className="page-intro explorer-intro"><p className="eyebrow">THE DATA EXPLORER</p><h1 id="explorer-title">Read between the rings.</h1><p>Explore Cassini’s radio signals. Choose a region. Follow what changes.</p></header>
     {typeof window !== 'undefined' && window.__SATURN_PREVIEW__?.mode === 'examples' && <p className="explorer-preview-caption">Preview: six example regions are included. Use Example region if another exact window is unavailable.</p>}
     {(session.notice || params.get('notice') === 'local-note-unavailable') && <p className="explorer-alert" role="alert">{session.notice || 'The requested local note is unavailable for this observation. A fresh draft is open; existing notes are preserved in your notebook.'}</p>}
     {requestedVersion && requestedVersion !== version && <p className="explorer-alert" role="alert">This view requested data version {requestedVersion}; available version is {version}. The original saved note remains unchanged until you save again.</p>}
@@ -260,7 +261,7 @@ function ObservationLoader({ catalog, observation }) {
 
 export default function Explorer() {
   const { datasetSlug } = useParams()
-  const [request, setRequest] = useState({ status: 'loading' })
+  const [request, setRequest] = useState({ status: 'ready', catalog: publishedCatalog })
   const [retry, setRetry] = useState(0)
   useEffect(() => {
     let cancelled = false
@@ -272,9 +273,12 @@ export default function Explorer() {
   }, [retry])
   const observation = request.catalog ? datasetSlug ? request.catalog.observations.find((item) => item.slug === datasetSlug) : getFeaturedObservation(request.catalog) : null
   return <>
-    <PageMeta title={observation ? `${observation.display_name} — Data Explorer` : 'Cassini Data Explorer'} description="Explore Cassini RSS diffraction-limited ring profiles, compare exact converted samples, and save observation notes." path={datasetSlug ? `/data/${datasetSlug}` : '/data'} />
-    {request.status !== 'ready' ? <section className="explorer-loading glass-panel" role={request.status === 'error' ? 'alert' : 'status'}><h1>Read between the rings.</h1><p>{request.status === 'error' ? 'The observation catalog could not be loaded.' : 'Loading Cassini observations…'}</p>{request.status === 'error' && <button className="button button-secondary" type="button" onClick={() => setRetry((value) => value + 1)}>Retry catalog</button>}</section>
+    <PageMeta title={datasetSlug && observation ? `${observation.display_name} — Data Explorer` : 'Cassini Data Explorer'} description={datasetSlug && observation ? `Inspect ${observation.display_name}: ${observation.record_count.toLocaleString('en-US')} converted source records from ${observation.product_id}, with exact radial windows and CSV export.` : 'Explore six Cassini RSS diffraction-limited ring profiles, compare exact converted samples, and save observation notes.'} path={datasetSlug ? `/data/${datasetSlug}` : '/data'} />
+    {(observation || !datasetSlug) && <header className="page-intro explorer-intro"><p className="eyebrow">THE DATA EXPLORER</p><h1 id="explorer-title">Read between the rings.</h1><p>{datasetSlug && observation ? `${observation.display_name}. ${observation.record_count.toLocaleString('en-US')} converted source records from ${observation.product_id}.` : 'Explore Cassini’s radio signals. Choose a region. Follow what changes.'}</p></header>}
+    {request.status !== 'ready' ? <section className="explorer-loading glass-panel" role={request.status === 'error' ? 'alert' : 'status'}><p>{request.status === 'error' ? 'The observation catalog could not be loaded.' : 'Loading Cassini observations…'}</p>{request.status === 'error' && <button className="button button-secondary" type="button" onClick={() => setRetry((value) => value + 1)}>Retry catalog</button>}</section>
       : !observation ? <section className="explorer-loading glass-panel"><h1>Observation not found.</h1><p>Choose one of the six available Cassini observations.</p><Link className="button button-primary" to="/data">Open the explorer</Link></section>
         : <ObservationLoader key={observation.dataset_id} catalog={request.catalog} observation={observation} />}
+    {observation && <p className="observation-reference-link"><Link to={observationDetailsPath(observation)}>Read this observation’s fields, provenance and limits →</Link></p>}
+    <ObservationCatalog />
   </>
 }

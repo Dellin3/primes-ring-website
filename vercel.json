@@ -49,41 +49,111 @@
       "source": "/gallery",
       "destination": "/resources",
       "permanent": true
+    },
+    {
+      "source": "/research/:moduleSlug",
+      "destination": "/research",
+      "permanent": true
+    },
+    {
+      "source": "/resources",
+      "destination": "/?about=sources",
+      "permanent": true
     }
   ],
   "rewrites": [
     {
-      "source": "/feedback",
-      "destination": "/index.html"
+      "source": "/data",
+      "destination": "/data/index.html"
     },
     {
       "source": "/research",
-      "destination": "/index.html"
+      "destination": "/research/index.html"
     },
     {
-      "source": "/research/:moduleSlug",
-      "destination": "/index.html"
+      "source": "/feedback",
+      "destination": "/feedback/index.html"
     },
     {
-      "source": "/data",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/data/:datasetSlug",
-      "destination": "/index.html"
+      "source": "/datasets",
+      "destination": "/datasets/index.html"
     },
     {
       "source": "/explorations",
-      "destination": "/index.html"
+      "destination": "/explorations/index.html"
     },
     {
-      "source": "/resources",
-      "destination": "/index.html"
+      "source": "/data/rev007e-x43-dlp-500m",
+      "destination": "/data/rev007e-x43-dlp-500m/index.html"
+    },
+    {
+      "source": "/datasets/rev007e-x43-dlp-500m",
+      "destination": "/datasets/rev007e-x43-dlp-500m/index.html"
+    },
+    {
+      "source": "/data/rev028i-x43-dlp-500m",
+      "destination": "/data/rev028i-x43-dlp-500m/index.html"
+    },
+    {
+      "source": "/datasets/rev028i-x43-dlp-500m",
+      "destination": "/datasets/rev028i-x43-dlp-500m/index.html"
+    },
+    {
+      "source": "/data/rev044e-x63-dlp-500m",
+      "destination": "/data/rev044e-x63-dlp-500m/index.html"
+    },
+    {
+      "source": "/datasets/rev044e-x63-dlp-500m",
+      "destination": "/datasets/rev044e-x63-dlp-500m/index.html"
+    },
+    {
+      "source": "/data/rev064e-x43-dlp-500m",
+      "destination": "/data/rev064e-x43-dlp-500m/index.html"
+    },
+    {
+      "source": "/datasets/rev064e-x43-dlp-500m",
+      "destination": "/datasets/rev064e-x43-dlp-500m/index.html"
+    },
+    {
+      "source": "/data/rev123e-x63-dlp-500m",
+      "destination": "/data/rev123e-x63-dlp-500m/index.html"
+    },
+    {
+      "source": "/datasets/rev123e-x63-dlp-500m",
+      "destination": "/datasets/rev123e-x63-dlp-500m/index.html"
+    },
+    {
+      "source": "/data/rev133e-x43-dlp-500m",
+      "destination": "/data/rev133e-x43-dlp-500m/index.html"
+    },
+    {
+      "source": "/datasets/rev133e-x43-dlp-500m",
+      "destination": "/datasets/rev133e-x43-dlp-500m/index.html"
     }
   ],
   "functions": {
     "api/feedback.js": {
       "maxDuration": 30
     }
-  }
+  },
+  "headers": [
+    {
+      "source": "/explorations",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, follow"
+        }
+      ]
+    },
+    {
+      "source": "/feedback",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, follow"
+        }
+      ]
+    }
+  ]
 }

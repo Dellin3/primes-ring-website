@@ -73,7 +73,12 @@ const contributions = [
 export default function Research() {
   const [showObservation, setShowObservation] = useState(false)
   return <article className="research-page research-story">
-    <PageMeta title="Project research — Following a signal from Saturn" path="/research" description="Follow our PRIMES team's research: from Cassini radio signals to stationary roots, branch tracking, and a local test of a more reliable calculation." />
+    <PageMeta title="Project research — Following a signal from Saturn" path="/research" description="Follow our PRIMES team's research: from Cassini radio signals to stationary roots, branch tracking, and a local test of a more reliable calculation." structuredData={{
+      '@context': 'https://schema.org', '@type': 'ResearchProject',
+      name: project.title, url: `${project.publicSiteUrl}/research`,
+      description: 'A team mathematics project studying stationary roots, branch identity, folds and local integration for Cassini radio-occultation signals. Results summarized from a working manuscript are separate from the archived-data viewer; the full manuscript and scientific solver are not hosted here.',
+      member: [...project.authors.map(name => ({ '@type': 'Person', name })), { '@type': 'Person', name: project.mentor }],
+    }} />
     <header className="research-story-hero">
       <p className="eyebrow">Project research <span aria-hidden="true">/</span> MIT PRIMES 2026</p>
       <div className="research-story-hero-copy"><h1>A signal from Saturn.<br /><em>A closer look at its rings.</em></h1><p>Cassini sent radio waves through Saturn’s rings. Our team studies the mathematics that could help recover finer detail from the signals that reached Earth.</p></div>

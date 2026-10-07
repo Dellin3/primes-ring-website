@@ -84,7 +84,7 @@ export default function Feedback() {
   const emailLink = `mailto:${contact.email}?subject=${encodeURIComponent('PRIMES website feedback')}&body=${encodeURIComponent(emailBody)}`
 
   return <section className="feedback-panel" aria-labelledby="feedback-title">
-    <PageMeta title="Feedback — Saturn explorer" description="Share a question, report a website problem, or suggest an improvement to the Saturn explorer." path="/feedback" />
+    <PageMeta title="Feedback — Saturn explorer" description="Share a question, report a website problem, or suggest an improvement to the Saturn explorer." path="/feedback" noindex />
     <h1 id="feedback-title">Feedback</h1>
     {receipt ? <div className="feedback-success" ref={result} tabIndex={-1} role="status"><p>Thank you. Your feedback has been saved.</p><Link className="feedback-submit" to="/">Home</Link></div> : <form className="feedback-form" onSubmit={submit} aria-label="Website feedback">
       <fieldset disabled={sending}>

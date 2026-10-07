@@ -4,7 +4,6 @@ New Methods toward High-Resolution Reconstruction of Saturn’s Rings is a team 
 
 Three core areas:
 - Explore data: https://primes-ring-website-p9yv.vercel.app/data
-- My notebook: https://primes-ring-website-p9yv.vercel.app/explorations
 - Project research: https://primes-ring-website-p9yv.vercel.app/research
 - Homepage: https://primes-ring-website-p9yv.vercel.app/
 
@@ -21,3 +20,13 @@ Separate tests report a verified generic fold in a scalar phase model with Cassi
 Data source: https://pds-rings.seti.org/cassini/rss/
 Website source: https://github.com/Dellin3/primes-ring-website
 The Saturn background is an artistic rendering.
+
+Public observation catalog: https://primes-ring-website-p9yv.vercel.app/datasets
+- Rev 007 Egress · X-band · DSN 43: https://primes-ring-website-p9yv.vercel.app/datasets/rev007e-x43-dlp-500m
+- Rev 028 Ingress · X-band · DSN 43: https://primes-ring-website-p9yv.vercel.app/datasets/rev028i-x43-dlp-500m
+- Rev 044 Egress · X-band · DSN 63: https://primes-ring-website-p9yv.vercel.app/datasets/rev044e-x63-dlp-500m
+- Rev 064 Egress · X-band · DSN 43: https://primes-ring-website-p9yv.vercel.app/datasets/rev064e-x43-dlp-500m
+- Rev 123 Egress · X-band · DSN 63: https://primes-ring-website-p9yv.vercel.app/datasets/rev123e-x63-dlp-500m
+- Rev 133 Egress · X-band · DSN 43: https://primes-ring-website-p9yv.vercel.app/datasets/rev133e-x43-dlp-500m
+
+The visitor notebook is browser-local and excluded from public search indexing. These data details describe the archived DLP products, not new high-resolution reconstruction results.
