@@ -38,7 +38,7 @@ await writeFile('dist/sitemap.txt', `${urls.join('\n')}\n`)
 await writeFile('dist/robots.txt', `User-agent: *\nAllow: /\n\nSitemap: ${siteOrigin}/sitemap.xml\n`)
 let llms = await readFile('public/llms.txt', 'utf8')
 llms = llms.split('\nPublic observation catalog:')[0]
-llms = llms.replaceAll('https://primes-ring-website-p9yv.vercel.app', siteOrigin).replace(/^- My notebook: .*\n/m, '')
+llms = llms.replaceAll('https://saturnringlab.com', siteOrigin).replace(/^- My notebook: .*\n/m, '')
 llms += `\nPublic observation catalog: ${siteOrigin}/datasets\n${catalog.observations.map(observation => `- ${observation.display_name}: ${siteOrigin}/datasets/${observation.slug}`).join('\n')}\n\nThe visitor notebook is browser-local and excluded from public search indexing. These data details describe the archived DLP products, not new high-resolution reconstruction results.\n`
 await writeFile('dist/llms.txt', llms)
 console.log(`Prerendered ${routes.length} routes with shared React components; ${publicRoutes.length} public canonical URLs.`)

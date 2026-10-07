@@ -184,6 +184,18 @@ test('rejects cross-origin, missing origin, and forged Host; accepts trusted Ver
   assert.equal(f.mail.length, 1)
 })
 
+test('custom apex accepts same-origin feedback while forged request Host stays untrusted', async () => {
+  const f = fixture()
+  const result = await request(f.handler, { headers: { origin: 'https://saturnringlab.com' } })
+  assert.equal(result.status, 200)
+  assert.equal(f.store.records.size, 2)
+  assert.equal(f.mail.length, 1)
+  const forged = await request(f.handler, { headers: { origin: 'https://saturnringlab.com.attacker.example', host: 'saturnringlab.com' } })
+  assert.equal(forged.status, 403)
+  assert.equal(f.store.records.size, 2)
+  assert.equal(f.mail.length, 1)
+})
+
 test('only development allows fixed localhost origins', async () => {
   const f = fixture({ env: { ...env, VERCEL_ENV: 'development' } })
   assert.equal((await request(f.handler, { headers: { origin: 'http://localhost:3000' } })).status, 200)

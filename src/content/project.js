@@ -19,8 +19,8 @@ export const project = {
   scientificCodeVersion: '',
   researchResults: [],
   repositoryUrl: 'https://github.com/Dellin3/primes-ring-website',
-  publicSiteUrl: (import.meta.env?.VITE_PUBLIC_SITE_URL || import.meta.env?.VITE_SITE_URL || 'https://primes-ring-website-p9yv.vercel.app').replace(/\/+$/, ''),
-  learningUrl: 'https://student-research-lab-theta.vercel.app/',
+  publicSiteUrl: (import.meta.env?.VITE_PUBLIC_SITE_URL || import.meta.env?.VITE_SITE_URL || 'https://saturnringlab.com').replace(/\/+$/, ''),
+  learningUrl: 'https://researchstarterlab.com/',
   dataSourceUrl: 'https://pds-rings.seti.org/cassini/rss/',
   visitorSummary: 'Inspect a ring profile, zoom into a region, and save an observation you can return to.',
   summary:
