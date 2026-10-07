@@ -15,7 +15,7 @@ for (const url of urls) {
   const title = html.match(/<title[^>]*>(.*?)<\/title>/s)?.[1]
   assert(title && !titles.has(title), `${path}: distinct title`); titles.add(title)
   const body = html.match(/<div id="root">([\s\S]+)<\/div>/)?.[1]
-  assert(body && /<h[12]\b/.test(body) && !bodies.has(body), `${path}: substantive distinct React HTML`); bodies.add(body)
+  assert(body && /<h1\b/.test(body) && !bodies.has(body), `${path}: substantive distinct React HTML with primary heading`); bodies.add(body)
   assert(!html.includes('Opening your workspace'), `${path}: no Suspense shell`)
   assert(!html.includes('<!--route-'), `${path}: no unfilled placeholders`)
   assert(!html.includes('cassini.explorations.v1'), `${path}: no browser records serialized`)
