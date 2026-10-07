@@ -22,6 +22,7 @@ npm run dev
 npm run lint
 npm test
 npm run build
+npm run check:seo
 ```
 
 The automated checks cover all six observation products (1,566,902 converted rows, 193 SHA-256 chunk hashes), display coordinates, exact export precision, notebook persistence, and saved-record/draft restoration. Automated checks do not substitute for a live browser review.
@@ -54,3 +55,7 @@ Deploy this source as the existing **Vite** project on Vercel (`npm run build`, 
 For direct form submissions, follow **[反馈功能部署说明](docs/FEEDBACK_SETUP.md)**: connect a **private** Vercel Blob store, configure Resend, and set the server-only environment variables from `.env.example`. Feedback is stored privately before a notification is requested for `Zhuoxuan780123@gmail.com`. If the receiver is unconfigured or unreachable, the page offers an email fallback; it never reports an unsaved message as submitted.
 
 `npm run dev` previews the interface without Vercel Functions. Use `vercel dev` for a real local API check. Mocked tests do not prove live email delivery; after deployment, submit a clearly labelled test yourself and verify the private record and your inbox.
+
+## Public HTML and discovery
+
+The production build prerenders shared React components to 19 route documents and hydrates them in the browser. The sitemap has 16 public URLs: home, data, research, the dataset catalog, six interactive observation routes and six product-detail routes. Product details derive from the verified catalog; no new results or licenses are asserted. Lazy-route CSS is included in static HTML so research content remains readable with JavaScript disabled. Notebook and feedback are noindex and absent from the sitemap; local notes are never serialized. Set `VITE_PUBLIC_SITE_URL` before building to migrate all metadata and discovery files consistently. `npm run seo:submit` is an explicit post-deployment IndexNow action, never a build side effect.

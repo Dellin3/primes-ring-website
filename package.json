@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && vite build --ssr src/entry-server.jsx --outDir dist-ssr && node scripts/prerender.mjs && node scripts/check-seo.mjs",
     "lint": "eslint .",
     "preview": "vite preview",
     "data:build:rev133": "python3 -B scripts/build_web_observation.py --dataset-id rss_2010_170_x43_e_dlp_500m",
@@ -13,7 +13,9 @@
     "data:build:catalog": "python3 -B scripts/build_web_observation_catalog.py",
     "data:verify:catalog": "python3 -B scripts/verify_web_observation_catalog.py",
     "test": "node --test tests/*.test.mjs",
-    "data:examples": "node scripts/build_exploration_examples.mjs"
+    "data:examples": "node scripts/build_exploration_examples.mjs",
+    "check:seo": "node scripts/check-seo.mjs",
+    "seo:submit": "node scripts/submit-indexnow.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.7",
