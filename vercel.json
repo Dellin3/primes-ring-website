@@ -1,6 +1,84 @@
 {
   "redirects": [
     {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": {
+            "eq": "primes-ring-website-p9yv.vercel.app"
+          }
+        }
+      ],
+      "destination": "https://saturnringlab.com/",
+      "permanent": true
+    },
+    {
+      "source": "/:section(data|datasets|research)",
+      "has": [
+        {
+          "type": "host",
+          "value": {
+            "eq": "primes-ring-website-p9yv.vercel.app"
+          }
+        }
+      ],
+      "destination": "https://saturnringlab.com/:section",
+      "permanent": true
+    },
+    {
+      "source": "/:section(data|datasets)/:slug",
+      "has": [
+        {
+          "type": "host",
+          "value": {
+            "eq": "primes-ring-website-p9yv.vercel.app"
+          }
+        }
+      ],
+      "destination": "https://saturnringlab.com/:section/:slug",
+      "permanent": true
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": {
+            "eq": "www.saturnringlab.com"
+          }
+        }
+      ],
+      "destination": "https://saturnringlab.com/",
+      "permanent": true
+    },
+    {
+      "source": "/:section(data|datasets|research)",
+      "has": [
+        {
+          "type": "host",
+          "value": {
+            "eq": "www.saturnringlab.com"
+          }
+        }
+      ],
+      "destination": "https://saturnringlab.com/:section",
+      "permanent": true
+    },
+    {
+      "source": "/:section(data|datasets)/:slug",
+      "has": [
+        {
+          "type": "host",
+          "value": {
+            "eq": "www.saturnringlab.com"
+          }
+        }
+      ],
+      "destination": "https://saturnringlab.com/:section/:slug",
+      "permanent": true
+    },
+    {
       "source": "/viewer",
       "destination": "/data",
       "permanent": true
