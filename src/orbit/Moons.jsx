@@ -4,7 +4,8 @@ import PageMeta from '../components/common/PageMeta.jsx'
 import { collectSources } from '../content/saturn.js'
 import { moonCount } from '../content/saturn.js'
 import { formatPublished, moonColumns, moonGroups, moonHighlights, moons, moonsCsvPath, sortMoons } from '../content/moons.js'
-import { Chapter, SectionHero, SourceNote, SourcesCard } from './SaturnPage.jsx'
+import { photos } from '../content/photos.js'
+import { Chapter, Photo, SectionHero, SourceNote, SourcesCard } from './SaturnPage.jsx'
 
 const chapters = [
   { id: 'moons-worlds', label: 'Worlds to know' },
@@ -18,6 +19,7 @@ const filters = [
   { id: 'outer', label: 'Small outer moons', groups: ['outer', 'irregular'] },
 ]
 const byId = Object.fromEntries(moons.map(moon => [moon.id, moon]))
+const highlightPhotos = { titan: photos.titan, enceladus: photos.enceladusPlume, mimas: photos.mimas, 'pan-daphnis': photos.pan, shepherds: photos.prometheus, coorbitals: photos.epimetheus, iapetus: photos.iapetus, hyperion: photos.hyperion, phoebe: photos.phoebe }
 
 function MoonFact({ id }) {
   const moon = byId[id]
@@ -63,6 +65,7 @@ export default function Moons() {
 
     <Chapter id="moons-worlds" number="01" eyebrow="Worlds to know" title="Oceans, haze," emphasis="and moons inside the rings.">
       <div className="moon-highlights">{moonHighlights.map(item => <article className="moon-highlight" key={item.id} id={`moon-${item.id}`}>
+        {highlightPhotos[item.id] && <Photo photo={highlightPhotos[item.id]} variant="card" />}
         <p className="moon-names">{item.names.join(' & ')}</p>
         <h3>{item.headline}</h3>
         <p>{item.text}</p>

@@ -184,3 +184,42 @@
 }
 @media(max-width:420px){.saturn-facts{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){.ring-map .ring-band{transition:none}}
+
+/* NASA photographs: the research story's framed-image language, with credits. */
+.saturn-photo{margin:0;min-width:0}
+.saturn-photo-frame{position:relative;overflow:hidden;border-radius:22px;border:1px solid #b3cbe328;background:#020408;box-shadow:0 26px 55px -30px #000,inset 0 1px #f4f8ff12}
+.saturn-photo-frame img{display:block;width:100%;height:auto}
+.saturn-photo figcaption{display:grid;gap:3px;padding:11px 3px 0;color:#9fadc0;font-size:.8125rem;line-height:1.55}
+.saturn-photo-caption{color:#b3c3d4}
+.saturn-photo-meta,.saturn-photo-credit{font-size:.75rem;color:#8396ac}
+.saturn-photo-credit a{color:#b5d3ef;text-decoration:underline;text-underline-offset:3px;text-decoration-color:#b3d4f044}
+.saturn-photo-credit a:hover{color:#fff}
+.saturn-photo.is-hero{margin:4px 0 66px}
+.saturn-photo.is-hero .saturn-photo-frame{border-radius:24px}
+.saturn-photo.is-hero img{aspect-ratio:16/9;object-fit:contain}
+.saturn-photo.is-hero figcaption{grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);column-gap:28px;align-items:start}
+.saturn-photo.is-hero .saturn-photo-caption{grid-row:span 2}
+.saturn-photo.is-wide{margin:34px 0 0}
+.saturn-photo.is-wide img{max-height:620px;object-fit:contain}
+.saturn-gallery{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:26px 20px;margin-top:34px}
+.saturn-gallery.is-two{grid-template-columns:repeat(2,minmax(0,1fr))}
+.saturn-photo.is-gallery img{aspect-ratio:4/3;object-fit:cover}
+.saturn-photo.is-gallery.is-contain img{object-fit:contain}
+.saturn-photo.is-panel{margin:-6px 0 18px}
+.saturn-photo.is-panel .saturn-photo-frame{border-radius:14px}
+.saturn-photo.is-inline{max-width:520px;margin-top:14px}
+.saturn-photo.is-inline .saturn-photo-frame{border-radius:16px}
+.saturn-photo.is-inline img{max-height:380px;object-fit:contain}
+.moon-highlight .saturn-photo.is-card{margin:-26px -26px 18px}
+.moon-highlight .saturn-photo.is-card .saturn-photo-frame{border-radius:19px 19px 0 0;border:0;border-bottom:1px solid #b8cde12e;box-shadow:none}
+.moon-highlight .saturn-photo.is-card img{aspect-ratio:16/10;object-fit:contain}
+.moon-highlight .saturn-photo.is-card figcaption{padding:9px 26px 0}
+.saturn-photo.is-strip{margin-top:30px}
+.saturn-photo.is-strip .saturn-photo-frame{overflow-x:auto;overscroll-behavior-x:contain}
+.saturn-photo.is-strip .saturn-photo-frame:focus-visible{outline:2px solid var(--blue);outline-offset:4px}
+.saturn-photo.is-strip img{width:auto;max-width:none;height:340px}
+.saturn-photo-hint{color:#c7d6e6;font-size:.8125rem}
+.saturn-photo.is-side img{max-height:520px;object-fit:contain}
+@media(max-width:1000px){.saturn-gallery{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:760px){.saturn-photo.is-hero{margin-bottom:46px}.saturn-photo.is-hero img{aspect-ratio:4/3}.saturn-photo.is-hero figcaption{grid-template-columns:1fr}.saturn-photo.is-hero .saturn-photo-caption{grid-row:auto}.saturn-photo.is-strip img{height:230px}}
+@media(max-width:600px){.saturn-gallery,.saturn-gallery.is-two{grid-template-columns:1fr}}

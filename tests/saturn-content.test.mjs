@@ -6,6 +6,8 @@ import { formatPublished, moonColumns, moons, moonsCsv, moonsCsvPath, moonHighli
 import { missionEras } from '../src/content/missions.js'
 import { cohortPath, findCohort, primesCohorts } from '../src/content/primesCohorts.js'
 import { keyFacts, moonCount, sections, sourceList, sources } from '../src/content/saturn.js'
+import { photoSrc, photos } from '../src/content/photos.js'
+import { stat } from 'node:fs/promises'
 
 const root = new URL('../', import.meta.url)
 const RECOMMENDED_EXACT_ROWS = 32768
@@ -173,4 +175,27 @@ test('PRIMES cohorts form a usable archive', () => {
 test('sections list every public section page once, in navigation order', () => {
   assert.deepEqual(sections.map(section => section.path), ['/planet', '/rings', '/moons', '/missions', '/research'])
   assert(sections.every(section => section.title && section.summary && /^0[1-5]$/.test(section.number)))
+})
+
+test('photos: credited, linked to a NASA page, and loaded only from NASA or this site', async () => {
+  const pageHosts = new Set(['science.nasa.gov', 'www.nasa.gov', 'www.jpl.nasa.gov'])
+  const fileHosts = new Set(['assets.science.nasa.gov', 'www.nasa.gov', 'd2pn8kiwq2w21t.cloudfront.net'])
+  for (const [key, photo] of Object.entries(photos)) {
+    for (const field of ['ref', 'title', 'mission', 'date', 'credit', 'page', 'caption', 'alt']) assert(photo[field], `${key}: ${field}`)
+    assert(pageHosts.has(new URL(photo.page).hostname) && new URL(photo.page).protocol === 'https:', `${key}: NASA page`)
+    if (photo.local) {
+      assert(photo.local.startsWith('/images/saturn/') && photo.width && photo.height, `${key}: local copy with dimensions`)
+      const { size } = await stat(new URL(`public${photo.local}`, root))
+      assert(size < 300 * 1024, `${key}: local copy stays small`)
+      assert.equal(photoSrc(photo), photo.local)
+    } else {
+      const file = new URL(photo.file)
+      assert(file.protocol === 'https:' && fileHosts.has(file.hostname), `${key}: file host ${file.hostname}`)
+      const src = new URL(photoSrc(photo, 900))
+      assert(src.protocol === 'https:' && fileHosts.has(src.hostname), `${key}: src host`)
+      if (photo.file.includes('/content/dam/') && !photo.file.includes('/jcr:content/')) assert(src.pathname.startsWith('/dynamicimage/assets/') && src.searchParams.get('w') === '900' && src.searchParams.get('fit') === 'clip', `${key}: resized by NASA's image service`)
+    }
+    if (/artist|concept|illustrat/i.test(`${photo.title} ${photo.caption}`)) assert.equal(photo.kind, 'Illustration', `${key}: illustrations are labeled`)
+  }
+  for (const era of missionEras) for (const entry of era.entries) if (entry.photo) assert(photos[entry.photo], `${entry.title}: photo ${entry.photo}`)
 })

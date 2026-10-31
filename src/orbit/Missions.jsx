@@ -2,7 +2,8 @@ import { Link } from 'react-router-dom'
 import PageMeta from '../components/common/PageMeta.jsx'
 import { collectSources } from '../content/saturn.js'
 import { missionEras } from '../content/missions.js'
-import { SectionHero, SourceNote, SourcesCard } from './SaturnPage.jsx'
+import { photos } from '../content/photos.js'
+import { Photo, SectionHero, SourceNote, SourcesCard } from './SaturnPage.jsx'
 
 const chapters = missionEras.map(era => ({ id: `missions-${era.id}`, label: era.title }))
 
@@ -18,6 +19,7 @@ export default function Missions() {
           <h3>{entry.title}</h3>
           <p>{entry.text}</p>
           {entry.link && <Link className="research-text-link" to={entry.link.to}>{entry.link.label} <span aria-hidden="true">→</span></Link>}
+          {entry.photo && <Photo photo={photos[entry.photo]} variant="inline" />}
           <SourceNote ids={entry.sources} />
         </div>
       </li>)}</ol>

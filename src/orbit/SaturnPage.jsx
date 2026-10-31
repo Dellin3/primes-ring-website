@@ -1,5 +1,6 @@
 import { Fragment } from 'react'
 import { sourceList, sources } from '../content/saturn.js'
+import { photoSrc } from '../content/photos.js'
 // The section pages reuse the research story's editorial styles so every page
 // shares one visual language; SaturnPage.css adds only section-specific parts.
 import './Research.css'
@@ -59,4 +60,37 @@ export function SourcesCard({ ids, title = 'Where these facts come from', childr
     {children}
     <ul className="saturn-source-list">{sourceList(unique).map(source => <li key={source.id}><Outbound href={source.url}>{source.title}</Outbound><span>{source.publisher}</span></li>)}</ul>
   </aside>
+}
+
+const photoWidths = { hero: 1800, wide: 1600, gallery: 900, card: 800, inline: 1000, panel: 1000 }
+
+// A NASA photograph with its caption, how the colors were made, the date,
+// and a credit line that links to the NASA page it was checked against.
+export function Photo({ photo, variant = 'wide', caption = true }) {
+  const meta = [photo.mission, photo.kind, photo.date].filter(Boolean).join(' · ')
+  return <figure className={`saturn-photo is-${variant}${photo.fit === 'contain' ? ' is-contain' : ''}`}>
+    <div className="saturn-photo-frame"><img src={photoSrc(photo, photoWidths[variant])} width={photo.width} height={photo.height} alt={photo.alt} loading={variant === 'hero' ? 'eager' : 'lazy'} decoding="async" /></div>
+    <figcaption>
+      {caption && <span className="saturn-photo-caption">{photo.caption}</span>}
+      <span className="saturn-photo-meta">{meta}</span>
+      <span className="saturn-photo-credit">{photo.credit} · <a href={photo.page} target="_blank" rel="noreferrer">{photo.ref}<span aria-hidden="true"> ↗</span><span className="sr-only">: {photo.title} (opens in a new tab)</span></a></span>
+    </figcaption>
+  </figure>
+}
+
+// A long panorama that keeps its labels legible by scrolling sideways.
+export function PhotoStrip({ photo }) {
+  return <figure className="saturn-photo is-strip">
+    <div className="saturn-photo-frame" role="region" aria-label={`${photo.title}. Scroll sideways to see the whole image.`} tabIndex={0}><img src={photoSrc(photo)} width={photo.width} height={photo.height} alt={photo.alt} loading="lazy" decoding="async" /></div>
+    <figcaption>
+      <span className="saturn-photo-hint" aria-hidden="true">Scroll sideways to follow the rings outward →</span>
+      <span className="saturn-photo-caption">{photo.caption}</span>
+      <span className="saturn-photo-meta">{[photo.mission, photo.kind, photo.date].filter(Boolean).join(' · ')}</span>
+      <span className="saturn-photo-credit">{photo.credit} · <a href={photo.page} target="_blank" rel="noreferrer">{photo.ref}<span aria-hidden="true"> ↗</span><span className="sr-only">: {photo.title} (opens in a new tab)</span></a></span>
+    </figcaption>
+  </figure>
+}
+
+export function PhotoGallery({ items, label }) {
+  return <div className={`saturn-gallery${items.length === 2 ? ' is-two' : ''}`} role="group" aria-label={label}>{items.map(photo => <Photo key={photo.ref + photo.title} photo={photo} variant="gallery" />)}</div>
 }

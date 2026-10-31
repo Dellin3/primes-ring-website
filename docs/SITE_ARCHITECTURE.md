@@ -55,6 +55,10 @@ The four Saturn sections share one template from `src/orbit/SaturnPage.jsx` and 
 - `SourceNote`: the compact “Source:” line under a fact, card, table or paragraph
 - `SourcesCard`: the page's full source list
 
+### Photographs
+
+The section pages show NASA photographs registered in `src/content/photos.js`, each with the NASA page its title, date, credit and caption were checked against. `Photo` (hero, wide, gallery, card, inline, side and panel variants), `PhotoGallery` and `PhotoStrip` render them with the mission, how the colors were made, the date, the credit and a link to that page. Files on NASA's image service are loaded from NASA at display size; the three copies in `public/images/saturn/` were identified against their NASA pages. Add a photo only from a NASA page you have read; say when colors are false, infrared, simulated or brightened, and label illustrations as illustrations.
+
 Every factual statement carries a `SourceNote` with registry ids. A value must say what its source says; unit conversions are allowed and must be exact. When sources disagree (for example, NASA pages that give the 2009 equinox as August 10 or 11), the page says so or uses the shared span. Values are checked against their sources before publishing; the Planet page states the month they were checked.
 
 ## 4. Rings section and guided observations
