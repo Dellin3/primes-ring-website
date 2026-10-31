@@ -1,106 +1,92 @@
-# MIT PRIMES Saturn Rings Website Architecture
+# Saturn Website Architecture
 
 ## Purpose
 
-This document defines Architecture Pass 1 for the complete MIT PRIMES 2026 Saturn Rings team project. The structure is intentionally stable while manuscript language, figures, scientific outputs, provenance records, and contributor descriptions remain subject to verification.
+This document defines Architecture Pass 2 (October 2026). The site grew from a single research project into a sourced website about the whole of Saturn, with the MIT PRIMES Saturn rings project kept as its own section and archived year by year. The site owner approved this structure; it replaces Pass 1's three-module research layout and four-block homepage.
 
-Project identity, team metadata, routes, research modules, and datasets are centralized in:
+The site serves two audiences on the same pages:
 
-- `src/content/project.js`
-- `src/content/researchModules.js`
-- `src/content/datasets.js`
+- **Students and amateur astronomers:** plain-language chapters, guided observations, a glossary, and a source next to every number.
+- **Researchers:** exact data windows, a machine-readable catalog, citation details, reproduction scripts, and a downloadable moons table.
+
+Content is centralized in:
+
+- `src/content/saturn.js` — the source registry (id → title, publisher, HTTPS URL), moon count, key facts, NSSDC table and the section list
+- `src/content/rings.js` — ring regions (PDS ring table), guided observations and their data checks, glossary
+- `src/content/moons.js` — sixteen moons as published strings, highlight cards, CSV export
+- `src/content/missions.js` — the missions timeline
+- `src/content/primesCohorts.js` — one record per PRIMES cohort
+- `src/content/project.js` — 2026 team identity and links
+- `src/content/datasets.js` and `public/data/observations/catalog.json` — the Cassini observations
 
 ## 1. Canonical route map
 
 | Route | Purpose |
 | --- | --- |
-| `/` | Short project gateway |
-| `/research` | Whole-project research overview |
-| `/research/:moduleSlug` | Reusable major-module detail template |
-| `/data` | Catalog of public local Cassini-derived observation subsets |
-| `/data/:datasetSlug` | One dataset record, profile viewer, derived-products state, and downloads |
-| `/resources` | Paper status, public code, figures, data, and provenance gateway |
+| `/` | Gateway: hero, the five-section index, and the first-observation preview |
+| `/planet` | The planet: facts, interior, weather, seasons and day, magnetic field |
+| `/rings` | The rings: to-scale map, ring table, reading a signal, guided observations, ring age |
+| `/moons` | The moons: highlight cards, sortable table, CSV download |
+| `/missions` | Missions timeline from 1610 to Dragonfly |
+| `/research` | PRIMES project archive (one card per cohort) |
+| `/research/:year` | One cohort; 2026 uses the full research story, later years the cohort template |
+| `/data`, `/data/:datasetSlug` | Data explorer (part of the Rings section) |
+| `/datasets`, `/datasets/:datasetSlug` | Observation catalog, product details, and the researcher guide |
+| `/explorations` | My notebook (noindex) |
+| `/feedback` | Feedback form (noindex) |
 | `/*` | Not-found page unless the path is a documented legacy redirect |
 
-The only primary navigation items are Research, Data, and Paper & Code. The site mark links to Home.
+Primary navigation: The planet · Rings · Moons · Missions · Research · My notebook · Feedback · Sources & credits (the “i” button; the footer link on small screens). Rings stays highlighted on `/data` and `/datasets`. The site mark links to Home.
 
-## 2. Homepage four-block limit
+## 2. Homepage
 
-Excluding the shared footer, the homepage may contain only:
+Excluding the shared footer, the homepage contains only:
 
-1. Project Hero
-2. Research Preview
-3. Cassini Data Explorer Preview
-4. Research Assets Preview
+1. Hero (with actions for the planet, the rings, and either the visitor's last exploration or the research)
+2. Explore Saturn: one index of the five sections
+3. Your first observation: the Rev 133 overview
 
-The Hero has one project-level summary, one primary action, one secondary link, and one explanatory visual. The Research Preview contains exactly three major modules. The Data Preview lazily reads the conversion-verified DLP profile catalog and the featured product’s display-only source-sample overview. The Research Assets Preview contains only Paper, Code, and Data.
+## 3. Section pages
 
-## 3. Research-module template
+The four Saturn sections share one template from `src/orbit/SaturnPage.jsx` and reuse the research story's styles:
 
-Every module detail page uses the same five areas:
+- `SectionHero`: eyebrow, two-line title, intro (optionally with sources) and an “On this page” chapter index
+- `Chapter`: numbered chapter heading
+- `SourceNote`: the compact “Source:” line under a fact, card, table or paragraph
+- `SourcesCard`: the page's full source list
 
-1. The Question
-2. Implementation
-3. Real Data & Results
-4. Explore
-5. Reproducibility
+Every factual statement carries a `SourceNote` with registry ids. A value must say what its source says; unit conversions are allowed and must be exact. When sources disagree (for example, NASA pages that give the 2009 equinox as August 10 or 11), the page says so or uses the shared span. Values are checked against their sources before publishing; the Planet page states the month they were checked.
 
-Architecture Pass 1 populates only the broad question. All other areas use a deliberate verified-artifact empty state. New algorithms, interactives, and figures belong inside the appropriate module rather than in new top-level pages.
+## 4. Rings section and guided observations
 
-The current module names and descriptions are provisional architecture labels:
+The ring map is drawn to scale from the PDS ring table; each region links to the data explorer on Rev 007 at a padded window inside that region. Each guided observation opens one exact window (at most 32,768 records, so exact samples always load) with the web-data version pinned in the URL. Every number a guided observation quotes is stored as a check in `src/content/rings.js` and re-measured from the exact Float64 chunks by `tests/saturn-content.test.mjs`; editing the text without the check, or the data without the text, fails the tests.
 
-- Signal & Phase Approximation
-- Stationary Roots & Continuation
-- Reliability & Reconstruction Interface
+Comparisons between observations must explain why values differ (viewing geometry, measurement limits) rather than imply physical change.
 
-Contributor arrays exist in `src/content/researchModules.js` and remain empty until the team contribution map is approved.
+## 5. Research archive and adding a cohort
 
-## 4. Dataset catalog and detail structure
+`/research` lists cohorts from `src/content/primesCohorts.js`, newest first. To add a year:
 
-`/data` is a master–detail observatory driven by `public/data/observations/catalog.json`. Only complete DLP profile products that pass PDS-label parsing, local conversion checks, exact-chunk hashing, deterministic source comparisons, and overview verification appear in the active rail.
+1. Add an entry with `year`, `program`, `title`, `team`, `mentor`, `status`, `question`, `summary`, `focus`, `data`, `results` and `materials`.
+2. Add a result to `results` only when it meets the traceability rule (section 8). Until then the cohort page shows “No verified results are published here yet.”
+3. List only team- and mentor-approved public materials.
+4. Run `npm run build`; the new `/research/<year>` page is prerendered and added to the sitemap automatically. Update the URL count in `scripts/check-seo.mjs`.
 
-Each observation viewer loads `metadata.json` and a display-only source-sample `overview.json` first. Optical-depth and signal-power extrema are retained; phase values are carried at the selected source rows and rendered as unconnected points without inferring continuity. Exact converted Float64 samples are stored in deterministic hashed binary chunks and fetched only when a selected radial interval requires them. The shared observation components, binary index, URL-state contract, provenance chain, and export format are observation-independent.
+The 2026 cohort (`story: true`) keeps its full research story at `/research/2026`. Old anchors on `/research` (`#research-question`, `#research-method`, `#research-results`, `#research-team`) redirect to the same anchors on `/research/2026`.
 
-Each dataset detail page contains:
+## 6. Dataset catalog and detail structure
 
-- Overview: documented PDS product identity and complete radial context
-- Profile: Canvas rendering, variable selection, radial-window navigation, exact chunk loading, sample inspection, and selected-window export
-- Derived Products: an explicit statement that no verified derived scientific output is currently published
-- Provenance and Data Fields: expandable source lineage and PDS label documentation
+`/data` is the explorer and `/datasets` the master–detail catalog, both driven by `public/data/observations/catalog.json`. Only complete DLP profile products that pass PDS-label parsing, local conversion checks, exact-chunk hashing, deterministic source comparisons, and overview verification appear.
+
+Each observation viewer loads `metadata.json` and a display-only source-sample `overview.json` first. Optical-depth and signal-power extrema are retained; phase values are carried at the selected source rows and rendered as unconnected points without inferring continuity. Exact converted Float64 samples are stored in deterministic hashed binary chunks and fetched only when a selected radial interval requires them.
+
+The catalog page ends with a researcher guide: the PDS-recommended citation for CO-SR-RSS-4/5-OCC-V2.0, the reproduction scripts, machine-readable files, and cautions for comparing observations.
 
 The earlier small CSVs are labeled internally as legacy research-window subsets and archived outside public production assets. They are not complete observations and remain outside the active catalog until their parent-product mappings are verified.
-
-## 5. Provisional content
-
-The following material is provisional and may change without changing site architecture:
-
-- Research module names, descriptions, order, and broad questions
-- Research-module contributor metadata
-- Public paper link and citation
-- Figure lists and module interactives
-- Detailed per-dataset provenance manifests
-- Module implementation and reproducibility records
-
-The public paper status is “Not yet available” as of the 2026-09-09 refinement. A submission or revision status requires author confirmation; no public manuscript link has been supplied.
-
-## 6. Content requiring verified artifacts
-
-Implementation descriptions, scientific results, stationary roots, branches, reliability diagnostics, reconstructions, validation claims, contributor assignments, publication figures, derived downloads, and citation data must not be added until verified artifacts are connected.
-
-A verified result record should identify:
-
-1. Input data
-2. Generating code
-3. Generated output
-4. Figure-generation path, when applicable
-5. Version or release state
-6. Provenance and validation status
 
 ## 7. Private research material policy
 
 `_research_private/` contains non-public working research material. It is ignored by Git and must remain outside the website source, `public/`, and generated deployment assets. Private manuscript files must not be imported, copied, linked, summarized as approved public copy, or exposed through any route or download control.
-
-Only team- and mentor-approved public artifacts may be linked from `/resources`.
 
 ## 8. Real-result traceability rule
 
@@ -112,34 +98,27 @@ Synthetic examples are explanatory tools only. They must never be labeled or sty
 
 | Legacy route | Redirect |
 | --- | --- |
-| `/viewer` | `/data` |
-| `/data-hub` | `/data` |
-| `/math` | `/research` |
-| `/algorithms` | `/research` |
-| `/algorithms/:slug` | `/research` |
-| `/overview` | `/research` |
-| `/progress` | `/research` |
-| `/team` | `/research` |
-| `/background` | `/resources` |
-| `/gallery` | `/resources` |
+| `/viewer`, `/data-hub` | `/data` |
+| `/math`, `/algorithms`, `/algorithms/:slug`, `/overview`, `/team` | `/research` |
+| `/research/signal-and-phase`, `/research/stationary-roots-and-continuation`, `/research/reliability-and-reconstruction` | `/research` |
+| `/progress` | `/explorations` |
+| `/resources`, `/background`, `/gallery` | `/?about=sources` |
 
 Legacy pages are not retained as hidden duplicate content.
 
 ## 10. Future content rules
 
-- Add project identity changes in `src/content/project.js`.
-- Add or revise major modules in `src/content/researchModules.js`.
-- Add a public observation only through the conversion, build, and read-only verification workflow documented in `README.md`; legacy subsets must remain outside public production assets.
-- Add algorithms, contributors, figures, results, interactives, and reproducibility records to an existing research module.
-- Add paper, citation, public code, publication figures, and provenance resources through `/resources`.
-- Do not create a top-level page to solve a content-organization problem without explicit architectural review.
+- Add or correct a fact in the matching content file, with a registry source; add new sources to `src/content/saturn.js` (HTTPS only).
+- After editing `src/content/moons.js`, run `npm run data:moons`.
+- Add a public observation only through the conversion, build, and read-only verification workflow documented in `README.md`.
+- Add PRIMES work to its cohort record, not as a new top-level page.
+- Do not create a top-level section without the site owner's review.
 
 ## Permanent editorial rules
 
-- One concept is explained once.
-- Algorithms live inside research modules, not as top-level pages.
-- Contributors are attribution metadata, not the site’s primary navigation.
+- One concept is explained once; other pages link to it.
+- Every number names its source; a value that disagrees with its current source is corrected to the source.
 - Synthetic examples are never labeled as real results.
 - A result must be traceable to input data, generating code, and output.
-- The homepage may contain only Hero, Research, Data Explorer, and Research Assets.
-- New top-level pages require explicit architectural review.
+- The homepage contains only the hero, the section index, and the first-observation preview.
+- New top-level sections require the site owner's review.

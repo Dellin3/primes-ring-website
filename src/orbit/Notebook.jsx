@@ -76,7 +76,7 @@ function SavedNote({ record, index, onRename, onDelete }) {
 }
 
 export default function Notebook() {
-  const [store, setStore] = useState(readExplorations)
+  const [store, setStore] = useState({ records: [], drafts: {} })
   const [status, setStatus] = useState('')
   const [deleting, setDeleting] = useState(null)
   const dialogRef = useRef(null)
@@ -84,10 +84,12 @@ export default function Notebook() {
   const titleRef = useRef(null)
 
   useEffect(() => {
+    let active = true
     function refresh() { setStore(readExplorations()) }
+    Promise.resolve().then(() => { if (active) refresh() })
     window.addEventListener('cassini-explorations-change', refresh)
     window.addEventListener('storage', refresh)
-    return () => { window.removeEventListener('cassini-explorations-change', refresh); window.removeEventListener('storage', refresh) }
+    return () => { active = false; window.removeEventListener('cassini-explorations-change', refresh); window.removeEventListener('storage', refresh) }
   }, [])
 
   useEffect(() => {
@@ -123,7 +125,7 @@ export default function Notebook() {
   }
 
   return <section className="orbit-notebook" aria-label="Your observation notebook">
-    <PageMeta title="Notebook" description="Return to your saved Cassini observations, continue a draft, and keep your questions about Saturn’s rings in one place." path="/explorations" />
+    <PageMeta title="Notebook" description="Return to your saved Cassini observations, continue a draft, and keep your questions about Saturn’s rings in one place." path="/explorations" noindex />
     <header className="orbit-notebook-intro page-intro"><div><p className="eyebrow">Your notebook</p><h1 ref={titleRef} tabIndex={-1}>A thought worth keeping.</h1><p>Your observations, saved in this browser.</p></div>{hasWork && <button className="button button-quiet orbit-notebook-export" type="button" onClick={exportNotebook}><svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 3v9m-3-3 3 3 3-3M4 13v4h12v-4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" /></svg>Export notebook</button>}</header>
     <ObservationPicker notebook />
     {store.error && <p className="orbit-notebook-alert" role="alert">{store.error}</p>}

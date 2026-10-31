@@ -1,0 +1,23 @@
+# Sixteen moons of Saturn — compiled by Saturn: A Cassini Explorer
+# Mean radius and mean density: NASA JPL Solar System Dynamics, Planetary Satellite Physical Parameters, https://ssd.jpl.nasa.gov/sats/phys_par/
+# Semi-major axis, eccentricity, inclination, period: NASA JPL Solar System Dynamics, Planetary Satellite Mean Elements, https://ssd.jpl.nasa.gov/sats/elem/
+#   Mean elements in the Laplace reference plane, epoch 2000-01-01.5 TDB. JPL notes they are not intended for computing positions; use JPL Horizons for ephemerides.
+# Discovery year and discoverers: NASA Science, Saturn Moons, https://science.nasa.gov/saturn/moons/
+# Blank cells: no value published by the cited source.
+name,group,mean_radius_km,mean_density_g_cm3,semi_major_axis_km,eccentricity,inclination_deg,orbital_period_days,discovery_year,discoverers
+Pan,Ring moon,14.0,0.3650,133600,0.000,0.0,0.575051,1990,M.R. Showalter
+Daphnis,Ring moon,,,136500,0.000,0.0,0.594080,2005,Cassini Imaging Science Team
+Atlas,Ring moon,15.1,0.3850,137700,0.001,0.0,0.604602,1980,Voyager Science Team
+Prometheus,Ring moon,43.1,0.4784,139400,0.002,0.0,0.615878,1980,Voyager Science Team
+Pandora,Ring moon,40.6,0.4948,141700,0.004,0.0,0.631369,1980,Voyager Science Team
+Epimetheus,Co-orbital moon,58.2,0.6375,151400,0.020,0.3,0.697012,"1977, 1980","J. Fountain, S. Larson (1977); D. Cruikshank (1980)"
+Janus,Co-orbital moon,89.2,0.6381,151500,0.007,0.2,0.697353,"1966, 1980",A. Dollfus (1966); D. Pascu (1980)
+Mimas,Major moon,198.20,1.1501,186000,0.020,1.6,0.942422,1789,W. Herschel
+Enceladus,Major moon,252.10,1.6097,238400,0.005,0.0,1.370218,1789,W. Herschel
+Tethys,Major moon,531.10,0.9840,295000,0.001,1.1,1.887802,1684,G.D. Cassini
+Dione,Major moon,561.40,1.4781,377700,0.002,0.0,2.736916,1684,G.D. Cassini
+Rhea,Major moon,763.50,1.2372,527200,0.001,0.3,4.517503,1672,G.D. Cassini
+Titan,Major moon,2574.76,1.8814,1221900,0.029,0.3,15.945448,1655,C. Huygens
+Hyperion,Small outer moon,135.00,0.5386,1481500,0.105,0.6,21.276658,1848,"W.C. Bond, G.P. Bond, W. Lassell"
+Iapetus,Major moon,734.30,1.0887,3561700,0.028,7.6,79.331002,1671,G.D. Cassini
+Phoebe,Irregular moon,106.50,1.6428,12929400,0.164,175.2,550.303910,1898,W.H. Pickering
