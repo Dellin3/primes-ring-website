@@ -1,11 +1,18 @@
-# MIT PRIMES 2026 Saturn Rings Project
+# Saturn — A Cassini Explorer
 
-New Methods toward High-Resolution Reconstruction of Saturn’s Rings is a team project by Dell Li, Maiya Qiu, and Yutong Zhao, mentored by Dr. Ryan Maguire.
+A sourced guide to Saturn — the planet, its rings, its moons and the missions that studied it — built around six archived Cassini radio observations of the rings. It is maintained by the MIT PRIMES Saturn rings project team. Facts on each section page link to the NASA, JPL or NASA PDS page they were checked against.
 
-Three core areas:
-- Explore data: https://saturnringlab.com/data
-- Project research: https://saturnringlab.com/research
+Sections:
 - Homepage: https://saturnringlab.com/
+- The planet (size, interior, weather, seasons, day length, magnetic field): https://saturnringlab.com/planet
+- The rings (to-scale ring map, ring and gap radii from the PDS Ring-Moon Systems Node, five guided observations in real Cassini data, open questions): https://saturnringlab.com/rings
+- The moons (293 confirmed moons as of August 2026 per NASA; sixteen compared from JPL data, downloadable CSV): https://saturnringlab.com/moons
+- Missions (sourced timeline from 1610 to Dragonfly): https://saturnringlab.com/missions
+- Research archive (MIT PRIMES Saturn rings project, one entry per cohort): https://saturnringlab.com/research
+- MIT PRIMES 2026 research story: https://saturnringlab.com/research/2026
+- Explore data: https://saturnringlab.com/data
+
+New Methods toward High-Resolution Reconstruction of Saturn’s Rings is the 2026 team project by Dell Li, Maiya Qiu, and Yutong Zhao, mentored by Dr. Ryan Maguire.
 
 The data explorer contains six Cassini RSS PDS diffraction-limited profile products: Rev 007, 028, 044, 064, 123, and 133, totaling 1,566,902 converted source rows. The plot supports optical depth, normalized signal power, and phase shift. Wide views are reduced source-sample overviews; narrow windows use hash-verified exact converted records. The 0.25 km sampling interval is not a claim about reconstructed resolution.
 
@@ -18,6 +25,7 @@ In the manuscript's eight-offset scalar-model benchmark, maximum symmetric discr
 Separate tests report a verified generic fold in a scalar phase model with Cassini-derived parameters and improved branch identity in five noiseless synthetic scenarios. These are not full reconstructions of the six archived profiles. Archive counts describe data available in the website, not experiment size or validation of a new reconstruction method. The full working manuscript and scientific solver are not hosted here. No publication status is asserted.
 
 Data source: https://pds-rings.seti.org/cassini/rss/
+Moons table: https://saturnringlab.com/downloads/saturn-major-moons.csv (JPL Solar System Dynamics values; mean elements, not for ephemerides)
 Website source: https://github.com/Dellin3/primes-ring-website
 The Saturn background is an artistic rendering.
 

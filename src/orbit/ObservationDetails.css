@@ -1,6 +1,8 @@
 .observation-reference { max-width: 1120px; margin: 40px auto; padding: clamp(22px, 4vw, 48px); }
 .observation-reference h1 { font-family: Georgia, serif; font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 400; line-height: 1.15; }
 .observation-reference h2 { margin-top: 2rem; font-family: Georgia, serif; font-size: 1.65rem; font-weight: 400; }
+.observation-reference h3 { margin-top: 1.6rem; font-family: Georgia, serif; font-size: 1.25rem; font-weight: 400; }
+.observation-reference code { font-family: var(--font-mono); font-size: .85em; color: #e3ecf6; overflow-wrap: anywhere; }
 .observation-reference p, .observation-reference dd, .observation-reference li { line-height: 1.75; color: #d2dbea; }
 .observation-reference a { color: #b5d7f3; text-underline-offset: 4px; }
 .observation-reference a.button-primary { color: #171813; }
