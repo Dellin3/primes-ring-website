@@ -1,7 +1,8 @@
 import { Link } from 'react-router-dom'
 import PageMeta from '../components/common/PageMeta.jsx'
 import { explorerHref, findObservation, formatObservationDate, glossary, guidedObservations, mapObservation, mapWindow, observations, ringRegions, shortName } from '../content/rings.js'
-import { Chapter, Outbound, SectionHero, SourceNote, SourcesCard } from './SaturnPage.jsx'
+import { photos } from '../content/photos.js'
+import { Chapter, Outbound, Photo, PhotoGallery, PhotoStrip, SectionHero, SourceNote, SourcesCard } from './SaturnPage.jsx'
 import RingMap from './RingMap.jsx'
 
 const chapters = [
@@ -39,9 +40,11 @@ export default function Rings() {
   return <article className="research-story saturn-page">
     <PageMeta title="The rings — mapped to scale, read through real Cassini data" path="/rings" description="Saturn’s rings and gaps to scale, the moons that shape them, how Cassini’s radio signals measured them, and five guided observations in real Cassini data." />
     <SectionHero eyebrow="The rings" title="Billions of pieces of ice." emphasis="One thin, bright plane." intro="Saturn’s main rings are almost entirely water ice, in pieces from smaller than a grain of sand to the size of a mountain — and generally only about 10 meters thick. See them to scale, then read six real Cassini radio observations yourself." sources={['cassiniRings']} chapters={chapters} />
+    <Photo photo={photos.ringsFromAbove} variant="hero" />
 
     <Chapter id="rings-map" number="01" eyebrow="To scale" title="From the D ring" emphasis="to the F ring." intro="Ring radii are measured from Saturn’s center. Brighter bands block more light; dark notches are gaps. Select any ring or gap to open that region in the data explorer.">
       <RingMap />
+      <PhotoStrip photo={photos.ringSweep} />
       <div className="saturn-table-scroll ring-table" id="ring-table" role="region" aria-labelledby="ring-table-caption" tabIndex={0}>
         <table className="saturn-table saturn-table-wide">
           <caption id="ring-table-caption">Saturn’s rings and gaps, from the NASA PDS Ring-Moon Systems Node</caption>
@@ -79,10 +82,12 @@ export default function Rings() {
           <SourceNote ids={['cassiniRings']} />
         </div>
       </div>
+      <PhotoGallery items={[photos.panInGap, photos.daphnisWaves, photos.prometheusStreamer, photos.spokes, photos.propeller, photos.equinoxPeaks]} label="Moons, gaps, spokes, propellers and ring peaks in Cassini images" />
     </Chapter>
 
     <Chapter id="rings-reading" number="03" eyebrow="Reading a signal" title="A radio signal" emphasis="through the rings." intro="Cassini repeatedly sent radio signals through the rings toward Earth. Where the rings held more material, less signal came through. Six of those recordings, made between 2005 and 2010, are on this site, from the NASA Planetary Data System.">
       <dl className="saturn-glossary">{glossary.map(entry => <div key={entry.term}><dt>{entry.term}</dt><dd>{entry.definition}</dd></div>)}</dl>
+      <Photo photo={photos.radioOccultation} />
       <div className="saturn-next is-inline">
         <Link className="research-text-link" to="/data">Open the data explorer <span aria-hidden="true">→</span></Link>
         <Link className="research-text-link" to="/datasets">All six observations and how to cite them <span aria-hidden="true">→</span></Link>
@@ -92,14 +97,18 @@ export default function Rings() {
 
     <Chapter id="guided" number="04" eyebrow="Try it yourself" title="Five guided observations" emphasis="in real Cassini data." intro={`Each link opens the data explorer at a chosen window. The numbers below were measured from the same exact samples you will see. The six profiles were recorded between ${formatObservationDate(observations[0])} and ${formatObservationDate(observations.at(-1))}.`}>
       <ol className="guided-list">{guidedObservations.map((item, index) => <GuidedObservation key={item.id} item={item} index={index} />)}</ol>
+      <Photo photo={photos.bRingCloseUp} />
       <p className="saturn-figure-note">Save what you notice in your notebook from the explorer. Your notes stay in this browser.</p>
     </Chapter>
 
     <Chapter id="rings-age" number="05" eyebrow="An open question" title="How old" emphasis="are the rings?">
-      <div className="saturn-prose">
-        <p>Cassini found the rings remarkably clean: more than 99% water ice. Dust falling in from space should slowly darken them, so studies in the 2010s and 2020s estimated that the rings are no more than a few hundred million years old — far younger than Saturn.</p>
-        <p>A 2024 study in <em>Nature Geoscience</em> argued that incoming micrometeoroids hit the rings so fast that they vaporize, and the vapor is swept away instead of darkening the rings. If so, the rings could have stayed clean for billions of years, possibly as long as the solar system has existed. Both ideas are still being tested.</p>
-        <SourceNote ids={['ringAge', 'ringAgePaper']} />
+      <div className="saturn-two-column">
+        <div className="saturn-prose">
+          <p>Cassini found the rings remarkably clean: more than 99% water ice. Dust falling in from space should slowly darken them, so studies in the 2010s and 2020s estimated that the rings are no more than a few hundred million years old — far younger than Saturn.</p>
+          <p>A 2024 study in <em>Nature Geoscience</em> argued that incoming micrometeoroids hit the rings so fast that they vaporize, and the vapor is swept away instead of darkening the rings. If so, the rings could have stayed clean for billions of years, possibly as long as the solar system has existed. Both ideas are still being tested.</p>
+          <SourceNote ids={['ringAge', 'ringAgePaper']} />
+        </div>
+        <Photo photo={photos.ringGrains} variant="side" />
       </div>
     </Chapter>
 

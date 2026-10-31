@@ -49,6 +49,7 @@ The full manuscript and scientific solver are not hosted here. The archive recor
 - `src/orbit/Planet.jsx`, `Rings.jsx` (with `RingMap.jsx`), `Moons.jsx`, `Missions.jsx`: the four Saturn sections.
 - `src/orbit/ResearchArchive.jsx` and `CohortPage.jsx`: the year-by-year PRIMES archive and the template for future cohorts.
 - `src/content/saturn.js`: the source registry, key facts and section list; `rings.js`, `moons.js`, `missions.js` and `primesCohorts.js` hold each section's content.
+- `src/content/photos.js`: the NASA photographs on the section pages, each with its NASA page, credit and how its colors were made (see `docs/SITE_ARCHITECTURE.md`).
 - `src/orbit/Explorer.jsx`: data workspace.
 - `src/orbit/Notebook.jsx`: observation notebook and access to all observations.
 - `src/orbit/Research.jsx`: the 2026 team's research story and data coverage (`/research/2026`).

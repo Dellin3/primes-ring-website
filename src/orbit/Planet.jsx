@@ -2,7 +2,8 @@ import { Link } from 'react-router-dom'
 import PageMeta from '../components/common/PageMeta.jsx'
 import { collectSources } from '../content/saturn.js'
 import { keyFacts, planetTable } from '../content/saturn.js'
-import { Chapter, SectionHero, SourceNote, SourcesCard } from './SaturnPage.jsx'
+import { photos } from '../content/photos.js'
+import { Chapter, Photo, PhotoGallery, SectionHero, SourceNote, SourcesCard } from './SaturnPage.jsx'
 
 const chapters = [
   { id: 'planet-glance', label: 'At a glance' },
@@ -16,6 +17,7 @@ export default function Planet() {
   return <article className="research-story saturn-page">
     <PageMeta title="The planet — Saturn at a glance" path="/planet" description="Saturn’s size, mass, interior, winds, polar hexagon, seasons, day length and magnetic field — each value linked to the NASA source it was checked against." />
     <SectionHero eyebrow="The planet" title="A giant made of gas." emphasis="Less dense than water." intro="Saturn is about 9.4 times as wide as Earth and 95 times as massive. Here is what spacecraft and telescopes have measured — with a source for every number." chapters={chapters} />
+    <Photo photo={photos.saturnFromAbove} variant="hero" />
 
     <Chapter id="planet-glance" number="01" eyebrow="At a glance" title="Saturn in" emphasis="eight numbers." intro="Each value links to the source it was checked against.">
       <dl className="saturn-facts">{keyFacts.map(fact => <div key={fact.id}><dt>{fact.label}</dt><dd><span className="saturn-fact-value">{fact.value}</span><span className="saturn-fact-detail">{fact.detail}</span><SourceNote ids={fact.sources} /></dd></div>)}</dl>
@@ -44,11 +46,13 @@ export default function Planet() {
         </div>
         <div className="saturn-panel">
           <p className="eyebrow">New in 2026</p>
+          <Photo photo={photos.decagon} variant="panel" />
           <h3>A ten-sided wave in the south.</h3>
           <p>For decades the hexagon had no southern counterpart. A study published in September 2026 reported Hubble observations of a giant, evolving, 10-sided wave encircling the south pole — the first large, regular-sided jet pattern seen in Saturn’s southern hemisphere.</p>
           <SourceNote ids={['nasaFacts']} />
         </div>
       </div>
+      <PhotoGallery items={[photos.hexagon, photos.greatStorm]} label="Saturn’s weather in Cassini images" />
     </Chapter>
 
     <Chapter id="planet-time" number="04" eyebrow="Seasons & day" title="Seven-year seasons." emphasis="A day measured by the rings.">
@@ -66,13 +70,17 @@ export default function Planet() {
           <Link className="research-text-link" to="/rings">Explore the rings <span aria-hidden="true">→</span></Link>
         </div>
       </div>
+      <Photo photo={photos.equinox} />
     </Chapter>
 
     <Chapter id="planet-field" number="05" eyebrow="Magnetic field" title="A field lined up" emphasis="with its spin.">
-      <div className="saturn-prose">
-        <p>Saturn’s magnetic field is weaker than Jupiter’s but much stronger than Earth’s. Unusually, its magnetic axis is almost exactly aligned with its spin axis: the NSSDC lists the tilt between them as 0.0°.</p>
-        <p>Saturn has aurorae near its poles. Some are driven by particles from its moons and by its rapid rotation rather than by the solar wind, and scientists do not yet fully understand them.</p>
-        <SourceNote ids={['nasaFacts', 'nssdc']} />
+      <div className="saturn-two-column">
+        <div className="saturn-prose">
+          <p>Saturn’s magnetic field is weaker than Jupiter’s but much stronger than Earth’s. Unusually, its magnetic axis is almost exactly aligned with its spin axis: the NSSDC lists the tilt between them as 0.0°.</p>
+          <p>Saturn has aurorae near its poles. Some are driven by particles from its moons and by its rapid rotation rather than by the solar wind, and scientists do not yet fully understand them.</p>
+          <SourceNote ids={['nasaFacts', 'nssdc']} />
+        </div>
+        <Photo photo={photos.aurora} variant="side" />
       </div>
     </Chapter>
 
