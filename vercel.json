@@ -14,7 +14,7 @@
       "permanent": true
     },
     {
-      "source": "/:section(data|datasets|research)",
+      "source": "/:section(data|datasets|research|planet|rings|moons|missions)",
       "has": [
         {
           "type": "host",
@@ -27,7 +27,7 @@
       "permanent": true
     },
     {
-      "source": "/:section(data|datasets)/:slug",
+      "source": "/:section(data|datasets|research)/:slug",
       "has": [
         {
           "type": "host",
@@ -53,7 +53,7 @@
       "permanent": true
     },
     {
-      "source": "/:section(data|datasets|research)",
+      "source": "/:section(data|datasets|research|planet|rings|moons|missions)",
       "has": [
         {
           "type": "host",
@@ -66,7 +66,7 @@
       "permanent": true
     },
     {
-      "source": "/:section(data|datasets)/:slug",
+      "source": "/:section(data|datasets|research)/:slug",
       "has": [
         {
           "type": "host",
@@ -129,7 +129,7 @@
       "permanent": true
     },
     {
-      "source": "/research/:moduleSlug",
+      "source": "/research/:moduleSlug(signal-and-phase|stationary-roots-and-continuation|reliability-and-reconstruction)",
       "destination": "/research",
       "permanent": true
     },
@@ -147,6 +147,26 @@
     {
       "source": "/research",
       "destination": "/research/index.html"
+    },
+    {
+      "source": "/planet",
+      "destination": "/planet/index.html"
+    },
+    {
+      "source": "/rings",
+      "destination": "/rings/index.html"
+    },
+    {
+      "source": "/moons",
+      "destination": "/moons/index.html"
+    },
+    {
+      "source": "/missions",
+      "destination": "/missions/index.html"
+    },
+    {
+      "source": "/research/:year(\\d{4})",
+      "destination": "/research/:year/index.html"
     },
     {
       "source": "/feedback",

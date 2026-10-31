@@ -15,7 +15,8 @@
     "test": "node --test tests/*.test.mjs",
     "data:examples": "node scripts/build_exploration_examples.mjs",
     "check:seo": "node scripts/check-seo.mjs",
-    "seo:submit": "node scripts/submit-indexnow.mjs"
+    "seo:submit": "node scripts/submit-indexnow.mjs",
+    "data:moons": "node scripts/build_moons_csv.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.7",

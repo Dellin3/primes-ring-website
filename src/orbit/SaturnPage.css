@@ -1,0 +1,186 @@
+/* Section pages (planet, rings, moons, missions, research archive).
+   Colours, type and surfaces follow Research.css; nothing here adds a new look. */
+.saturn-page .saturn-hero .research-story-hero-copy{margin-bottom:30px}
+.saturn-hero-intro{padding-bottom:4px}.saturn-hero-intro>p:first-child{font-size:1.0625rem;color:#b6c5d6;max-width:425px}
+@media(max-width:760px){.saturn-hero-intro>p:first-child{max-width:620px}}
+.saturn-page .saturn-chapters{grid-template-columns:repeat(var(--chapters,4),minmax(0,1fr))}
+.saturn-page .saturn-chapters a{text-align:center;padding:0 10px}
+.saturn-chapter{margin:80px 0 0;scroll-margin-top:32px}
+.saturn-chapter-heading{max-width:760px;margin-bottom:34px}
+.saturn-chapter-heading h2{font-size:clamp(2.1rem,3.4vw,3rem);line-height:1.1;margin:18px 0 20px}
+.saturn-chapter-heading>p:not(.eyebrow){color:var(--research-muted);font-size:1rem}
+.saturn-prose{max-width:760px}
+.saturn-prose p{color:var(--research-muted);font-size:1rem}
+.saturn-prose p strong{color:#e1eaf3;font-weight:550}
+.saturn-two-column{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:48px;align-items:start}
+.saturn-panel{padding:28px 30px;border:1px solid #b8cde135;border-radius:20px;background:linear-gradient(145deg,#23374b9c,#09111ae8);box-shadow:0 16px 33px -20px #000,inset 0 1px #f0f7ff0c}
+.saturn-panel h3{font-size:1.6rem;margin:0 0 12px}
+.saturn-panel p{color:#b3c3d4;font-size:.9375rem}
+.saturn-source-note{margin-top:12px!important;font-size:.8125rem!important;line-height:1.6!important;color:#8fa4bb!important}
+.saturn-source-note>span:first-child{margin-right:4px}
+.saturn-source-note a{color:#b5d3ef;text-decoration:underline;text-underline-offset:3px;text-decoration-color:#b3d4f044}
+.saturn-source-note a:hover{color:#fff}
+.saturn-figure-note{color:#9fb1c8;font-size:.875rem;margin-top:12px}
+
+/* Key facts */
+.saturn-facts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin:0}
+.saturn-facts>div{min-width:0;padding:22px 22px 18px;border:1px solid #b8cde12e;border-radius:18px;background:linear-gradient(145deg,#1d2f42b3,#09111ae8)}
+.saturn-facts dt{color:#a5c1dd;font-size:.8125rem;letter-spacing:.02em}
+.saturn-facts dd{margin:0}
+.saturn-facts .saturn-fact-value{display:block;margin:10px 0 8px;font-family:var(--font-mono);font-size:1.45rem;letter-spacing:.01em;color:#e8f0fb}
+.saturn-facts .saturn-fact-detail{display:block;color:#a9b9cb;font-size:.875rem;line-height:1.65}
+
+/* Tables */
+.saturn-table-scroll{overflow-x:auto;border:1px solid #b8cde12e;border-radius:18px;background:linear-gradient(145deg,#132233d9,#070d16f0)}
+.saturn-table-scroll:focus-visible{outline:2px solid var(--blue);outline-offset:4px}
+.saturn-table{width:100%;border-collapse:collapse;font-size:.9rem;color:#d4deea}
+/* Wide tables scroll sideways on phones instead of squeezing their text columns. */
+.saturn-table-wide{min-width:860px}.saturn-table-wide .saturn-cell-text{min-width:250px}.saturn-table-wide .saturn-cell-name{min-width:150px}.saturn-table-wide .saturn-cell-action{white-space:nowrap}
+.saturn-table caption{caption-side:top;text-align:left;padding:18px 20px 6px;color:#aebcd0;font-size:.875rem}
+.saturn-table th,.saturn-table td{padding:13px 16px;text-align:left;vertical-align:top;border-top:1px solid #c3d3e71f}
+.saturn-table thead th{color:#e3ecf6;font-weight:550;font-size:.8125rem;white-space:nowrap;border-top:0}
+.saturn-table tbody th{font-weight:500;color:#eef3f9;white-space:nowrap}
+.saturn-table td.numeric{font-variant-numeric:tabular-nums;white-space:nowrap;text-align:right}
+.saturn-table thead th.numeric{text-align:right}
+.saturn-table small{display:block;color:#93a6bb;font-size:.78rem;margin-top:3px;font-weight:400;white-space:normal}
+.saturn-table a{color:#c1def7;text-underline-offset:4px}
+.saturn-table .muted-cell{color:#8d9fb4}
+.saturn-sort{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:4px 0;background:none;border:0;color:inherit;font:inherit;font-weight:550;text-align:inherit}
+.saturn-sort span[aria-hidden]{color:#8ea6c2;font-size:.75rem}
+.saturn-sort:hover{color:#fff}
+.saturn-table-tools{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 24px;margin:0 0 14px}
+.saturn-filter{display:flex;flex-wrap:wrap;gap:8px;margin:0;padding:0;border:0}
+.saturn-filter legend{float:left;margin-right:10px;padding:9px 0 0;color:#aebcd0;font-size:.875rem}
+.saturn-filter label{position:relative;display:inline-flex;align-items:center;min-height:40px;padding:7px 15px;border:1px solid #9dbbd73b;border-radius:999px;background:#0d1a2888;color:#b5c8dd;font-size:.875rem;cursor:pointer}
+.saturn-filter input{position:absolute;inset:0;margin:0;opacity:0;cursor:pointer}
+.saturn-filter label.is-selected{color:#eaf4ff;background:linear-gradient(145deg,#4567868c,#263e567d);border-color:#c0def0a6}
+.saturn-filter label:has(input:focus-visible){outline:2px solid var(--blue);outline-offset:3px}
+.saturn-download{display:inline-flex;align-items:center;gap:10px;color:#c1def7;font-size:.9375rem;text-decoration:underline;text-underline-offset:6px;text-decoration-color:#b3d4f044}
+.saturn-download:hover{color:#fff}
+
+/* Ring map */
+.ring-map{margin:0}
+.ring-map-scroll{overflow-x:auto;border:1px solid #b0cbe332;border-radius:21px;background:radial-gradient(ellipse at 92% 6%,#436e9824,transparent 60%),linear-gradient(145deg,#132233e6,#070d16f2);padding:10px 8px 4px}
+.ring-map-scroll:focus-visible{outline:2px solid var(--blue);outline-offset:4px}
+.ring-map svg{display:block;width:100%;min-width:720px;height:auto}
+.ring-map text{fill:#aabed6;font:13px var(--font-sans)}
+.ring-map .ring-axis{stroke:#91b5d63d}
+.ring-map .ring-tick text{fill:#8ea3bb;font-size:12px}
+.ring-map .ring-label{fill:#dbe6f2;font-size:14px}
+.ring-map .ring-label-small{fill:#b9cbde;font-size:12px}
+.ring-map .ring-leader{stroke:#9fb7d055}
+.ring-map .ring-band{fill:#c7d6e6;transition:fill-opacity .2s}
+.ring-map .ring-gap{fill:#08111b}
+.ring-map a{cursor:pointer}
+.ring-map a:hover .ring-band,.ring-map a:focus-visible .ring-band{fill:#e4c9a1}
+.ring-map a:focus-visible{outline:none}
+.ring-map a:focus-visible .ring-focus,.ring-map a:hover .ring-focus{stroke:#e4c9a1;stroke-width:1.5}
+.ring-map .ring-focus{fill:none;stroke:transparent}
+.ring-map .ring-planet{fill:#2a3442}
+.ring-map .ring-coverage{stroke:#e1c69c;stroke-width:1.5}
+.ring-map .ring-coverage-label{fill:#d8c6a7;font-size:12px}
+.ring-map figcaption{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 20px;padding:12px 4px 0;color:#9fb3ca;font-size:.875rem;line-height:1.6}
+.ring-map-status{min-height:1.6em;color:#dbe6f2!important}
+
+/* Guided observations */
+.guided-list{list-style:none;margin:0;padding:0;display:grid;gap:18px}
+.guided-item{display:grid;grid-template-columns:64px minmax(0,1fr);gap:22px;padding:28px 30px;border:1px solid #b8cde12e;border-radius:20px;background:linear-gradient(145deg,#1d2f42b3,#09111ae8);scroll-margin-top:32px}
+.guided-number{font-family:var(--font-mono);font-size:1.1rem;color:#8ea6c2;padding-top:6px}
+.guided-item h3{font-size:1.75rem;margin:0 0 10px}
+.guided-question{color:#dce6f2!important;font-size:1.0625rem!important}
+.guided-item dl{display:grid;grid-template-columns:150px minmax(0,1fr);gap:12px 22px;margin:20px 0 18px}
+.guided-item dl>div{display:contents}
+.guided-item dt{color:#a5c1dd;font-size:.875rem;padding-top:2px}
+.guided-item dd{margin:0;color:#c2d0de;font-size:.9375rem;line-height:1.75}
+.guided-actions{display:flex;flex-wrap:wrap;gap:12px 28px}
+
+/* Glossary */
+.saturn-glossary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 48px;margin:0}
+.saturn-glossary>div{padding:18px 0;border-top:1px solid var(--research-line)}
+.saturn-glossary dt{font:400 1.2rem Georgia,serif;color:#e7eef7;letter-spacing:-.01em}
+.saturn-glossary dd{margin:8px 0 0;color:#b2c2d5;font-size:.9375rem;line-height:1.75}
+
+/* Moon highlights */
+.moon-highlights{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.moon-highlight{min-width:0;display:flex;flex-direction:column;padding:26px 26px 22px;border:1px solid #b8cde12e;border-radius:20px;background:linear-gradient(145deg,#1d2f42b3,#09111ae8)}
+.moon-highlight .moon-names{color:#a5c1dd;font-size:.8125rem;letter-spacing:.04em;margin-bottom:8px}
+.moon-highlight h3{font-size:1.5rem;margin:0 0 12px}
+.moon-highlight>p{color:#b3c3d4;font-size:.9375rem;line-height:1.75}
+.moon-highlight .moon-fact{font-family:var(--font-mono);font-size:.8125rem;color:#cfdbe8;margin-top:14px}
+.moon-highlight .research-text-link{margin-top:14px;font-size:.875rem}
+.moon-highlight .saturn-source-note{margin-top:auto!important;padding-top:14px}
+
+/* Timeline */
+.mission-era{margin-top:70px}
+.mission-era>header{display:flex;align-items:baseline;gap:18px;margin-bottom:22px}
+.mission-era>header h2{font-size:clamp(1.9rem,3vw,2.5rem)}
+.mission-era>header span{font-family:var(--font-mono);color:#8ea6c2;font-size:.9rem}
+.mission-timeline{list-style:none;margin:0;padding:0;border-left:1px solid var(--research-line);margin-left:6px}
+.mission-entry{position:relative;display:grid;grid-template-columns:220px minmax(0,1fr);gap:26px;padding:0 0 30px 34px}
+.mission-entry:before{content:'';position:absolute;left:-5px;top:9px;width:9px;height:9px;border-radius:50%;background:#0b1520;border:1px solid #c7d8ea}
+.mission-entry.is-upcoming:before{border-style:dashed;border-color:#e1c69c}
+.mission-date{font-family:var(--font-mono);font-size:.875rem;color:#c9d6e4;padding-top:4px}
+.mission-entry.is-upcoming .mission-date{color:#e1c69c}
+.mission-entry h3{font-size:1.45rem;margin:0 0 8px}
+.mission-entry p{color:#b3c3d4;font-size:.9375rem;line-height:1.75}
+.mission-entry .research-text-link{margin-top:10px;font-size:.875rem}
+
+/* Research archive */
+.cohort-list{list-style:none;margin:0;padding:0;display:grid;gap:22px}
+.cohort-card{display:grid;grid-template-columns:150px minmax(0,1fr);gap:34px;padding:34px 36px;border:1px solid #b8cde135;border-radius:22px;background:radial-gradient(ellipse at 85% 0,#29486944,transparent 65%),linear-gradient(130deg,#142537ed,#090f19ed)}
+.cohort-year{font-family:var(--font-mono);font-size:2.4rem;line-height:1;color:#e8f0fb}
+.cohort-year small{display:block;margin-top:12px;font-family:var(--font-sans);font-size:.8125rem;color:#a5c1dd;letter-spacing:.02em}
+.cohort-card h3{font-size:clamp(1.6rem,2.4vw,2.1rem);margin:0 0 14px}
+.cohort-card p{color:#b3c3d4;font-size:.9375rem}
+.cohort-card dl{display:grid;grid-template-columns:120px minmax(0,1fr);gap:10px 20px;margin:20px 0}
+.cohort-card dl>div{display:contents}
+.cohort-card dt{color:#a5c1dd;font-size:.875rem}
+.cohort-card dd{margin:0;color:#c9d6e4;font-size:.9375rem;line-height:1.7}
+.cohort-card ul{margin:0;padding-left:18px}
+.cohort-card .research-return-link{margin-top:8px}
+.cohort-pending{color:#91a7c0!important;font-size:.875rem!important}
+.saturn-inline-heading{font-size:clamp(2rem,3.2vw,2.8rem);line-height:1.1;margin:16px 0 20px}
+.saturn-breadcrumb{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding-top:40px;color:#91a7c0;font-size:.875rem}
+.saturn-breadcrumb a{color:#c1def7;text-decoration:underline;text-underline-offset:4px;text-decoration-color:#b3d4f044}
+
+/* Sources */
+.saturn-sources{margin-top:80px}
+.saturn-sources h2{font-size:1.9rem;margin:16px 0 12px}
+.saturn-sources>p{color:#9cb0c8!important;font-size:.875rem!important;line-height:1.8}
+.saturn-source-list{list-style:none;margin:20px 0 0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 32px}
+.saturn-source-list li{display:grid;gap:4px}
+.saturn-source-list li>span{color:#8ca4be;font-size:.8125rem}
+.saturn-source-list .research-text-link{font-size:.9rem;justify-content:space-between}
+.saturn-next{display:flex;flex-wrap:wrap;gap:14px 34px;margin-top:40px}
+.saturn-next.is-inline{margin-top:26px}
+.ring-table{margin-top:28px}
+
+@media(max-width:1000px){
+  .saturn-facts{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .moon-highlights{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .saturn-two-column{grid-template-columns:1fr;gap:28px}
+  .mission-entry{grid-template-columns:170px minmax(0,1fr);gap:20px}
+}
+@media(max-width:760px){
+  .saturn-page .saturn-chapters{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .saturn-page .saturn-chapters a{justify-content:flex-start;text-align:left;padding-left:18px}
+  .saturn-page .saturn-chapters a:nth-child(odd){border-left:0}
+  .saturn-page .saturn-chapters a:nth-child(n+3){border-top:1px solid var(--research-line)}
+  .saturn-chapter{margin-top:56px}
+  .saturn-facts{grid-template-columns:1fr 1fr;gap:12px}
+  .saturn-facts>div{padding:18px 16px 14px}
+  .saturn-facts .saturn-fact-value{font-size:1.15rem}
+  .moon-highlights{grid-template-columns:1fr}
+  .guided-item{grid-template-columns:1fr;gap:10px;padding:24px 22px}
+  .guided-item dl{grid-template-columns:1fr;gap:4px}
+  .guided-item dd{margin-bottom:10px}
+  .saturn-glossary{grid-template-columns:1fr}
+  .mission-entry{grid-template-columns:1fr;gap:6px;padding-left:26px}
+  .cohort-card{grid-template-columns:1fr;gap:16px;padding:26px 24px}
+  .cohort-card dl{grid-template-columns:1fr;gap:2px}
+  .cohort-card dd{margin-bottom:10px}
+  .saturn-source-list{grid-template-columns:1fr}
+  .saturn-panel{padding:24px 22px}
+}
+@media(max-width:420px){.saturn-facts{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){.ring-map .ring-band{transition:none}}

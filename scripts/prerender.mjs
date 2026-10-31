@@ -1,16 +1,16 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
-import { render, siteOrigin } from '../dist-ssr/entry-server.js'
+import { cohortRoutes, render, routeEntry, sectionRoutes, siteOrigin } from '../dist-ssr/entry-server.js'
 
 const origin = new URL(siteOrigin)
 if (origin.protocol !== 'https:' || origin.pathname !== '/' || origin.search || origin.hash || origin.username || origin.password) throw new Error('VITE_PUBLIC_SITE_URL must be a HTTPS site origin without credentials')
 const catalog = JSON.parse(await readFile('public/data/observations/catalog.json', 'utf8'))
-const publicRoutes = ['/', '/data', '/research', '/datasets', ...catalog.observations.flatMap(observation => [`/data/${observation.slug}`, `/datasets/${observation.slug}`])]
+const publicRoutes = ['/', ...sectionRoutes, ...cohortRoutes, '/data', '/datasets', ...catalog.observations.flatMap(observation => [`/data/${observation.slug}`, `/datasets/${observation.slug}`])]
 const routes = [...publicRoutes, '/feedback', '/explorations', '/404']
 const template = await readFile('dist/index.html', 'utf8')
 const manifest = JSON.parse(await readFile('dist/.vite/manifest.json', 'utf8'))
 function routeStyles(path) {
-  const entry = path === '/research' ? 'src/orbit/Research.jsx' : path === '/explorations' ? 'src/orbit/Notebook.jsx' : path.startsWith('/data') && !path.startsWith('/datasets') ? 'src/orbit/Explorer.jsx' : null
+  const entry = routeEntry(path)
   const css = new Set()
   const visited = new Set()
   function collect(key) {
