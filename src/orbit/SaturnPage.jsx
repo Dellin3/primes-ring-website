@@ -28,10 +28,27 @@ export function Chapter({ id, number, eyebrow, title, emphasis, children, intro,
   </section>
 }
 
-// A compact “Source:” line under a fact, a card, or a table.
+function SourceLink({ source, children }) {
+  return <a href={source.url} target="_blank" rel="noreferrer">{children}<span className="sr-only">: {source.title} (opens in a new tab)</span></a>
+}
+
+// A compact “Source:” line under a fact, a card, or a table. Pages from the
+// same publisher are grouped so two links never read as the same source.
 export function SourceNote({ ids, label = 'Source' }) {
   const list = sourceList(ids)
-  return <p className="saturn-source-note"><span>{list.length > 1 ? `${label}s` : label}:</span> {list.map((source, index) => <Fragment key={source.id}>{index > 0 && <span aria-hidden="true"> · </span>}<a href={source.url} target="_blank" rel="noreferrer">{source.publisher.split(' · ')[0]}<span className="sr-only">: {source.title} (opens in a new tab)</span></a></Fragment>)}</p>
+  const groups = []
+  for (const source of list) {
+    const publisher = source.publisher.split(' · ')[0]
+    const group = groups.find(item => item.publisher === publisher)
+    if (group) group.items.push(source)
+    else groups.push({ publisher, items: [source] })
+  }
+  return <p className="saturn-source-note"><span>{list.length > 1 ? `${label}s` : label}:</span> {groups.map((group, index) => <Fragment key={group.publisher}>
+    {index > 0 && <span aria-hidden="true"> · </span>}
+    {group.items.length === 1
+      ? <SourceLink source={group.items[0]}>{group.publisher}</SourceLink>
+      : <>{group.publisher}: {group.items.map((source, item) => <Fragment key={source.id}>{item > 0 && ', '}<SourceLink source={source}>{source.short || source.title}</SourceLink></Fragment>)}</>}
+  </Fragment>)}</p>
 }
 
 export function SourcesCard({ ids, title = 'Where these facts come from', children }) {
