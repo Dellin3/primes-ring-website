@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { project } from '../content/project.js'
+import './surfaces.css'
 
 function About({ open, onClose }) {
   const ref = useRef(null)
@@ -21,7 +22,7 @@ function About({ open, onClose }) {
       <Link className="about-research-link" to="/research/2026" onClick={onClose}>Explore the team’s project research <span aria-hidden="true">↗</span></Link>
       <div className="about-links"><a href="https://science.nasa.gov/saturn/" target="_blank" rel="noreferrer">NASA Science: Saturn <span>↗</span></a><a href="https://ssd.jpl.nasa.gov/sats/" target="_blank" rel="noreferrer">JPL Solar System Dynamics: moons <span>↗</span></a><a href={project.dataSourceUrl} target="_blank" rel="noreferrer">Original Cassini data <span>↗</span></a><a href={project.repositoryUrl} target="_blank" rel="noreferrer">Website source code <span>↗</span></a><a href={project.learningUrl} target="_blank" rel="noreferrer">New to research? Start here <span>↗</span></a></div>
       <p className="fine-print">Project research presents methods and reported results from the team’s working manuscript. The explorer displays archived observations; the method benchmarks are separate synthetic and scalar-model experiments. The full manuscript and scientific solver are not hosted here.</p>
-      <p className="fine-print">Background: an artistic rendering of Saturn.</p>
+      <p className="fine-print">Home background: an artistic rendering of Saturn. The stars and ring arcs behind other pages are decorative and drawn in code; they are not data. Photographs are credited where they appear.</p>
     </div>
   </dialog>
 }
@@ -36,6 +37,9 @@ export default function OrbitShell({ children }) {
   const feedbackHref = `/feedback?from=${encodeURIComponent(location.pathname)}`
   // The data explorer and dataset pages belong to the Rings section.
   const inRings = /^\/(data|datasets)(\/|$)/.test(location.pathname)
+  // Background treatment: the home hero is unchanged; rings and data pages get
+  // decorative ring arcs; every other page gets the quiet deep field.
+  const theme = location.pathname === '/' ? '' : inRings || /^\/rings(\/|$)/.test(location.pathname) ? ' theme-rings' : ' theme-deep'
   function setAbout(value) {
     if (value) params.set('about', 'research'); else params.delete('about')
     navigate({ pathname: location.pathname, search: params.toString() }, { replace: true, preventScrollReset: true })
@@ -54,8 +58,8 @@ export default function OrbitShell({ children }) {
     window.addEventListener('pointermove', drift, { passive: true })
     return () => { cancelAnimationFrame(frame); window.removeEventListener('pointermove', drift) }
   }, [])
-  return <div ref={appRef} className={`orbit-app ${location.pathname === '/' || isFeedback ? 'is-home' : 'is-workspace'}${isFeedback ? ' is-feedback' : ''}`}>
-    <div className="space-backdrop" aria-hidden="true"><div className="saturn-image" /><div className="space-vignette" />{!isFeedback ? <div className="ambient-light" /> : null}</div>
+  return <div ref={appRef} className={`orbit-app ${location.pathname === '/' || isFeedback ? 'is-home' : 'is-workspace'}${isFeedback ? ' is-feedback' : theme}`}>
+    <div className="space-backdrop" aria-hidden="true"><div className="saturn-image" /><div className="deep-field" /><div className="ring-light" /><div className="space-vignette" />{!isFeedback ? <div className="ambient-light" /> : null}</div>
     {!isFeedback ? <><a href="#main-content" className="skip-link">Skip to content</a>
     <header className="orbit-header"><div className="header-inner">
       <Link className="orbit-brand" to="/" aria-label="Saturn explorer home"><span className="brand-symbol" aria-hidden="true">s</span><span>SATURN<small>A CASSINI EXPLORER</small></span></Link>

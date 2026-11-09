@@ -1,6 +1,7 @@
 import { useId, useState } from 'react'
 import { toyFold, toyRoots } from '../components/research/toyBranchMath.js'
 import ResearchMath from './ResearchMath.jsx'
+import EvidenceTag from '../components/common/EvidenceTag.jsx'
 
 const plot = { width: 720, height: 365, left: 50, right: 22, top: 27, bottom: 41 }
 const xPosition = value => plot.left + ((value + 8) / 10) * (plot.width - plot.left - plot.right)
@@ -17,9 +18,17 @@ branches[0].push([toyFold.x, toyFold.y])
 branches[1].push([toyFold.x, toyFold.y])
 const paths = branches.map(toPath)
 const moments = [{ value: -3, label: 'Before the fold' }, { value: toyFold.x, label: 'At the fold' }, { value: -1, label: 'Beyond the fold' }]
+const DEFAULT_X = -3
+const rootSummary = value => {
+  const roots = toyRoots(value)
+  const fold = Math.abs(value - toyFold.x) < 1e-10
+  return `${fold ? 2 : roots.length} distinct real root${(fold ? 2 : roots.length) === 1 ? '' : 's'}${fold ? ' (one double)' : ''}: ${roots.map(root => root.toFixed(4)).join(', ')}`
+}
 
 export default function MethodJourneyFigure() {
-  const [selectedX, setSelectedX] = useState(-3)
+  const [selectedX, setSelectedX] = useState(DEFAULT_X)
+  const [baselineX, setBaselineX] = useState(null)
+  const [note, setNote] = useState('')
   const id = useId()
   const roots = toyRoots(selectedX)
   const atFold = Math.abs(selectedX - toyFold.x) < 1e-10
@@ -31,7 +40,7 @@ export default function MethodJourneyFigure() {
       : 'Only the upper real root remains at this parameter. The folded curve continues back toward smaller parameter values; it does not continue forward as two real roots.'
 
   return <figure className="research-method-figure" aria-labelledby={`${id}-title`}>
-    <div className="research-method-figure-intro"><div><p className="research-method-mini-label">A teaching model</p><h3 id={`${id}-title`}>When two paths become one.</h3><p>Here, a simple cubic makes the geometry visible.</p></div><ResearchMath display>{String.raw`y^3+xy-1=0`}</ResearchMath></div>
+    <div className="research-method-figure-intro"><div><p className="research-method-mini-label">A teaching model <EvidenceTag kind="synthetic" /></p><h3 id={`${id}-title`}>When two paths become one.</h3><p>Here, a simple cubic makes the geometry visible.</p></div><ResearchMath display>{String.raw`y^3+xy-1=0`}</ResearchMath></div>
     <div className="research-method-moments" aria-label="Choose a point in the branch story">
       {moments.map(moment => <button key={moment.label} type="button" aria-pressed={Math.abs(selectedX - moment.value) < 1e-10} onClick={() => setSelectedX(moment.value)}>{moment.label}</button>)}
     </div>
@@ -56,6 +65,18 @@ export default function MethodJourneyFigure() {
         <label className="research-method-slider" htmlFor={`${id}-parameter`}><span>Move the parameter <ResearchMath>x</ResearchMath><output htmlFor={`${id}-parameter`}>{selectedX.toFixed(4)}</output></span><input id={`${id}-parameter`} type="range" min="-8" max="2" step="0.01" value={selectedX} aria-valuetext={`${selectedX.toFixed(4)}, ${roots.length} distinct real roots`} onChange={event => setSelectedX(Number(event.target.value))} /></label>
       </div>
       <div className="research-method-reading" aria-live="polite" aria-atomic="true"><span className="research-method-reading-count">{atFold ? '2' : roots.length}<span> distinct real roots{atFold ? ' · one is double' : ''}</span></span><h4>{state}</h4><p>{explanation}</p><p className="research-method-root-values">Root values: {roots.map(value => value.toFixed(4)).join(' · ')}</p></div>
+    </div>
+    <div className="research-method-compare" aria-live="polite">
+      <div className="research-method-compare-actions">
+        <button type="button" className="button button-secondary" onClick={() => { setBaselineX(selectedX); setNote(`Baseline saved at x = ${selectedX.toFixed(4)}. Move the parameter to compare.`) }}>Save x as baseline</button>
+        <button type="button" className="button button-secondary" disabled={baselineX === null} onClick={async () => {
+          const text = ['Teaching model y^3 + x y - 1 = 0 (synthetic and dimensionless; not Cassini data or a team result)', `Baseline: x = ${baselineX.toFixed(4)}; ${rootSummary(baselineX)}`, `Current: x = ${selectedX.toFixed(4)}; ${rootSummary(selectedX)}`, `Fold at x = ${toyFold.x.toFixed(4)}, y = ${toyFold.y.toFixed(4)}`, 'To reproduce, set the slider to each x value.'].join('\n')
+          try { await navigator.clipboard.writeText(text); setNote('Copied both settings and their roots.') } catch { setNote('Copying is blocked here; the settings are shown above.') }
+        }}>Copy settings and results</button>
+        <button type="button" className="button button-quiet" onClick={() => { setSelectedX(DEFAULT_X); setBaselineX(null); setNote(`Reset to x = ${DEFAULT_X.toFixed(4)} with no baseline.`) }}>Reset</button>
+      </div>
+      {baselineX !== null && <dl className="research-method-compare-table"><div><dt>Baseline x = {baselineX.toFixed(4)}</dt><dd>{rootSummary(baselineX)}</dd></div><div><dt>Current x = {selectedX.toFixed(4)}</dt><dd>{rootSummary(selectedX)}</dd></div><div><dt>Change in x</dt><dd>{(selectedX - baselineX >= 0 ? '+' : '−') + Math.abs(selectedX - baselineX).toFixed(4)} (dimensionless)</dd></div></dl>}
+      {note && <p className="research-method-compare-note">{note}</p>}
     </div>
     <figcaption>This dimensionless teaching equation illustrates a fold. It is separate from the Cassini phase equation and from the manuscript’s numerical experiments.</figcaption>
   </figure>

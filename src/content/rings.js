@@ -43,6 +43,20 @@ export function formatObservationDate(observation) {
   return iso ? new Date(`${iso}T00:00:00Z`).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }) : ''
 }
 
+// Which main rings a profile covers, from its radial range and the PDS ring
+// table: e.g. "outer D ring → F ring".
+const mainRings = ['d-ring', 'c-ring', 'b-ring', 'cassini-division', 'a-ring', 'f-ring']
+export function observationCoverage(observation) {
+  const { minimum, maximum } = observation.radial_range
+  const covered = ringRegions.filter(region => mainRings.includes(region.id) && region.inner < maximum && region.outer > minimum)
+  if (!covered.length) return ''
+  const first = covered[0]
+  const last = covered.at(-1)
+  const firstLabel = minimum > first.inner ? `outer ${first.name}` : first.name
+  const lastLabel = maximum < last.outer ? `inner ${last.name}` : last.name
+  return first === last ? firstLabel : `${firstLabel} → ${lastLabel}`
+}
+
 export function findObservation(slug) {
   return observations.find(item => item.slug === slug)
 }

@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import PageMeta from '../components/common/PageMeta.jsx'
 import { explorerHref, findObservation, formatObservationDate, glossary, guidedObservations, mapObservation, mapWindow, observations, ringRegions, shortName } from '../content/rings.js'
 import { photos } from '../content/photos.js'
+import { activityHref, labActivities } from '../content/labActivities.js'
 import { Chapter, Outbound, Photo, PhotoGallery, PhotoStrip, SectionHero, SourceNote, SourcesCard } from './SaturnPage.jsx'
 import RingMap from './RingMap.jsx'
 
@@ -30,6 +31,7 @@ function GuidedObservation({ item, index }) {
       </dl>
       <div className="guided-actions">
         <Link className="research-text-link" to={explorerHref(item.slug, item.range)}>Open {shortName(item.slug)} at this window <span aria-hidden="true">→</span></Link>
+        {item.id === 'encke-gap' && <Link className="research-text-link is-activity" to={activityHref(labActivities['encke-width'])}>Measure its width in the lab <span aria-hidden="true">→</span></Link>}
         {compare && <Link className="research-text-link" to={explorerHref(item.compareSlug, item.range)}>Open {shortName(item.compareSlug)} at the same window <span aria-hidden="true">→</span></Link>}
       </div>
     </div>
@@ -96,6 +98,7 @@ export default function Rings() {
     </Chapter>
 
     <Chapter id="guided" number="04" eyebrow="Try it yourself" title="Five guided observations" emphasis="in real Cassini data." intro={`Each link opens the data explorer at a chosen window. The numbers below were measured from the same exact samples you will see. The six profiles were recorded between ${formatObservationDate(observations[0])} and ${formatObservationDate(observations.at(-1))}.`}>
+      <section className="guided-activity" aria-labelledby="guided-activity-title"><div><p className="eyebrow">Guided activity · about 10 minutes</p><h3 id="guided-activity-title">{labActivities['encke-width'].title}</h3><p>Measure the gap in two observations with the same rule, change one setting, and save a record someone else can reproduce.</p></div><Link className="button button-primary" to={activityHref(labActivities['encke-width'])}>Start the activity <span aria-hidden="true">→</span></Link></section>
       <ol className="guided-list">{guidedObservations.map((item, index) => <GuidedObservation key={item.id} item={item} index={index} />)}</ol>
       <Photo photo={photos.bRingCloseUp} />
       <p className="saturn-figure-note">Save what you notice in your notebook from the explorer. Your notes stay in this browser.</p>

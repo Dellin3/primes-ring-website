@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
 import { test } from 'node:test'
-import { explorerHref, findObservation, guidedObservations, mapWindow, observationDate, observations, observedSpan, ringRegions } from '../src/content/rings.js'
+import { explorerHref, findObservation, guidedObservations, mapWindow, observationCoverage, observationDate, observations, observedSpan, ringRegions } from '../src/content/rings.js'
 import { formatPublished, moonColumns, moons, moonsCsv, moonsCsvPath, moonHighlights, sortMoons } from '../src/content/moons.js'
 import { missionEras } from '../src/content/missions.js'
 import { cohortPath, findCohort, primesCohorts } from '../src/content/primesCohorts.js'
@@ -198,4 +198,8 @@ test('photos: credited, linked to a NASA page, and loaded only from NASA or this
     if (/artist|concept|illustrat/i.test(`${photo.title} ${photo.caption}`)) assert.equal(photo.kind, 'Illustration', `${key}: illustrations are labeled`)
   }
   for (const era of missionEras) for (const entry of era.entries) if (entry.photo) assert(photos[entry.photo], `${entry.title}: photo ${entry.photo}`)
+})
+
+test('observation descriptions name the rings each profile covers', () => {
+  assert.deepEqual(observations.map(observationCoverage), ['outer D ring → F ring', 'outer B ring → F ring', 'outer D ring → F ring', 'outer D ring → F ring', 'outer D ring → F ring', 'outer D ring → F ring'])
 })

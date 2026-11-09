@@ -18,3 +18,5 @@
 .observation-table-scroll th, .observation-table-scroll td { text-align: left; padding: 14px 12px; border-bottom: 1px solid #ffffff18; }
 .observation-table-scroll td { white-space: nowrap; }
 @media (max-width: 600px) { .observation-facts { grid-template-columns: 1fr; } .observation-reference { margin: 24px 0; } }
+
+.observation-reference p a, .observation-reference li a { text-decoration: underline; text-underline-offset: 3px; text-decoration-color: rgba(168,201,237,.55); }
