@@ -7,6 +7,7 @@ A sourced website about the whole of Saturn, built by the MIT PRIMES Saturn ring
 - **The moons** (`/moons`): nine highlight cards and a sortable, filterable table of sixteen moons, downloadable as CSV.
 - **Missions** (`/missions`): a sourced timeline from Galileo to Dragonfly.
 - **Research** (`/research`): the PRIMES project archive, one record per cohort. `/research/2026` is the 2026 team's full research story.
+- **Follow the signal:** on the home page, a 3D Saturn (radii to scale, ring brightness from a real profile) shows how Cassini's radio signal crossed the rings, with presets, labels and a static fallback.
 - **Explore data:** six described Cassini RSS observations, three signal variables, exact radial windows, drag-to-zoom, hover readout, reset, a visible source line, two-point comparison, and CSV export of every exact row in any window.
 - **Measure:** a measurement lab under the explorer computes window statistics and a gap width, saves a baseline, compares a second configuration, and copies or downloads a reproduction record. The guided activity “Is the Encke Gap the same width in every observation?” starts from the Rings page.
 - **My notebook:** autosaved drafts, named observations, restore, rename, delete, and export. Notes stay in the current browser; there is no account or cloud synchronization.

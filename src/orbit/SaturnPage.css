@@ -231,3 +231,10 @@
 .guided-activity .button{flex:0 0 auto}
 .research-text-link.is-activity{color:var(--gold)}
 @media(max-width:700px){.guided-activity{flex-direction:column;align-items:flex-start}}
+
+/* Reserve every photograph's frame before it loads, so NASA images never push
+   the text. Files without stored dimensions get a fixed frame and are fitted
+   inside it; the three local copies keep their own proportions. */
+.saturn-photo.is-wide img:not([width]) { aspect-ratio: 16 / 9; }
+.saturn-photo.is-inline img:not([width]), .saturn-photo.is-side img:not([width]) { aspect-ratio: 4 / 3; }
+.saturn-photo.is-panel img:not([width]) { aspect-ratio: 16 / 10; object-fit: contain; }
