@@ -67,6 +67,25 @@ The ring map is drawn to scale from the PDS ring table; each region links to the
 
 Comparisons between observations must explain why values differ (viewing geometry, measurement limits) rather than imply physical change.
 
+## 4a. Explorer workflow and measurement lab
+
+The data explorer (`src/orbit/Explorer.jsx`) supports one complete workflow:
+
+1. **Choose an observation.** Each card in `ObservationPicker` shows the Rev, date (from the PDS ring observation ID), direction, band and DSN station, the main rings covered (from the PDS ring table) and the row count; “Keep this window when switching” carries the window, threshold and activity to another observation that covers it.
+2. **Select an interval.** Type radii, use ±, or drag across the chart. Windows up to `recommended_exact_window_records` load SHA-256-verified exact rows; wider windows draw the display overview, and the chart legend and source line say so.
+3. **Read the chart.** Axes carry units; the legend names the series and markers; hovering shows the nearest sample’s value, radius and sample index (or “overview point”).
+4. **Reset.** “Reset view” returns to the observation’s example window and optical depth.
+5. **Trace the source.** The source line under the chart names the PDS data set, product and web-data version, states what is drawn, and links to the observation details and PDS documentation.
+6. **Export.** “Download CSV” (exact windows) or “Export N exact rows” (overview windows, loaded on demand) writes every exact row in the inclusive window with full Float64 precision and a provenance header. Exports never contain overview points.
+
+The measurement lab (`src/orbit/MeasurementLab.jsx`, `src/lib/windowMeasurements.js`) computes statistics and a gap width (longest unbroken run below an optical-depth threshold) from the exact rows, saves a baseline in this browser (`src/lib/labStore.js`), compares a second configuration only where variables match and flags different thresholds or windows, and copies or downloads a reproduction record (dataset, PDS product, web-data version, window, threshold, results, method and a link that reopens each view). Guided activities live in `src/content/labActivities.js`; their expected values are re-measured from the exact chunks by `tests/lab-activity.test.mjs`.
+
+Every figure or number is labeled with `EvidenceTag`: Cassini observation, derived on this site, synthetic teaching model, or illustration. The site does not run the team’s reconstruction method; the lab says so.
+
+## 4b. Background treatments
+
+The home hero keeps `/images/saturn-observatory.webp` (`.saturn-image` in `OrbitShell`). Other pages use one of three coordinated treatments from `src/orbit/surfaces.css`: the deep field (narrative pages), decorative ring arcs (Rings, data and dataset pages) and the instrument surface (explorer, lab and data tables). The stars and arcs are drawn in CSS and are not data; the Sources & credits dialog says so.
+
 ## 5. Research archive and adding a cohort
 
 `/research` lists cohorts from `src/content/primesCohorts.js`, newest first. To add a year:

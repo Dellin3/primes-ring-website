@@ -54,12 +54,12 @@ export function SourceNote({ ids, label = 'Source' }) {
 
 export function SourcesCard({ ids, title = 'Where these facts come from', children }) {
   const unique = [...new Set(ids)].filter(id => sources[id])
-  return <aside className="research-source-card saturn-sources" aria-labelledby="page-sources-title">
+  return <section className="research-source-card saturn-sources" aria-labelledby="page-sources-title">
     <p className="eyebrow">Sources</p>
     <h2 id="page-sources-title">{title}</h2>
     {children}
     <ul className="saturn-source-list">{sourceList(unique).map(source => <li key={source.id}><Outbound href={source.url}>{source.title}</Outbound><span>{source.publisher}</span></li>)}</ul>
-  </aside>
+  </section>
 }
 
 const photoWidths = { hero: 1800, wide: 1600, gallery: 900, card: 800, inline: 1000, panel: 1000 }

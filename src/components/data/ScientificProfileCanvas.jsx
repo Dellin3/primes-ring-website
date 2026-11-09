@@ -61,8 +61,13 @@ export default function ScientificProfileCanvas({
   statusMessage,
   samplingInterval,
   requestedRange,
+  onSelectRange,
+  overviewPointCount,
 }) {
   const [modeDetailsOpen, setModeDetailsOpen] = useState(false)
+  const [hover, setHover] = useState(null)
+  const [band, setBand] = useState(null)
+  const dragRef = useRef(null)
   const canvasRef = useRef(null)
   const resizeFrameRef = useRef(null)
   const layoutRef = useRef(null)
@@ -161,8 +166,11 @@ export default function ScientificProfileCanvas({
       bounds,
       margins,
       plotWidth,
+      plotHeight,
       xMinimum,
       xMaximum,
+      yMinimum,
+      ySpan,
       samples,
     }
 
@@ -309,6 +317,31 @@ export default function ScientificProfileCanvas({
     }
   }, [requestDraw])
 
+  function radiusAtClientX(clientX) {
+    const layout = layoutRef.current
+    if (!layout || !Number.isFinite(clientX)) return Number.NaN
+    const canvasBounds = canvasRef.current.getBoundingClientRect()
+    const ratio = Math.min(1, Math.max(0, (clientX - canvasBounds.left - layout.margins.left) / layout.plotWidth))
+    return layout.xMinimum + ratio * (layout.xMaximum - layout.xMinimum)
+  }
+
+  // Hover readout: the nearest plotted sample (exact row or overview point).
+  function updateHover(clientX) {
+    const layout = layoutRef.current
+    if (!layout || layout.samples !== samples || !inspectableSamples.length || !valueExtent) return setHover(null)
+    const sample = nearestSample(inspectableSamples, radiusAtClientX(clientX))
+    if (!sample) return setHover(null)
+    const x = layout.margins.left + ((sample.ring_radius_km - layout.xMinimum) / ((layout.xMaximum - layout.xMinimum) || 1)) * layout.plotWidth
+    const value = sample[variable.id]
+    const y = Number.isFinite(value) ? layout.margins.top + (1 - (value - layout.yMinimum) / (layout.ySpan || 1)) * layout.plotHeight : Number.NaN
+    setHover({
+      x, y, width: layout.bounds.width,
+      radius: formatRadius(sample.ring_radius_km),
+      value: Number.isFinite(value) ? `${formatScientificValue(value)}${displayUnit(variable.unit) === 'dimensionless' ? '' : ` ${displayUnit(variable.unit)}`}` : 'Missing value',
+      index: dataMode === 'exact' ? sample.sample_index?.toLocaleString('en-US') : undefined,
+    })
+  }
+
   function inspectAtClientX(clientX) {
     if (!interactive || !Number.isFinite(clientX)) return
     const layout = layoutRef.current
@@ -372,6 +405,12 @@ export default function ScientificProfileCanvas({
           )}
         </div>
       </div>
+      <ul className="scientific-profile-legend" aria-label="Chart legend">
+        <li><span className={`legend-swatch ${requiresContinuityNeutralPoints(variable) ? 'is-points' : 'is-line'}${dataMode === 'overview' ? ' is-overview' : ''}`} aria-hidden="true" />{dataMode === 'overview' ? `Overview · display reduction${overviewPointCount ? ` (${overviewPointCount.toLocaleString('en-US')} points for the whole profile)` : ''}` : `${variable.label}${requiresContinuityNeutralPoints(variable) ? ' · stored values, unconnected' : ''} · exact source rows`}</li>
+        {currentInspected && <li><span className="legend-swatch is-marker-a" aria-hidden="true" />Point A</li>}
+        {comparisonSample && <li><span className="legend-swatch is-marker-b" aria-hidden="true" />Point B</li>}
+        <li className="legend-hint">Hover for values · drag to zoom</li>
+      </ul>
       <div className="scientific-profile-frame">
         <canvas
           ref={canvasRef}
@@ -386,11 +425,48 @@ export default function ScientificProfileCanvas({
           tabIndex={interactive ? 0 : undefined}
           onPointerDown={(event) => {
             if (event.button !== 0) return
-            event.currentTarget.focus()
+            if (interactive) event.currentTarget.focus()
+            dragRef.current = { startX: event.clientX, pointerType: event.pointerType, moved: false }
+            if (event.pointerType !== 'touch') event.currentTarget.setPointerCapture?.(event.pointerId)
+          }}
+          onPointerMove={(event) => {
+            const drag = dragRef.current
+            if (drag && drag.pointerType !== 'touch' && Math.abs(event.clientX - drag.startX) > 5 && onSelectRange) {
+              drag.moved = true
+              const bounds = canvasRef.current.getBoundingClientRect()
+              const left = Math.min(drag.startX, event.clientX) - bounds.left
+              setBand({ left, width: Math.abs(event.clientX - drag.startX) })
+              setHover(null)
+              return
+            }
+            if (!drag && event.pointerType !== 'touch') updateHover(event.clientX)
+          }}
+          onPointerUp={(event) => {
+            const drag = dragRef.current
+            dragRef.current = null
+            setBand(null)
+            if (!drag) return
+            if (drag.moved && Math.abs(event.clientX - drag.startX) > 6) {
+              const a = radiusAtClientX(drag.startX)
+              const b = radiusAtClientX(event.clientX)
+              if (Number.isFinite(a) && Number.isFinite(b)) onSelectRange?.([Math.min(a, b), Math.max(a, b)])
+              return
+            }
             inspectAtClientX(event.clientX)
           }}
+          onPointerCancel={() => { dragRef.current = null; setBand(null) }}
+          onPointerLeave={() => { if (!dragRef.current) setHover(null) }}
           onKeyDown={handleKeyDown}
         />
+        {hover && <div className="profile-hover" aria-hidden="true" style={{ left: hover.x }}>
+          <span className="profile-hover-line" />
+          {Number.isFinite(hover.y) && <span className="profile-hover-dot" style={{ top: hover.y }} />}
+          <span className={`profile-hover-tip${hover.x > hover.width - 190 ? ' is-left' : ''}`}>
+            <strong>{hover.value}</strong>
+            <span>{hover.radius} km{hover.index !== undefined ? ` · sample ${hover.index}` : ' · overview point'}</span>
+          </span>
+        </div>}
+        {band && <div className="profile-drag-band" aria-hidden="true" style={{ left: band.left, width: band.width }}><span>Release to zoom</span></div>}
         {(statusMessage || emptyFieldMessage) && (
           <p className="scientific-profile-status" role="status">
             {statusMessage || emptyFieldMessage}

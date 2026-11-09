@@ -23,3 +23,21 @@ a.orbit-observation-choice:hover { border-color: rgba(225,198,156,.5); backgroun
 @media (max-width: 760px) { .orbit-observation-picker { padding: 20px; } .orbit-observation-choices { grid-template-columns: repeat(3, minmax(0,1fr)); gap: 8px; } .orbit-observation-picker.is-notebook { padding: 19px; margin-top: 27px; } }
 @media (max-width: 390px) { .orbit-observation-choices { grid-template-columns: repeat(2, minmax(0,1fr)); } }
 @media (prefers-reduced-motion: reduce) { .orbit-observation-choice { transition: none; } }
+
+/* Descriptions on each observation, a keep-window toggle and a label key. */
+.orbit-observation-choice > span { font-size: 12px; line-height: 1.45; color: #aebdcc; }
+.orbit-observation-choice > span.orbit-observation-date { color: var(--text); font-size: 12.5px; }
+.orbit-observation-choice > span.orbit-observation-rows { color: #8597ab; font-size: 11.5px; }
+.orbit-observation-keep { display: inline-flex; align-items: center; gap: 8px; margin-top: 8px; font-size: 12.5px; color: #c9d3de; cursor: pointer; }
+.orbit-observation-keep input { width: 16px; height: 16px; accent-color: #e1c69c; }
+.orbit-observation-legend { margin: -4px 0 14px; font-size: 12.5px; color: var(--muted); }
+.orbit-observation-legend summary { cursor: pointer; color: var(--blue); width: fit-content; }
+.orbit-observation-legend dl { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px 22px; margin: 10px 0 0; }
+.orbit-observation-legend dt { color: var(--text); font-weight: 500; }
+.orbit-observation-legend dd { margin: 0; line-height: 1.55; }
+@media (max-width: 1050px) { .orbit-observation-choices { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 700px) { .orbit-observation-legend dl { grid-template-columns: 1fr; } }
+@media (max-width: 560px) { .orbit-observation-choices { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.orbit-observation-tools { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 6px 26px; margin: -6px 0 14px; }
+.orbit-observation-tools .orbit-observation-keep { margin-top: 0; order: 2; }
+.orbit-observation-tools .orbit-observation-legend { margin: 0; flex: 1 1 320px; }

@@ -1,14 +1,19 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 import ScientificProfileCanvas from '../components/data/ScientificProfileCanvas.jsx'
 import PageMeta from '../components/common/PageMeta.jsx'
+import EvidenceTag from '../components/common/EvidenceTag.jsx'
+import { getActivity } from '../content/labActivities.js'
+import { formatObservationDate } from '../content/rings.js'
 import { getExample } from '../content/explorationExamples.js'
 import { getFeaturedObservation } from '../content/observations.js'
 import { displayUnit } from '../lib/profileRendering.js'
-import { buildExactWindowCsv, estimatedRecordCount, exactWindowFilename, loadExactRange, loadObservationCatalog, loadObservationSummary, overviewSamples, sourceDatasetUrl } from '../lib/webObservation.js'
+import { buildExactWindowCsv, downloadExactWindow, estimatedRecordCount, exactWindowFilename, loadExactRange, loadObservationCatalog, loadObservationSummary, overviewSamples, sourceDatasetUrl } from '../lib/webObservation.js'
 import { downloadText, observationMarkdown, readExplorations, saveDraft, saveExploration } from '../lib/explorations.js'
 import { canonicalSessionParams, restoreExplorerSession } from '../lib/explorerSession.js'
 import ObservationPicker from './ObservationPicker.jsx'
+import MeasurementLab, { DEFAULT_THRESHOLD } from './MeasurementLab.jsx'
+import { readLab } from '../lib/labStore.js'
 import { ObservationCatalog } from './ObservationDetails.jsx'
 import { publishedCatalog, observationDetailsPath } from '../content/publicObservations.js'
 import './Explorer.css'
@@ -93,7 +98,10 @@ function LoadedExplorer({ catalog, observation, metadata, overview }) {
   const [retry, setRetry] = useState(0)
   const [receipt, setReceipt] = useState(null)
   const [message, setMessage] = useState('')
+  const [exportState, setExportState] = useState({ key: '', status: 'idle', text: '' })
   const notesRef = useRef(null)
+  const thresholdText = params.get('threshold') ?? DEFAULT_THRESHOLD
+  const activity = getActivity(params.get('activity'))
   const key = `${metadata.dataset_id}:${metadata.web_product_version}:${lower}:${upper}`
   const exactAllowed = estimatedRecordCount(metadata, range) <= metadata.data_product.recommended_exact_window_records
   const status = !exactAllowed ? 'overview' : exact.key === key ? exact.status : 'loading'
@@ -117,6 +125,10 @@ function LoadedExplorer({ catalog, observation, metadata, overview }) {
   const signature = JSON.stringify(currentRecord)
   const draftRef = useRef(currentRecord)
   const csv = useCsvDownload(metadata, samples, range, variable.id)
+  const loadExactWindow = useCallback(() => loadExactRange(observation.base_path, range).then((result) => {
+    if (result.index.dataset_id !== metadata.dataset_id) throw new Error('Observation identity mismatch')
+    return result.samples
+  }), [observation.base_path, range, metadata.dataset_id])
   const stats = useMemo(() => {
     const values = samples.map((sample) => sample[variable.id]).filter(Number.isFinite)
     return { count: samples.length, finite: values.length, minimum: values.length ? Math.min(...values) : null, maximum: values.length ? Math.max(...values) : null }
@@ -176,6 +188,38 @@ function LoadedExplorer({ catalog, observation, metadata, overview }) {
     const from = Math.max(fullRange[0], Math.min(fullRange[1] - width, center - width / 2))
     updateView([Number(from.toFixed(6)), Number((from + width).toFixed(6))])
   }
+  function resetView() {
+    setSelection({ range: example?.range || fullRange, indices: [] })
+    updateView(example?.range || fullRange, example?.variableId || 'optical_depth')
+    setMessage('View reset to this observation’s default window.')
+  }
+  function selectRange(nextRange) {
+    const minimumWidth = metadata.observation.radial_range.sampling_interval * 4
+    const from = Math.max(fullRange[0], Math.min(nextRange[0], nextRange[1]))
+    const to = Math.min(fullRange[1], Math.max(nextRange[0], nextRange[1]))
+    if (to - from < minimumWidth) return
+    updateView([Number(from.toFixed(2)), Number(to.toFixed(2))])
+  }
+  function setThreshold(text) {
+    const next = new URLSearchParams(params)
+    next.set('threshold', text)
+    setParams(next, { replace: true, preventScrollReset: true })
+  }
+  async function exportOverviewWindow() {
+    setExportState({ key, status: 'loading', text: `Loading ${number(windowEstimate, 0)} exact rows…` })
+    try {
+      const rows = await loadExactWindow()
+      if (!rows.length) return setExportState({ key, status: 'error', text: 'No source rows fall inside this window.' })
+      const download = downloadExactWindow(metadata, rows, { range, variableId: variable.id })
+      setExportState({ key, status: 'done', text: `Downloaded ${number(download.rowCount, 0)} exact rows · ${download.fileName}` })
+    } catch {
+      setExportState({ key, status: 'error', text: 'The exact rows could not be loaded or verified. Try again, or narrow the window.' })
+    }
+  }
+  function saveMeasurementNote({ title: noteTitle, notes: noteText }) {
+    const result = saveExploration({ ...currentRecord, id: undefined, draftId: undefined, title: noteTitle, notes: noteText, selectedSamples: [], createdAt: new Date().toISOString() })
+    return result.persistent ? 'Saved to your notebook as a new entry.' : result.error
+  }
   function inspect(sample) {
     if (!sample) return setSelection({ range, indices: [] })
     setSelection((previous) => {
@@ -206,6 +250,19 @@ function LoadedExplorer({ catalog, observation, metadata, overview }) {
   const hasDelta = Number.isFinite(pointA?.[variable.id]) && Number.isFinite(pointB?.[variable.id])
   const storageMessage = receipt?.signature === signature ? receipt.persistent ? 'Draft saved in this browser' : receipt.error : session.storageError || 'Saving draft…'
   const plotMode = status === 'ready' ? 'exact' : status === 'loading' ? 'loading_exact' : status
+  const windowEstimate = estimatedRecordCount(metadata, range)
+  const exportStatus = exportState.key === key ? exportState : { status: 'idle', text: '' }
+  const sourceUrl = sourceDatasetUrl(metadata)
+  const viewParams = new URLSearchParams({ variable: variable.id, from: String(lower), to: String(upper), version })
+  if (variable.id === 'optical_depth') viewParams.set('threshold', thresholdText)
+  const viewUrl = `${typeof window !== 'undefined' ? window.location.origin : ''}/data/${observation.slug}?${viewParams}`
+  const pickerWindowParams = new URLSearchParams(viewParams)
+  if (activity) pickerWindowParams.set('activity', activity.id)
+  const labConfig = {
+    observationName: observation.display_name, observationDate: formatObservationDate(observation), slug: observation.slug,
+    datasetId: metadata.dataset_id, productId: metadata.pds_identity.product_id, ringObservationId: metadata.pds_identity.ring_observation_id,
+    dataSetId: metadata.pds_identity.data_set_id, version, variableId: variable.id, variableLabel: variable.label, unit, range, viewUrl,
+  }
   const plotMessage = status === 'loading' ? 'Loading verified samples…' : status === 'error' ? 'Exact samples could not be verified.' : status === 'ready' && !samples.length ? 'No samples fall inside this window. Widen the range.' : ''
 
   return <section className="orbit-explorer" aria-labelledby="explorer-title">
@@ -214,31 +271,35 @@ function LoadedExplorer({ catalog, observation, metadata, overview }) {
     {requestedVersion && requestedVersion !== version && <p className="explorer-alert" role="alert">This view requested data version {requestedVersion}; available version is {version}. The original saved note remains unchanged until you save again.</p>}
     {(params.has('from') || params.has('to')) && !queryValid && <p className="explorer-alert" role="alert">The requested radius range is invalid. Showing {number(lower)}–{number(upper)} km; use the radius inputs to choose a valid range.</p>}
     {!metadata.principal_variables.some((item) => item.id === requestedVariable) && <p className="explorer-alert" role="alert">The requested metric is unavailable. Showing {variable.label}.</p>}
-    <section className="explorer-workspace glass-panel" aria-label="Cassini observation explorer">
-      <ObservationPicker catalog={catalog} currentDatasetId={metadata.dataset_id} onChoose={() => saveDraft({ ...currentRecord, updatedAt: new Date().toISOString() })} />
+    <section className="explorer-workspace surface-instrument" aria-label="Cassini observation explorer">
+      <ObservationPicker catalog={catalog} currentDatasetId={metadata.dataset_id} onChoose={() => saveDraft({ ...currentRecord, updatedAt: new Date().toISOString() })} windowParams={pickerWindowParams} keepWindowDefault={Boolean(activity) || Boolean(readLab().baseline)} />
       <div className="explorer-toolbar">
-        <div className="explorer-observation-label"><span className="eyebrow">CURRENT OBSERVATION</span><p>{observation.display_name}</p></div>
+        <div className="explorer-observation-label"><span className="eyebrow">CURRENT OBSERVATION <EvidenceTag kind="observation" /></span><p>{observation.display_name} <span className="explorer-observation-date">· {formatObservationDate(observation)}</span></p></div>
         <div className="explorer-metrics" role="group" aria-label="Profile metric">{metadata.principal_variables.map((item) => <button key={item.id} type="button" aria-pressed={item.id === variable.id} onClick={() => updateView(range, item.id)}>{metricNames[item.id] || item.label}</button>)}</div>
       </div>
       <div className="explorer-body">
         <div className="explorer-main">
           <div className="explorer-chart-heading"><div><p className="eyebrow">{variable.label}</p><h2>{number(lower, 2)} <span>—</span> {number(upper, 2)} <small>km</small></h2></div><span className={`explorer-data-badge ${status === 'ready' ? 'is-exact' : ''}`}><i />{status === 'ready' ? 'Exact samples' : status === 'overview' ? 'Overview' : status === 'error' ? 'Data unavailable' : 'Loading'}</span></div>
-          <ScientificProfileCanvas samples={plotRows} variable={variable} inspectedSample={inspected} comparisonSample={pointB ? pointA : null} onInspect={inspect} dataMode={plotMode} scopeLabel="Selected radial window" statusMessage={plotMessage} samplingInterval={metadata.observation.radial_range.sampling_interval} requestedRange={range} />
-          <div className="explorer-chart-caption"><span>{status === 'overview' ? 'Open a smaller region to inspect exact samples.' : variable.id === 'phase_shift' ? 'Stored phase values · unconnected points' : 'Click two points to compare · arrow keys to move'}</span><div className="explorer-zoom"><button type="button" title="Zoom out" aria-label="Zoom out" onClick={() => zoom(2)}>−</button><button type="button" title="Zoom in" aria-label="Zoom in" onClick={() => zoom(0.5)}>+</button></div></div>
+          <ScientificProfileCanvas samples={plotRows} variable={variable} inspectedSample={inspected} comparisonSample={pointB ? pointA : null} onInspect={inspect} dataMode={plotMode} scopeLabel="Selected radial window" statusMessage={plotMessage} samplingInterval={metadata.observation.radial_range.sampling_interval} requestedRange={range} onSelectRange={selectRange} overviewPointCount={overviewRows.length} />
+          <div className="explorer-chart-caption"><span>{status === 'overview' ? `Drag across the chart to zoom in. Windows narrower than about ${number(metadata.data_product.recommended_exact_window_records * metadata.observation.radial_range.sampling_interval, 0)} km load exact samples.` : variable.id === 'phase_shift' ? 'Stored phase values · unconnected points · drag to zoom' : 'Click two points to compare · drag across the chart to zoom · arrow keys move the selection'}</span><div className="explorer-zoom"><button type="button" title="Zoom out" aria-label="Zoom out" onClick={() => zoom(2)}>−</button><button type="button" title="Zoom in" aria-label="Zoom in" onClick={() => zoom(0.5)}>+</button></div></div>
           {status === 'error' && <button className="button button-secondary" type="button" onClick={() => setRetry((value) => value + 1)}>Retry exact data</button>}
-          <div className="explorer-window-controls"><RangeForm key={`${lower}:${upper}`} range={range} fullRange={fullRange} onApply={updateView} /><div className="explorer-presets"><button type="button" className="button button-quiet" onClick={() => updateView(example.range, example.variableId)} disabled={!example}>Example region</button><button type="button" className="button button-quiet" onClick={() => updateView(fullRange)}>Full observation</button></div></div>
+          <div className="explorer-window-controls"><RangeForm key={`${lower}:${upper}`} range={range} fullRange={fullRange} onApply={updateView} /><div className="explorer-presets"><button type="button" className="button button-quiet" onClick={resetView}>Reset view</button><button type="button" className="button button-quiet" onClick={() => updateView(example.range, example.variableId)} disabled={!example}>Example region</button><button type="button" className="button button-quiet" onClick={() => updateView(fullRange)}>Full observation</button></div></div>
+          <div className="explorer-provenance" aria-label="Source and processing of this view"><p><strong>Source</strong> NASA Planetary Data System · {metadata.pds_identity.data_set_id} · <span className="mono">{metadata.pds_identity.product_id}</span> · web data v{version}</p><p><strong>Shown</strong> {status === 'ready' ? `Exact samples: all ${number(samples.length, 0)} converted source rows in this window, SHA-256 verified.` : status === 'overview' ? `Overview: a display reduction (${number(overviewRows.length, 0)} points for the whole profile). Hover values are overview points; exports and measurements use the exact rows.` : status === 'error' ? 'Exact samples could not be verified for this window.' : 'Loading exact samples…'} Radius is measured from Saturn’s center; diffraction effects remain in these profiles.</p><p className="explorer-provenance-links"><Link to={observationDetailsPath(observation)}>Observation details</Link><a href={sourceUrl} target="_blank" rel="noreferrer">PDS documentation ↗</a></p></div>
           <div className="explorer-bottom">
             <dl className="explorer-stats"><div><dt>Exact rows</dt><dd className="mono">{status === 'ready' ? number(stats.count, 0) : '—'}</dd></div><div><dt>Minimum <span>({unit})</span></dt><dd className="mono">{status === 'ready' ? scientific(stats.minimum) : '—'}</dd></div><div><dt>Maximum <span>({unit})</span></dt><dd className="mono">{status === 'ready' ? scientific(stats.maximum) : '—'}</dd></div></dl>
-            <div className="explorer-download">{csv?.url ? <a className="button button-secondary" href={csv.url} download={csv.filename}>Download CSV <span aria-hidden="true">↓</span></a> : <button className="button button-secondary" type="button" disabled>Download CSV <span aria-hidden="true">↓</span></button>}{csv?.error && <span role="alert">CSV could not be prepared.</span>}</div>
+            <div className="explorer-download">{csv?.url ? <a className="button button-secondary" href={csv.url} download={csv.filename} onClick={() => setExportState({ key, status: 'done', text: `Downloading ${number(samples.length, 0)} exact rows · ${csv.filename}` })}>Download CSV <span aria-hidden="true">↓</span></a> : status === 'overview' ? <button className="button button-secondary" type="button" onClick={exportOverviewWindow} disabled={exportStatus.status === 'loading'}>{exportStatus.status === 'loading' ? 'Preparing CSV…' : `Export ${number(windowEstimate, 0)} exact rows`} <span aria-hidden="true">↓</span></button> : <button className="button button-secondary" type="button" disabled>Download CSV <span aria-hidden="true">↓</span></button>}{csv?.error && <span role="alert">CSV could not be prepared.</span>}</div>
           </div>
+          {exportStatus.text && <p className={`explorer-export-status is-${exportStatus.status}`} role={exportStatus.status === 'error' ? 'alert' : 'status'}>{exportStatus.text}</p>}
+          {status === 'overview' && <p className="explorer-export-note">The CSV contains every exact row in the window (about {number(windowEstimate * 75 / 1e6, 1)} MB), not the overview points drawn here.</p>}
           {status === 'ready' && stats.finite < stats.count && <p className="explorer-missing">{number(stats.count - stats.finite, 0)} missing {metricNames[variable.id]?.toLowerCase()} values excluded from the minimum and maximum.</p>}
         </div>
-        <aside className="explorer-sidebar" aria-label={notesOpen ? 'Observation notes' : 'Sample comparison'}>
+        <section className="explorer-sidebar" aria-label={notesOpen ? 'Observation notes' : 'Sample comparison'}>
           {notesOpen ? <div className="explorer-notes"><div className="explorer-sidebar-heading"><h3>Your observation</h3><button type="button" aria-label="Close notes" className="explorer-close" onClick={() => setNotesOpen(false)}>×</button></div><label>Title<input value={title} maxLength={160} onChange={(event) => { setTitle(event.target.value); setMessage('') }} /></label><label>Notes<textarea ref={notesRef} rows={8} value={notes} maxLength={20000} placeholder="What do you notice? What would you check next?" onChange={(event) => { setNotes(event.target.value); setMessage('') }} /></label><button className="button button-primary" type="button" onClick={save}>Save to notebook <span aria-hidden="true">↗</span></button><div className="explorer-note-links"><button type="button" onClick={exportNotes}>Export notes ↓</button><Link to="/explorations">Notebook →</Link></div><p className="explorer-save-status" role="status">{message || storageMessage}</p></div> : <div className="explorer-inspect"><div className="explorer-sidebar-heading"><h3>Look a little closer.</h3>{points.length > 0 && <button type="button" className="explorer-clear" onClick={() => inspect(null)}>Clear</button>}</div><p className="explorer-inspect-intro">Two points. A change worth noticing.</p><PointCard sample={pointA} label="A" variable={variable} /><PointCard sample={pointB} label="B" variable={variable} /><div className="explorer-delta"><span>Difference <small>B − A</small></span><strong className="mono">{pointB ? hasDelta ? signed(pointB[variable.id] - pointA[variable.id]) : 'Missing' : '—'}</strong><small>{unit}{pointB ? ` · Δ radius ${signed(pointB.ring_radius_km - pointA.ring_radius_km)} km` : ''}</small></div><button className="button button-primary" type="button" onClick={() => { setNotesOpen(true); requestAnimationFrame(() => notesRef.current?.focus()) }}>Save a note <span aria-hidden="true">↗</span></button></div>}
           <details className="explorer-source"><summary>Data source & limits <span aria-hidden="true">+</span></summary><div><p>Cassini Radio Science Subsystem · NASA Planetary Data System. Radius is the ring-plane intercept’s distance from Saturn’s center.</p><p><strong>{variable.label}:</strong> {variable.description}</p><p>These calibrated diffraction-limited profiles retain diffraction effects. They are not high-resolution reconstructions. Optical depth is not mass density. Phase is displayed as stored, without unwrapping or inferred continuity.</p><p>Exact converted Float64 rows are SHA-256 verified. Overview points are a display reduction. Exact inspection and CSV are available for windows up to {number(metadata.data_product.recommended_exact_window_records, 0)} estimated rows. CSV includes all four published fields and original zero-based sample indices within inclusive radius boundaries.</p><p>Missing and negative values are preserved. This derivative has no per-sample quality flags; conversion verification does not validate a physical interpretation.</p><p className="mono">{metadata.pds_identity.product_id}<br />Web data v{version}</p><a href={sourceDatasetUrl(metadata)} target="_blank" rel="noreferrer">Read the PDS documentation ↗</a><p>Notes stay in this browser. Export a copy to take them with you.</p></div></details>
-        </aside>
+        </section>
       </div>
     </section>
+    <MeasurementLab key={metadata.dataset_id} config={labConfig} exactRows={status === 'ready' ? samples : null} estimate={windowEstimate} loadExactWindow={loadExactWindow} threshold={thresholdText} onThresholdChange={setThreshold} activity={activity} onSaveToNotebook={saveMeasurementNote} />
     <p className="explorer-footer-caption"><span>{catalog.observations.length} observations. One extraordinary ring system.</span><span>CASSINI / RSS</span></p>
   </section>
 }
@@ -274,7 +335,7 @@ export default function Explorer() {
   const observation = request.catalog ? datasetSlug ? request.catalog.observations.find((item) => item.slug === datasetSlug) : getFeaturedObservation(request.catalog) : null
   return <>
     <PageMeta title={datasetSlug && observation ? `${observation.display_name} — Data Explorer` : 'Cassini Data Explorer'} description={datasetSlug && observation ? `Inspect ${observation.display_name}: ${observation.record_count.toLocaleString('en-US')} converted source records from ${observation.product_id}, with exact radial windows and CSV export.` : 'Explore six Cassini RSS diffraction-limited ring profiles, compare exact converted samples, and save observation notes.'} path={datasetSlug ? `/data/${datasetSlug}` : '/data'} />
-    {(observation || !datasetSlug) && <header className="page-intro explorer-intro"><p className="eyebrow"><Link className="eyebrow-link" to="/rings">The rings</Link> <span aria-hidden="true">/</span> The data explorer</p><h1 id="explorer-title">Read between the rings.</h1><p>{datasetSlug && observation ? `${observation.display_name}. ${observation.record_count.toLocaleString('en-US')} converted source records from ${observation.product_id}.` : 'Explore Cassini’s radio signals. Choose a region. Follow what changes.'}</p></header>}
+    {(observation || !datasetSlug) && <header className="page-intro explorer-intro"><p className="eyebrow"><Link className="eyebrow-link" to="/rings">The rings</Link> <span aria-hidden="true">/</span> The data explorer</p><h1 id="explorer-title">Read between the rings.</h1><p>Each profile records how much of Cassini’s radio signal the rings blocked at every distance from Saturn’s center. Choose an observation, zoom into a region, trace its source, then measure it below.</p>{datasetSlug && observation && <p className="explorer-intro-source">{observation.display_name} · {observation.record_count.toLocaleString('en-US')} converted source records from <span className="mono">{observation.product_id}</span></p>}</header>}
     {request.status !== 'ready' ? <section className="explorer-loading glass-panel" role={request.status === 'error' ? 'alert' : 'status'}><p>{request.status === 'error' ? 'The observation catalog could not be loaded.' : 'Loading Cassini observations…'}</p>{request.status === 'error' && <button className="button button-secondary" type="button" onClick={() => setRetry((value) => value + 1)}>Retry catalog</button>}</section>
       : !observation ? <section className="explorer-loading glass-panel"><h1>Observation not found.</h1><p>Choose one of the six available Cassini observations.</p><Link className="button button-primary" to="/data">Open the explorer</Link></section>
         : <ObservationLoader key={observation.dataset_id} catalog={request.catalog} observation={observation} />}

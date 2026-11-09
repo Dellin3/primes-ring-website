@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom'
 import PageMeta from '../components/common/PageMeta.jsx'
 import { loadObservationCatalog, loadObservationSummary, overviewSamples } from '../lib/webObservation.js'
 import { explorationHref, readExplorations } from '../lib/explorations.js'
-import { getExample } from '../content/explorationExamples.js'
+import { defaultExampleDatasetId, getExample } from '../content/explorationExamples.js'
+import { activityHref, labActivities } from '../content/labActivities.js'
 import { moonCount, sections } from '../content/saturn.js'
 
 function Arrow() { return <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg> }
@@ -46,6 +47,9 @@ function SignalPreview() {
   </Link>
 }
 
+const featuredExample = getExample(defaultExampleDatasetId)
+const featuredExplorerHref = featuredExample ? `/data/${featuredExample.slug}?variable=${featuredExample.variableId}&from=${featuredExample.range[0]}&to=${featuredExample.range[1]}&version=${featuredExample.webProductVersion}` : '/data'
+
 export default function Home() {
   const [last, setLast] = useState(null)
   useEffect(() => {
@@ -57,7 +61,7 @@ export default function Home() {
     return () => { active = false }
   }, [])
   return <><PageMeta title="Saturn — A Cassini Explorer" description="Explore Saturn — the planet, its rings, its moons and the missions that studied it — and read six real Cassini radio observations of the rings yourself." />
-    <section className="home-hero" aria-labelledby="home-title"><div className="hero-copy"><p className="mission-tag"><span />MIT PRIMES <span className="tag-divider">/</span> 2026</p><h1 id="home-title">Every ring, every moon.<br /><em>A new question.</em></h1><p className="hero-description">Meet Saturn: the planet, its rings, its moons.<br className="desktop-break" /> Read real Cassini data for yourself.<br className="desktop-break" /> Keep exploring.</p><div className="hero-actions"><Link to="/planet" className="hero-action"><span>Meet the planet</span><Arrow /></Link><Link to="/rings" className="hero-action"><span>Explore the rings</span><Arrow /></Link><Link to={last ? explorationHref(last) : '/research'} className="hero-action"><span>{last ? 'Continue exploring' : 'Project research'}</span><Arrow /></Link></div><div className="hero-facts"><div><strong>{moonCount.value}</strong><span>Confirmed moons</span></div><div><strong>29.4 yr</strong><span>One orbit of the Sun</span></div><div><strong>06</strong><span>Cassini ring observations</span></div></div></div><div className="planet-caption" aria-hidden="true"><span>SATURN</span><span>PLANET · RINGS · MOONS</span></div></section>
+    <section className="home-hero" aria-labelledby="home-title"><div className="hero-copy"><p className="mission-tag"><span />MIT PRIMES <span className="tag-divider">/</span> 2026</p><h1 id="home-title">Every ring, every moon.<br /><em>A new question.</em></h1><p className="hero-description">Cassini sent radio signals through Saturn’s rings to Earth. Our MIT PRIMES project studies the mathematics of reading those signals — and here you can read six of them yourself.</p><div className="hero-actions"><Link to={featuredExplorerHref} className="hero-action is-primary"><span>Open the explorer</span><Arrow /></Link><Link to={activityHref(labActivities['encke-width'])} className="hero-action"><span>Guided measurement</span><Arrow /></Link><Link to="/rings#rings-reading" className="hero-action"><span>Read a signal</span><Arrow /></Link></div><p className="hero-question"><span>The question</span> How can we find the points that matter in that mathematics, follow them as conditions change, and know when the usual approximation needs more care? <Link to="/research/2026">Read the research →</Link></p>{last && <p className="hero-continue"><Link to={explorationHref(last)}>Continue where you left off: {last.title} →</Link></p>}<div className="hero-facts"><div><strong>{moonCount.value}</strong><span>Confirmed moons</span></div><div><strong>29.4 yr</strong><span>One orbit of the Sun</span></div><div><strong>06</strong><span>Cassini ring observations</span></div></div></div><div className="planet-caption" aria-hidden="true"><span>SATURN</span><span>PLANET · RINGS · MOONS</span></div></section>
     <nav className="home-sections glass-panel" aria-labelledby="home-sections-title"><h2 id="home-sections-title" className="eyebrow">Explore Saturn</h2><ol>{sections.map(section => <li key={section.id}><Link to={section.path}><span className="home-section-number" aria-hidden="true">{section.number}</span><span className="home-section-copy"><strong>{section.title}</strong><span>{section.summary}</span></span><span className="home-section-arrow" aria-hidden="true">→</span></Link></li>)}</ol></nav>
     <SignalPreview />
   </>

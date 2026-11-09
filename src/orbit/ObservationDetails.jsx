@@ -10,7 +10,7 @@ const number = value => new Intl.NumberFormat('en-US', { maximumFractionDigits: 
 export function ObservationCatalog({ heading = 'Six Cassini RSS observations', page = false }) {
   const Heading = page ? 'h1' : 'h2'
   const count = publicObservations.reduce((total, observation) => total + observation.record_count, 0)
-  return <section className="observation-reference glass-panel" aria-labelledby="observation-catalog-title">
+  return <section className="observation-reference surface-instrument" aria-labelledby="observation-catalog-title">
     <p className="eyebrow">Public data & provenance</p><Heading id="observation-catalog-title">{heading}</Heading>
     <p>Inspect {number(count)} converted source records from six NASA PDS Cassini Radio Science Subsystem diffraction-limited profiles. Read the product details, then open a radial window in the explorer.</p>
     <div className="observation-table-scroll" tabIndex={0} role="region" aria-label="Cassini observation catalog, horizontally scrollable"><table><caption>Complete archived profile products in this website</caption><thead><tr><th scope="col">Observation</th><th scope="col">Source records</th><th scope="col">Ring radius (km)</th></tr></thead><tbody>{publicObservations.map(observation => <tr key={observation.dataset_id}><th scope="row"><Link to={observationDetailsPath(observation)}>{observation.display_name}</Link><small>{observation.product_id}</small></th><td>{number(observation.record_count)}</td><td>{number(observation.radial_range.minimum)}–{number(observation.radial_range.maximum)}</td></tr>)}</tbody></table></div>
@@ -23,7 +23,7 @@ export function ObservationCatalog({ heading = 'Six Cassini RSS observations', p
 // For researchers: how to cite, reproduce and responsibly compare the data.
 function ResearcherGuide() {
   const version = publicObservations[0] ? getExample(publicObservations[0].dataset_id)?.webProductVersion : null
-  return <section className="observation-reference glass-panel" aria-labelledby="researcher-guide-title">
+  return <section className="observation-reference surface-instrument" aria-labelledby="researcher-guide-title">
     <p className="eyebrow">For researchers</p><h2 id="researcher-guide-title">Cite, reproduce and compare with care</h2>
     <h3>Cite the original data</h3>
     <p>Cite the NASA PDS data set as its catalog file recommends: <q>Marouf, E., CASSINI ORBITER SATURN RSS RING RADIO OCCULTATIONS 2.0, CO-SR-RSS-4/5-OCC-V2.0, NASA Planetary Data System, 2018.</q> Also list the product IDs you used, which are shown above and on each observation page. If you used this website’s conversion or exports, also cite the <a href={project.repositoryUrl} target="_blank" rel="noreferrer">source repository ↗</a>{version ? <> and web-data version <strong>{version}</strong></> : null}.</p>
@@ -43,11 +43,11 @@ export function DatasetCatalogPage() {
 export default function ObservationDetails() {
   const { datasetSlug } = useParams()
   const observation = findPublicObservation(datasetSlug)
-  if (!observation) return <><PageMeta title="Observation not found" path="/404" noindex /><section className="observation-reference glass-panel"><h1>Observation not found.</h1><Link to="/datasets">Choose an archived observation</Link></section></>
+  if (!observation) return <><PageMeta title="Observation not found" path="/404" noindex /><section className="observation-reference surface-instrument"><h1>Observation not found.</h1><Link to="/datasets">Choose an archived observation</Link></section></>
   const example = getExample(observation.dataset_id)
   const params = example ? new URLSearchParams({ variable: example.variableId, from: String(example.range[0]), to: String(example.range[1]), version: example.webProductVersion }) : null
   const explorer = `/data/${observation.slug}`
-  return <article className="observation-reference glass-panel">
+  return <article className="observation-reference surface-instrument">
     <PageMeta title={`${observation.display_name} — Cassini RSS dataset`} path={observationDetailsPath(observation)} description={`${number(observation.record_count)} source records from ${observation.product_id}. Inspect ring radius, optical depth, normalized signal power and stored phase; read provenance and limits.`} structuredData={publicDatasetSchema(observation, project.publicSiteUrl)} />
     <p className="eyebrow">Cassini RSS / archived profile</p><h1>{observation.display_name}</h1>
     <p>This public web derivative comes from the PDS3 product <strong>{observation.product_id}</strong> in collection <strong>CO-SR-RSS-4/5-OCC-V2.0</strong>. It provides exact converted records for browser inspection; it is not the original PDS ASCII table or a new reconstruction.</p>
