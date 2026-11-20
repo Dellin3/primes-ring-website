@@ -175,7 +175,7 @@ export const glossary = [
   { term: 'Normal optical depth', definition: 'How strongly the ring weakened the signal, converted to a path straight through the ring. Zero means the signal passed freely; larger numbers mean more was blocked. It has no unit and is not a direct measure of mass.' },
   { term: 'Normalized signal power', definition: 'The received power divided by the power expected with no rings in the way, so 1 means unobstructed.' },
   { term: 'Phase shift', definition: 'The change in the timing of the radio wave, in degrees. This site shows the stored values without unwrapping them.' },
-  { term: 'Diffraction-limited profile', definition: 'Radio waves spread and interfere, which blurs the finest structure. These archived profiles keep that blur; reconstructing sharper detail is the problem the PRIMES project studies.' },
+  { term: 'Diffraction-limited profile', definition: 'Radio waves spread and interfere, which blurs the finest structure. These archived profiles keep that blur; recovering sharper detail takes further processing that this site does not do.' },
   { term: 'Ingress and egress', definition: 'Labels for the two directions in which the signal path can cross the rings during an occultation. Each profile records one.' },
   { term: 'Rev', definition: 'Cassini’s label for each orbit (revolution) of Saturn. A redesign of the early tour replaced Revs 1 and 2 with Revs A, B and C, so Rev 133 is not exactly the 133rd orbit.' },
 ]

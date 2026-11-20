@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url><loc>https://saturnringlab.com/</loc></url>
+<url><loc>https://saturnringlab.com/planet</loc></url>
+<url><loc>https://saturnringlab.com/rings</loc></url>
+<url><loc>https://saturnringlab.com/moons</loc></url>
+<url><loc>https://saturnringlab.com/missions</loc></url>
 <url><loc>https://saturnringlab.com/data</loc></url>
-<url><loc>https://saturnringlab.com/research</loc></url>
 <url><loc>https://saturnringlab.com/datasets</loc></url>
 <url><loc>https://saturnringlab.com/data/rev007e-x43-dlp-500m</loc></url>
 <url><loc>https://saturnringlab.com/datasets/rev007e-x43-dlp-500m</loc></url>

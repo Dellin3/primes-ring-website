@@ -79,6 +79,16 @@
       "permanent": true
     },
     {
+      "source": "/research",
+      "destination": "/rings",
+      "permanent": false
+    },
+    {
+      "source": "/research/:path*",
+      "destination": "/rings",
+      "permanent": false
+    },
+    {
       "source": "/viewer",
       "destination": "/data",
       "permanent": true
@@ -90,22 +100,22 @@
     },
     {
       "source": "/math",
-      "destination": "/research",
+      "destination": "/rings",
       "permanent": true
     },
     {
       "source": "/algorithms",
-      "destination": "/research",
+      "destination": "/rings",
       "permanent": true
     },
     {
       "source": "/algorithms/:slug",
-      "destination": "/research",
+      "destination": "/rings",
       "permanent": true
     },
     {
       "source": "/overview",
-      "destination": "/research",
+      "destination": "/rings",
       "permanent": true
     },
     {
@@ -115,7 +125,7 @@
     },
     {
       "source": "/team",
-      "destination": "/research",
+      "destination": "/",
       "permanent": true
     },
     {
@@ -129,11 +139,6 @@
       "permanent": true
     },
     {
-      "source": "/research/:moduleSlug(signal-and-phase|stationary-roots-and-continuation|reliability-and-reconstruction)",
-      "destination": "/research",
-      "permanent": true
-    },
-    {
       "source": "/resources",
       "destination": "/?about=sources",
       "permanent": true
@@ -143,10 +148,6 @@
     {
       "source": "/data",
       "destination": "/data/index.html"
-    },
-    {
-      "source": "/research",
-      "destination": "/research/index.html"
     },
     {
       "source": "/planet",
@@ -163,10 +164,6 @@
     {
       "source": "/missions",
       "destination": "/missions/index.html"
-    },
-    {
-      "source": "/research/:year(\\d{4})",
-      "destination": "/research/:year/index.html"
     },
     {
       "source": "/feedback",

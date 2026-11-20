@@ -5,7 +5,7 @@
 export const measurementMethod = {
   statistics: 'Computed from every exact converted source row whose ring radius lies inside the window (both boundaries inclusive). Missing values are counted but excluded from the minimum, median, mean and maximum.',
   gap: 'Rows are sorted by ring radius. The gap is the longest unbroken run of rows whose normal optical depth is finite and below the threshold; any row at or above the threshold, or with a missing value, ends a run. Width = outer radius − inner radius of that run, in kilometers.',
-  limitations: 'These are diffraction-limited profiles exactly as archived: they still contain diffraction effects and noise, and this site does not run the team’s reconstruction method. A measured width depends on the threshold and on noise; it is not a physical edge position by itself.',
+  limitations: 'These are diffraction-limited profiles exactly as archived: they still contain diffraction effects and noise, and this site does not run any reconstruction to remove them. A measured width depends on the threshold and on noise; it is not a physical edge position by itself.',
 }
 
 function median(sorted) {

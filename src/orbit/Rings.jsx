@@ -93,7 +93,6 @@ export default function Rings() {
       <div className="saturn-next is-inline">
         <Link className="research-text-link" to="/data">Open the data explorer <span aria-hidden="true">→</span></Link>
         <Link className="research-text-link" to="/datasets">All six observations and how to cite them <span aria-hidden="true">→</span></Link>
-        <Link className="research-text-link" to="/research/2026">How the PRIMES team studies these signals <span aria-hidden="true">→</span></Link>
       </div>
     </Chapter>
 

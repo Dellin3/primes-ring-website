@@ -75,5 +75,4 @@ export const sections = [
   { id: 'rings', number: '02', path: '/rings', title: 'The rings', summary: 'Ice in orbit, mapped to scale — and six real Cassini radio observations to explore.' },
   { id: 'moons', number: '03', path: '/moons', title: 'The moons', summary: `${moonCount.value} confirmed moons, from ocean worlds to the moonlets that carve gaps.` },
   { id: 'missions', number: '04', path: '/missions', title: 'Missions', summary: 'Four centuries of looking closer, from Galileo to Cassini — and Dragonfly next.' },
-  { id: 'research', number: '05', path: '/research', title: 'Research', summary: 'The MIT PRIMES Saturn rings project, year by year.' },
 ]

@@ -126,19 +126,6 @@
 .mission-entry .research-text-link{margin-top:10px;font-size:.875rem}
 
 /* Research archive */
-.cohort-list{list-style:none;margin:0;padding:0;display:grid;gap:22px}
-.cohort-card{display:grid;grid-template-columns:150px minmax(0,1fr);gap:34px;padding:34px 36px;border:1px solid #b8cde135;border-radius:22px;background:radial-gradient(ellipse at 85% 0,#29486944,transparent 65%),linear-gradient(130deg,#142537ed,#090f19ed)}
-.cohort-year{font-family:var(--font-mono);font-size:2.4rem;line-height:1;color:#e8f0fb}
-.cohort-year small{display:block;margin-top:12px;font-family:var(--font-sans);font-size:.8125rem;color:#a5c1dd;letter-spacing:.02em}
-.cohort-card h3{font-size:clamp(1.6rem,2.4vw,2.1rem);margin:0 0 14px}
-.cohort-card p{color:#b3c3d4;font-size:.9375rem}
-.cohort-card dl{display:grid;grid-template-columns:120px minmax(0,1fr);gap:10px 20px;margin:20px 0}
-.cohort-card dl>div{display:contents}
-.cohort-card dt{color:#a5c1dd;font-size:.875rem}
-.cohort-card dd{margin:0;color:#c9d6e4;font-size:.9375rem;line-height:1.7}
-.cohort-card ul{margin:0;padding-left:18px}
-.cohort-card .research-return-link{margin-top:8px}
-.cohort-pending{color:#91a7c0!important;font-size:.875rem!important}
 .saturn-inline-heading{font-size:clamp(2rem,3.2vw,2.8rem);line-height:1.1;margin:16px 0 20px}
 .saturn-breadcrumb{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding-top:40px;color:#91a7c0;font-size:.875rem}
 .saturn-breadcrumb a{color:#c1def7;text-decoration:underline;text-underline-offset:4px;text-decoration-color:#b3d4f044}
@@ -176,16 +163,13 @@
   .guided-item dd{margin-bottom:10px}
   .saturn-glossary{grid-template-columns:1fr}
   .mission-entry{grid-template-columns:1fr;gap:6px;padding-left:26px}
-  .cohort-card{grid-template-columns:1fr;gap:16px;padding:26px 24px}
-  .cohort-card dl{grid-template-columns:1fr;gap:2px}
-  .cohort-card dd{margin-bottom:10px}
   .saturn-source-list{grid-template-columns:1fr}
   .saturn-panel{padding:24px 22px}
 }
 @media(max-width:420px){.saturn-facts{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){.ring-map .ring-band{transition:none}}
 
-/* NASA photographs: the research story's framed-image language, with credits. */
+/* NASA photographs: the shared framed-image language, with credits. */
 .saturn-photo{margin:0;min-width:0}
 .saturn-photo-frame{position:relative;overflow:hidden;border-radius:22px;border:1px solid #b3cbe328;background:#020408;box-shadow:0 26px 55px -30px #000,inset 0 1px #f4f8ff12}
 .saturn-photo-frame img{display:block;width:100%;height:auto}

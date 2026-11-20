@@ -1,6 +1,9 @@
 https://saturnringlab.com/
+https://saturnringlab.com/planet
+https://saturnringlab.com/rings
+https://saturnringlab.com/moons
+https://saturnringlab.com/missions
 https://saturnringlab.com/data
-https://saturnringlab.com/research
 https://saturnringlab.com/datasets
 https://saturnringlab.com/data/rev007e-x43-dlp-500m
 https://saturnringlab.com/datasets/rev007e-x43-dlp-500m

@@ -27,6 +27,6 @@ export default function Missions() {
     <SourcesCard ids={collectSources(missionEras.flatMap(era => era.entries.flatMap(entry => entry.sources)))}>
       <p>Mission dates are given as NASA reports them; times near midnight can fall on different calendar days in different time zones. Plans for future missions can change.</p>
     </SourcesCard>
-    <nav className="saturn-next" aria-label="Continue exploring"><Link className="research-return-link" to="/research">See the research <span aria-hidden="true">→</span></Link><Link className="research-text-link" to="/rings">Explore the rings <span aria-hidden="true">→</span></Link></nav>
+    <nav className="saturn-next" aria-label="Continue exploring"><Link className="research-return-link" to="/data">Read the Cassini data yourself <span aria-hidden="true">→</span></Link><Link className="research-text-link" to="/rings">Explore the rings <span aria-hidden="true">→</span></Link></nav>
   </article>
 }
