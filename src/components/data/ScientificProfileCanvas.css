@@ -1,0 +1,31 @@
+/* The profile chart's own styles, shared by every page that shows it. Page
+   styles may change the frame's height and surroundings. */
+.scientific-profile { min-width: 0; width: 100%; }
+.scientific-profile-frame { position: relative; width: 100%; height: 300px; min-width: 0; background: #0c1725; border: 1px solid rgba(184,208,236,.12); border-radius: 10px; overflow: hidden; box-shadow: inset 0 1px 10px rgba(0,0,0,.16); }
+.scientific-profile-frame canvas { width: 100%; height: 100%; display: block; font: 10px 'JetBrains Mono', 'SFMono-Regular', Consolas, monospace; touch-action: pan-y; cursor: crosshair; }
+.scientific-profile-frame canvas:focus-visible { outline: 2px solid var(--gold); outline-offset: -3px; }
+.scientific-profile-status { position: absolute; left: 20px; right: 20px; top: 40%; padding: 12px; margin: 0; border: 1px solid var(--line); border-radius: 8px; background: rgba(12,23,37,.94); color: var(--text); text-align: center; font-size: 12px; }
+.profile-range-note { margin: 10px 2px 0; color: var(--muted); font-size: 11px; line-height: 1.5; }
+
+/* Chart legend, hover readout and drag-to-zoom band. */
+.scientific-profile-legend { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 0 0 10px; padding: 0; list-style: none; font-size: 12px; color: #b4c4d4; }
+.scientific-profile-legend li { display: inline-flex; align-items: center; gap: 8px; }
+.scientific-profile-legend .legend-hint { margin-left: auto; color: #8193a8; }
+.legend-swatch { display: inline-block; flex: 0 0 auto; }
+.legend-swatch.is-line { width: 22px; height: 2px; background: #a8c9ed; border-radius: 2px; }
+.legend-swatch.is-line.is-overview { background: repeating-linear-gradient(90deg, #a8c9ed 0 6px, transparent 6px 9px); }
+.legend-swatch.is-points { width: 22px; height: 6px; background: radial-gradient(circle, #a8c9ed 1.5px, transparent 2px) 0 0 / 7px 6px repeat-x; }
+.legend-swatch.is-marker-a, .legend-swatch.is-marker-b { width: 10px; height: 10px; border-radius: 50%; border: 2px solid #0c1725; box-shadow: 0 0 0 1px currentColor; }
+.legend-swatch.is-marker-a { background: #e1c69c; color: #e1c69c; }
+.legend-swatch.is-marker-b { background: #a8c9ed; color: #a8c9ed; }
+.scientific-profile-frame { position: relative; }
+.scientific-profile-frame canvas { touch-action: pan-y; cursor: crosshair; }
+.profile-hover { position: absolute; top: 0; bottom: 0; width: 0; pointer-events: none; }
+.profile-hover-line { position: absolute; top: 18px; bottom: 34px; left: 0; border-left: 1px dashed rgba(225,235,245,.45); }
+.profile-hover-dot { position: absolute; left: -5px; width: 10px; height: 10px; margin-top: -5px; border-radius: 50%; background: #f4f1e9; box-shadow: 0 0 0 3px rgba(12,23,37,.9); }
+.profile-hover-tip { position: absolute; top: 14px; left: 12px; display: grid; gap: 2px; min-width: 150px; padding: 8px 11px; border: 1px solid rgba(178,201,228,.3); border-radius: 9px; background: rgba(6,12,20,.94); font-size: 12px; line-height: 1.35; color: #c8d6e3; white-space: nowrap; }
+.profile-hover-tip strong { font: 500 13px/1.35 var(--font-mono, ui-monospace, monospace); color: #f4f1e9; }
+.profile-hover-tip.is-left { left: auto; right: 12px; }
+.profile-drag-band { position: absolute; top: 18px; bottom: 34px; display: flex; align-items: flex-start; justify-content: center; border: 1px solid rgba(225,198,156,.6); background: rgba(225,198,156,.12); pointer-events: none; }
+.profile-drag-band span { margin-top: 8px; padding: 2px 8px; border-radius: 6px; background: rgba(6,12,20,.9); color: #f0d9b4; font-size: 11px; white-space: nowrap; }
+

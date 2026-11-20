@@ -12,6 +12,7 @@ import {
   radialDisplayInterval, shouldBreakProfile,
 } from '../../lib/profileRendering.js'
 import { measuredProfileAxes } from '../../lib/profileAxes.js'
+import './ScientificProfileCanvas.css'
 
 const MAX_DEVICE_PIXEL_RATIO = 1.5
 

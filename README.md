@@ -6,6 +6,7 @@ A sourced website about Saturn — the planet, its rings, its moons and the miss
 - **The rings** (`/rings`): a to-scale ring map whose regions open the data explorer, the PDS ring table, a glossary for reading a radio signal, five guided observations in real Cassini data, and the open question of the rings' age. The data explorer (`/data`) and observation catalog (`/datasets`) belong to this section.
 - **The moons** (`/moons`): nine highlight cards and a sortable, filterable table of sixteen moons, downloadable as CSV.
 - **Missions** (`/missions`): a sourced timeline from Galileo to Dragonfly.
+- **Follow the signal:** on the home page, a 3D Saturn (radii to scale, ring brightness from a real profile) shows how Cassini's radio signal crossed the rings, with presets, labels and a static fallback.
 - **Explore data:** six described Cassini RSS observations, three signal variables, exact radial windows, drag-to-zoom, hover readout, reset, a visible source line, two-point comparison, and CSV export of every exact row in any window.
 - **Measure:** a measurement lab under the explorer computes window statistics and a gap width, saves a baseline, compares a second configuration, and copies or downloads a reproduction record. The guided activity “Is the Encke Gap the same width in every observation?” starts from the Rings page.
 - **My notebook:** autosaved drafts, named observations, restore, rename, delete, and export. Notes stay in the current browser; there is no account or cloud synchronization.
