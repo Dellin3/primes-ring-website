@@ -1,6 +1,6 @@
-# Saturn — A Cassini Explorer
+# Saturn Ring Lab
 
-A sourced guide to Saturn — the planet, its rings, its moons and the missions that studied it — built around six archived Cassini radio observations of the rings. It is maintained by the MIT PRIMES Saturn rings project team. Facts on each section page link to the NASA, JPL or NASA PDS page they were checked against.
+Saturn Ring Lab is a sourced guide to Saturn — the planet, its rings, its moons and the missions that studied it — built around six archived Cassini radio observations of the rings. Facts on each section page link to the NASA, JPL or NASA PDS page they were checked against.
 
 Sections:
 - Homepage: https://saturnringlab.com/
@@ -8,21 +8,11 @@ Sections:
 - The rings (to-scale ring map, ring and gap radii from the PDS Ring-Moon Systems Node, five guided observations in real Cassini data, open questions): https://saturnringlab.com/rings
 - The moons (293 confirmed moons as of August 2026 per NASA; sixteen compared from JPL data, downloadable CSV): https://saturnringlab.com/moons
 - Missions (sourced timeline from 1610 to Dragonfly): https://saturnringlab.com/missions
-- Research archive (MIT PRIMES Saturn rings project, one entry per cohort): https://saturnringlab.com/research
-- MIT PRIMES 2026 research story: https://saturnringlab.com/research/2026
 - Explore data: https://saturnringlab.com/data
 
-New Methods toward High-Resolution Reconstruction of Saturn’s Rings is the 2026 team project by Dell Li, Maiya Qiu, and Yutong Zhao, mentored by Dr. Ryan Maguire.
+The data explorer contains six Cassini RSS PDS diffraction-limited profile products: Rev 007, 028, 044, 064, 123, and 133, totaling 1,566,902 converted source rows. The plot supports optical depth, normalized signal power, and phase shift. Wide views are reduced source-sample overviews; narrow windows use hash-verified exact converted records. The 0.25 km sampling interval is not a claim about reconstructed resolution. The measurement lab computes window statistics and gap widths from the exact rows; the site does not run any reconstruction to remove diffraction effects.
 
-The data explorer contains six Cassini RSS PDS diffraction-limited profile products: Rev 007, 028, 044, 064, 123, and 133, totaling 1,566,902 converted source rows. The plot supports optical depth, normalized signal power, and phase shift. Wide views are reduced source-sample overviews; narrow windows use hash-verified exact converted records. The 0.25 km sampling interval is not a claim about reconstructed resolution.
-
-My notebook stores visitor observations and drafts in the current browser, with export support. It is separate from the team's research and does not provide account or cloud synchronization.
-
-Project research summarizes the team's working manuscript, sections 3–6: Padé and adaptive least-squares initialization, pseudo-arclength continuation and PCHIP interpolation, Halley refinement, one-to-one branch bookkeeping, generic fold verification, and a local angular-integral reliability switch. The interactive cubic is a teaching model; the website does not run the scientific solver.
-
-In the manuscript's eight-offset scalar-model benchmark, maximum symmetric discrepancy in a local angular integral falls from 59.5629% (SPA) to 2.2872% (switched evaluation). Quadrature is selected at five offsets by a preset phase-gap threshold. Direct integrand sampling work is 37.5% lower than quadrature at all eight offsets; this is not a measured runtime speedup or an improvement in final ring-profile resolution. The 0.0242% value at the farthest offset is not the maximum. Table 3 and the surrounding analysis support 2.2872%, despite the inconsistent maximum stated in the manuscript's conclusion.
-
-Separate tests report a verified generic fold in a scalar phase model with Cassini-derived parameters and improved branch identity in five noiseless synthetic scenarios. These are not full reconstructions of the six archived profiles. Archive counts describe data available in the website, not experiment size or validation of a new reconstruction method. The full working manuscript and scientific solver are not hosted here. No publication status is asserted.
+My notebook stores visitor observations and drafts in the current browser, with export support. It does not provide account or cloud synchronization.
 
 Data source: https://pds-rings.seti.org/cassini/rss/
 Moons table: https://saturnringlab.com/downloads/saturn-major-moons.csv (JPL Solar System Dynamics values; mean elements, not for ephemerides)

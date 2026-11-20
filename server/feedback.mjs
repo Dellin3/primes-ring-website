@@ -152,9 +152,9 @@ function notificationPayload(record) {
     from: record.sender,
     to: [CONTACT_EMAIL],
     ...(f.email ? { reply_to: f.email } : {}),
-    subject: `[PRIMES feedback] ${f.category} · ${f.id}`,
+    subject: `[Saturn Ring Lab feedback] ${f.category} · ${f.id}`,
     text: [
-      'A visitor submitted feedback to the PRIMES Saturn rings website.',
+      'A visitor submitted feedback to Saturn Ring Lab (saturnringlab.com).',
       `Reference: ${f.id}`, `Received: ${record.createdAt}`, `Category: ${f.category}`,
       `Page: ${f.page || '(not specified)'}`, `Name: ${f.name || '(not provided)'}`,
       `Reply email: ${f.email || '(not provided)'}`, '', 'Visitor feedback:', f.message,
@@ -173,7 +173,7 @@ async function saveFeedback(store, feedback, sender, now) {
     // The upload may have succeeded just before a timeout, or another request
     // may have won the create. Read back; never overwrite an existing record.
     const existing = await store.read(path)
-    if (!existing) throw new RequestError(503, 'Feedback was not confirmed saved. Please retry or use email.')
+    if (!existing) throw new RequestError(503, 'Feedback was not confirmed saved. Please try again.')
     if (existing.contentHash !== hash) throw new RequestError(409, 'This submission changed. Reload the form and submit again.')
     if (contentHash(existing.feedback) !== hash || !Number.isFinite(Date.parse(existing.createdAt))
       || typeof existing.sender !== 'string') throw new Error('Invalid stored feedback')
@@ -222,10 +222,10 @@ export function createFeedbackHandler({ env = process.env, store, notify, now = 
       }
       if (!allowRequest()) {
         res.setHeader('Retry-After', '60')
-        throw new RequestError(429, 'Too many submissions. Please wait a minute or use email.')
+        throw new RequestError(429, 'Too many submissions. Please wait a minute and try again.')
       }
       const feedback = validate(await readJson(req))
-      if (!configured(env)) throw new RequestError(503, 'Direct submission is unavailable. Please use the email option.')
+      if (!configured(env)) throw new RequestError(503, 'Direct submission is unavailable right now. Please try again later.')
       const storage = store || createPrivateFeedbackStore(env.BLOB_READ_WRITE_TOKEN)
       const record = await saveFeedback(storage, feedback, env.FEEDBACK_FROM_EMAIL.trim(), now)
       const notificationSent = await notifyFeedback(storage, notify || createResendNotifier(env.RESEND_API_KEY), record, now)
@@ -233,7 +233,7 @@ export function createFeedbackHandler({ env = process.env, store, notify, now = 
     } catch (error) {
       // Never log visitor contents, IP/UA, secrets, Blob URLs, or provider errors.
       const status = error instanceof RequestError ? error.status : 503
-      const message = error instanceof RequestError ? error.message : 'Feedback was not confirmed saved. Please retry or use email.'
+      const message = error instanceof RequestError ? error.message : 'Feedback was not confirmed saved. Please try again.'
       return respond(res, status, { ok: false, error: message })
     }
   }

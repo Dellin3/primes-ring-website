@@ -9,7 +9,7 @@ const origin = 'https://primes-ring-website-p9yv.vercel.app'
 const env = {
   NODE_ENV: 'production', VERCEL: '1',
   BLOB_READ_WRITE_TOKEN: 'fake-private-token', RESEND_API_KEY: 'fake-resend-key',
-  FEEDBACK_FROM_EMAIL: 'PRIMES Feedback <feedback@example.org>',
+  FEEDBACK_FROM_EMAIL: 'Saturn Ring Lab <feedback@example.org>',
 }
 const feedback = (overrides = {}) => ({
   id: '583077c5-b292-48bb-a60a-7c3e0bef6e30', category: 'content',

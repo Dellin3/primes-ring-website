@@ -8,7 +8,6 @@ import { moonCount } from '../content/saturn.js'
 import { useRevealOnScroll } from '../lib/motion.js'
 import SignalScene from './home/SignalScene.jsx'
 import ObservationPreview from './home/ObservationPreview.jsx'
-import InsideResearch from './home/InsideResearch.jsx'
 import ContinueExploring from './home/ContinueExploring.jsx'
 import './home/home.css'
 
@@ -29,23 +28,22 @@ export default function Home() {
     })
     return () => { active = false }
   }, [])
-  return <div className="home-page" ref={pageRef}><PageMeta title="Saturn — A Cassini Explorer" description="Explore Saturn — the planet, its rings, its moons and the missions that studied it — follow a Cassini radio signal through the rings in 3D, and read six real Cassini observations yourself." />
+  return <div className="home-page" ref={pageRef}><PageMeta title="Saturn Ring Lab" description="Saturn Ring Lab: explore Saturn — the planet, its rings, its moons and the missions that studied it — follow a Cassini radio signal through the rings in 3D, and read six real Cassini observations yourself." />
     <section className="home-hero" aria-labelledby="home-title"><div className="hero-copy">
-      <p className="mission-tag hero-enter" style={{ '--enter-delay': '0ms' }}><span />MIT PRIMES <span className="tag-divider">/</span> 2026</p>
+      <p className="mission-tag hero-enter" style={{ '--enter-delay': '0ms' }}><span />SATURN RING LAB <span className="tag-divider">/</span> CASSINI DATA</p>
       <h1 id="home-title" className="hero-enter" style={{ '--enter-delay': '70ms' }}><span className="hero-line">Every ring,</span> <span className="hero-line">every moon.</span> <em className="hero-line">A new question.</em></h1>
-      <p className="hero-description hero-enter" style={{ '--enter-delay': '150ms' }}>Cassini sent radio signals through Saturn’s rings to Earth. Read six of them yourself — and see how our MIT PRIMES team works on the mathematics behind them.</p>
+      <p className="hero-description hero-enter" style={{ '--enter-delay': '150ms' }}>Cassini sent radio signals through Saturn’s rings to Earth. Read six of those recordings yourself — and explore the planet, its rings and its moons along the way.</p>
       <div className="hero-actions hero-enter" style={{ '--enter-delay': '230ms' }}>
         <Link to={featuredExplorerHref} className="hero-action is-primary"><span>Open the explorer</span><Arrow /></Link>
         <a href="#follow-the-signal" className="hero-action is-secondary"><span>Follow the signal</span><Arrow down /></a>
         <Link to={activityHref(labActivities['encke-width'])} className="hero-link">Guided measurement <span aria-hidden="true">→</span></Link>
       </div>
-      <p className="hero-question hero-enter" style={{ '--enter-delay': '310ms' }}><span>The question</span> Radio waves spread as they cross the rings, so the finest structure reaches Earth blurred. Can mathematics help recover it — and tell when the usual shortcut needs more care? <Link to="/research/2026">Read the research →</Link></p>
+      <p className="hero-question hero-enter" style={{ '--enter-delay': '310ms' }}><span>The question</span> How do you measure a ring you can’t visit? As Cassini’s radio signal crossed the rings, ring material dimmed it. Six of those recordings are here, sample by sample. <Link to="/rings#rings-reading">How a signal is read →</Link></p>
       {last && <p className="hero-continue"><Link to={explorationHref(last)}>Continue where you left off: {last.title} →</Link></p>}
       <div className="hero-facts hero-enter" style={{ '--enter-delay': '390ms' }}><div><strong>{moonCount.value}</strong><span>Confirmed moons</span></div><div><strong>29.4 yr</strong><span>One orbit of the Sun</span></div><div><strong>06</strong><span>Cassini ring observations</span></div></div>
     </div><div className="planet-caption" aria-hidden="true"><span>SATURN</span><span>PLANET · RINGS · MOONS</span></div></section>
     <SignalScene />
     <ObservationPreview />
-    <InsideResearch />
     <ContinueExploring />
   </div>
 }

@@ -1,8 +1,9 @@
 import { Fragment } from 'react'
 import { sourceList, sources } from '../content/saturn.js'
 import { photoSrc } from '../content/photos.js'
-// The section pages reuse the research story's editorial styles so every page
-// shares one visual language; SaturnPage.css adds only section-specific parts.
+// The section pages share the editorial styles in Research.css (named for the
+// page they first served) so every page has one visual language; SaturnPage.css
+// adds only section-specific parts.
 import './Research.css'
 import './SaturnPage.css'
 

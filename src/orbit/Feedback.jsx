@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import PageMeta from '../components/common/PageMeta.jsx'
-import { contact, feedbackCategories, feedbackEmailBody, feedbackPagePath } from '../content/contact.js'
+import { feedbackCategories, feedbackPagePath } from '../content/contact.js'
 import './Feedback.css'
 
 export default function Feedback() {
@@ -80,11 +80,8 @@ export default function Feedback() {
     } finally { clearTimeout(timeout); request.current = null; setSending(false) }
   }
 
-  const emailBody = feedbackEmailBody({ ...fields, page: feedbackPagePath(page) })
-  const emailLink = `mailto:${contact.email}?subject=${encodeURIComponent('PRIMES website feedback')}&body=${encodeURIComponent(emailBody)}`
-
   return <section className="feedback-panel" aria-labelledby="feedback-title">
-    <PageMeta title="Feedback — Saturn explorer" description="Share a question, report a website problem, or suggest an improvement to the Saturn explorer." path="/feedback" noindex />
+    <PageMeta title="Feedback" description="Share a question, report a website problem, or suggest an improvement to Saturn Ring Lab." path="/feedback" noindex />
     <h1 id="feedback-title">Feedback</h1>
     {receipt ? <div className="feedback-success" ref={result} tabIndex={-1} role="status"><p>Thank you. Your feedback has been saved.</p><Link className="feedback-submit" to="/">Home</Link></div> : <form className="feedback-form" onSubmit={submit} aria-label="Website feedback">
       <fieldset disabled={sending}>
@@ -98,8 +95,7 @@ export default function Feedback() {
         <div className="feedback-honeypot" aria-hidden="true"><label htmlFor="feedback-website">Leave this field empty<input id="feedback-website" name="website" type="text" value={fields.website} onChange={change} tabIndex={-1} autoComplete="off" /></label></div>
       </fieldset>
       {error ? <p className="feedback-error" role="alert">{error}</p> : null}
-      <p className="feedback-recipient">To: {contact.email}</p>
-      {availability !== 'ready' ? <p className="feedback-status" role="status">{availability === 'checking' ? 'Checking submission availability…' : <>Direct submission is unavailable. <a href={emailLink}>Email this message</a>.</>}</p> : null}
+      {availability !== 'ready' ? <p className="feedback-status" role="status">{availability === 'checking' ? 'Checking submission availability…' : 'Feedback can’t be sent from this page right now. Please try again later.'}</p> : null}
       <button className="feedback-submit" type="submit" disabled={availability !== 'ready' || sending}>{sending ? 'Submitting…' : 'Submit feedback'}</button>
     </form>}
   </section>

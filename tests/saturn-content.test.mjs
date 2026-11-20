@@ -4,7 +4,6 @@ import { test } from 'node:test'
 import { explorerHref, findObservation, guidedObservations, mapWindow, observationCoverage, observationDate, observations, observedSpan, ringRegions } from '../src/content/rings.js'
 import { formatPublished, moonColumns, moons, moonsCsv, moonsCsvPath, moonHighlights, sortMoons } from '../src/content/moons.js'
 import { missionEras } from '../src/content/missions.js'
-import { cohortPath, findCohort, primesCohorts } from '../src/content/primesCohorts.js'
 import { keyFacts, moonCount, sections, sourceList, sources } from '../src/content/saturn.js'
 import { photoSrc, photos } from '../src/content/photos.js'
 import { stat } from 'node:fs/promises'
@@ -158,23 +157,9 @@ test('every cited source exists and uses HTTPS', () => {
   for (const source of Object.values(sources)) assert.equal(new URL(source.url).protocol, 'https:')
 })
 
-test('PRIMES cohorts form a usable archive', () => {
-  const years = primesCohorts.map(cohort => cohort.year)
-  assert.equal(new Set(years).size, years.length)
-  for (const cohort of primesCohorts) {
-    assert(Number.isInteger(cohort.year) && cohort.year >= 2026)
-    for (const key of ['program', 'title', 'mentor', 'status', 'question', 'summary', 'data']) assert(cohort[key], `${cohort.year}: ${key}`)
-    assert(cohort.team.length && cohort.focus.length && Array.isArray(cohort.results) && Array.isArray(cohort.materials))
-    assert.equal(cohortPath(cohort), `/research/${cohort.year}`)
-    assert.equal(findCohort(String(cohort.year)), cohort)
-  }
-  assert(findCohort(2026).story, 'the 2026 cohort keeps its full research story')
-  assert.equal(findCohort('signal-and-phase'), undefined)
-})
-
 test('sections list every public section page once, in navigation order', () => {
-  assert.deepEqual(sections.map(section => section.path), ['/planet', '/rings', '/moons', '/missions', '/research'])
-  assert(sections.every(section => section.title && section.summary && /^0[1-5]$/.test(section.number)))
+  assert.deepEqual(sections.map(section => section.path), ['/planet', '/rings', '/moons', '/missions'])
+  assert(sections.every(section => section.title && section.summary && /^0[1-4]$/.test(section.number)))
 })
 
 test('photos: credited, linked to a NASA page, and loaded only from NASA or this site', async () => {

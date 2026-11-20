@@ -12,15 +12,13 @@ function TilePhoto({ photo, width, src, credit = true }) {
 }
 const Credit = ({ photo }) => <span className="explore-credit" aria-hidden="true">{photo.credit} · {photo.ref}</span>
 
-const research = { credit: 'NASA/JPL-Caltech/SSI', ref: 'The Day the Earth Smiled' }
-
 export default function ContinueExploring() {
   const featureRef = useRef(null)
   usePointerDepth(featureRef, 8)
   return <section className="home-band home-explore" aria-labelledby="explore-title">
     <div className="home-band-inner">
       <header className="explore-head" data-reveal>
-        <p className="home-kicker"><span className="mono">04</span> Continue exploring</p>
+        <p className="home-kicker"><span className="mono">03</span> Continue exploring</p>
         <h2 id="explore-title">Start with the rings. <em>Then the rest of Saturn.</em></h2>
       </header>
       <nav className="explore-grid" aria-label="Sections of the site" data-reveal>
@@ -37,9 +35,9 @@ export default function ContinueExploring() {
           <TilePhoto photo={photos.saturnFromAbove} width={900} />
           <span className="explore-copy"><span className="explore-label">The planet</span><span className="explore-text">{summary('planet')}</span></span>
         </Link>
-        <Link className="explore-tile is-medium" to="/research">
-          <TilePhoto photo={research} src="/images/research/cassini-saturn-shadow.webp" />
-          <span className="explore-copy"><span className="explore-label">Research</span><span className="explore-text">{summary('research')}</span></span>
+        <Link className="explore-tile is-medium" to="/datasets">
+          <TilePhoto photo={photos.radioOccultation} />
+          <span className="explore-copy"><span className="explore-label">The data</span><span className="explore-text">Six Cassini radio observations of the rings, with product details, units and how to cite them.</span></span>
         </Link>
         <Link className="explore-tile is-small" to="/moons">
           <TilePhoto photo={photos.enceladusPlume} width={600} credit={false} />
