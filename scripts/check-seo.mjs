@@ -2,8 +2,8 @@ import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
 const sitemap = await readFile('dist/sitemap.xml', 'utf8')
 const urls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(match => match[1])
-// Home, five sections, one research page per PRIMES cohort, the explorer, the catalog and 6 + 6 observation pages.
-assert.equal(urls.length, 21)
+// Home, four sections, the explorer, the catalog and 6 + 6 observation pages.
+assert.equal(urls.length, 19)
 assert.equal(new Set(urls).size, urls.length)
 const origin = new URL(urls[0]).origin
 const titles = new Set()
@@ -38,7 +38,7 @@ const config = JSON.parse(await readFile('vercel.json', 'utf8'))
 assert(config.functions['api/feedback.js'], 'Existing feedback function preserved')
 assert(!config.rewrites.some(rule => rule.destination === '/index.html'), 'No route falls back to homepage metadata')
 const page = async path => readFile(path === '/' ? 'dist/index.html' : `dist${path}/index.html`, 'utf8')
-for (const path of ['/planet', '/rings', '/moons', '/missions', '/research', '/research/2026']) assert(urls.includes(`${origin}${path}`), `${path} is a public canonical page`)
+for (const path of ['/planet', '/rings', '/moons', '/missions']) assert(urls.includes(`${origin}${path}`), `${path} is a public canonical page`)
 for (const path of ['/planet', '/rings', '/moons', '/missions']) assert((await page(path)).includes('Where these facts come from'), `${path}: visible sources`)
 const ringsHtml = await page('/rings')
 assert.equal((ringsHtml.match(/class="guided-item"/g) || []).length, 5, '/rings: five guided observations in static HTML')
@@ -46,9 +46,18 @@ assert(ringsHtml.includes('href="/data/rev064e-x43-dlp-500m?variable=optical_dep
 const moonsHtml = await page('/moons')
 assert.equal((moonsHtml.match(/<tr>/g) || []).length, 17, '/moons: header row plus sixteen moons')
 assert(moonsHtml.includes('href="/downloads/saturn-major-moons.csv"') && (await readFile('dist/downloads/saturn-major-moons.csv', 'utf8')).includes('semi_major_axis_km'), '/moons: downloadable CSV')
-const schemaOf = html => [...html.matchAll(/<script[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g)].map(match => JSON.parse(match[1]))
-assert(schemaOf(await page('/research/2026')).some(item => item['@type'] === 'ResearchProject' && item.url === `${origin}/research/2026`), '/research/2026: project schema')
-assert(schemaOf(await page('/research')).some(item => item['@type'] === 'CollectionPage'), '/research: archive schema')
-assert(config.rewrites.some(rule => rule.source === '/research/:year(\\d{4})'), 'Cohort pages have a static rewrite')
-assert(!config.redirects.some(rule => rule.source === '/research/:moduleSlug'), 'Former module redirect must not capture cohort pages')
-console.log(`SEO checks passed: ${urls.length} raw HTML routes, unique metadata, sourced section pages, research archive, six source-backed Dataset pages, notebook exclusions and preserved feedback API.`)
+// The site is Saturn Ring Lab. The former research pages are gone, and their
+// addresses lead to the rings section instead of a 404.
+assert(urls.every(url => !new URL(url).pathname.startsWith('/research')), 'No research pages in the sitemap')
+await assert.rejects(readFile('dist/research/index.html'), 'No research page is built')
+const sameOrigin = config.redirects.filter(rule => !rule.has)
+for (const source of ['/research', '/research/:path*', '/math', '/algorithms', '/overview']) assert(sameOrigin.some(rule => rule.source === source && rule.destination === '/rings'), `${source} leads to /rings`)
+assert(sameOrigin.some(rule => rule.source === '/team' && rule.destination === '/'), '/team leads home')
+assert(!config.rewrites.some(rule => rule.source.startsWith('/research')), 'No rewrite points at a removed page')
+for (const url of urls) {
+  const path = new URL(url).pathname
+  const html = await page(path)
+  assert(html.includes('Saturn Ring Lab'), `${path}: names Saturn Ring Lab`)
+  assert(!/\bPRIMES\b/.test(html), `${path}: no PRIMES content`)
+}
+console.log(`SEO checks passed: ${urls.length} raw HTML routes, unique metadata, sourced section pages, research addresses redirected, six source-backed Dataset pages, notebook exclusions and preserved feedback API.`)

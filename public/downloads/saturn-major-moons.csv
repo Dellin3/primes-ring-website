@@ -1,4 +1,4 @@
-# Sixteen moons of Saturn — compiled by Saturn: A Cassini Explorer
+# Sixteen moons of Saturn — compiled by Saturn Ring Lab
 # Mean radius and mean density: NASA JPL Solar System Dynamics, Planetary Satellite Physical Parameters, https://ssd.jpl.nasa.gov/sats/phys_par/
 # Semi-major axis, eccentricity, inclination, period: NASA JPL Solar System Dynamics, Planetary Satellite Mean Elements, https://ssd.jpl.nasa.gov/sats/elem/
 #   Mean elements in the Laplace reference plane, epoch 2000-01-01.5 TDB. JPL notes they are not intended for computing positions; use JPL Horizons for ephemerides.
